@@ -40,13 +40,13 @@ namespace seco {
     DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::DenseDecomposableStatisticVector(
       const DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>& other)
         : DenseDecomposableStatisticVector(other.getNumElements()) {
-        VectorMath::copy(other.view.cbegin(), this->view.begin(), this->view.numElements);
+        VectorMath::copy(other.view.cbegin(), this->view.begin(), this->view.numElementsWithPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const DenseDecomposableStatisticVectorView<StatisticType>& other) {
-        VectorMath::add(this->view.begin(), other.cbegin(), this->view.numElements);
+        VectorMath::add(this->view.begin(), other.cbegin(), this->view.numElementsWithPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
@@ -145,7 +145,7 @@ namespace seco {
     void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::difference(
       const DenseDecomposableStatisticVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseDecomposableStatisticVectorView<StatisticType>& second) {
-        VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->view.numElements);
+        VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->view.numElementsWithPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>

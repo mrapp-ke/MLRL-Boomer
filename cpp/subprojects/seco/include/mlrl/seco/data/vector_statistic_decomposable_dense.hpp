@@ -29,9 +29,11 @@ namespace seco {
             /**
              * @param array     A pointer to an array of template type `StatisticType` that stores the counts
              * @param numCounts The number of counts in the view
+             * @param padding   The number of elements added to the vector to ensure aligned memory access when using
+             *                  SIMD operations
              */
-            DenseDecomposableStatisticVectorView(StatisticType* array, uint32 numCounts)
-                : Vector<StatisticType>(array, numCounts * 2), numCounts(numCounts) {}
+            DenseDecomposableStatisticVectorView(StatisticType* array, uint32 numCounts, uint32 padding = 0)
+                : Vector<StatisticType>(array, numCounts * 2, padding), numCounts(numCounts) {}
 
             /**
              * @param other A reference to an object of type `DenseDecomposableStatisticVectorView` that should be
@@ -126,7 +128,7 @@ namespace seco {
              *         predicts incorrectly
              */
             typename View<StatisticType>::const_iterator incorrect_counts_cend() const {
-                return &(this->cbegin())[this->numElements];
+                return &(this->cbegin())[this->numElementsWithPadding];
             }
 
             /**
@@ -148,7 +150,7 @@ namespace seco {
              *         incorrectly
              */
             typename View<StatisticType>::iterator incorrect_counts_end() {
-                return &(this->begin())[this->numElements];
+                return &(this->begin())[this->numElementsWithPadding];
             }
     };
 
@@ -167,8 +169,11 @@ namespace seco {
              * @param init          True, if all elements in the view should be value-initialized, false otherwise
              */
             explicit DenseDecomposableStatisticVectorAllocator(uint32 numCounts, bool init = false)
-                : View(MemoryAllocator::template allocateMemory<typename View::value_type>(numCounts * 2, init),
-                       numCounts) {}
+                : View(
+                    MemoryAllocator::template allocateMemory<typename View::value_type>(
+                      (numCounts * 2) + MemoryAllocator::template getPadding<typename View::value_type>(numCounts * 2),
+                      init),
+                    numCounts, MemoryAllocator::template getPadding<typename View::value_type>(numCounts * 2)) {}
 
             /**
              * @param other A reference to an object of type `DenseDecomposableStatisticVectorAllocator` that should be

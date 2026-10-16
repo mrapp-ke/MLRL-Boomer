@@ -26,7 +26,7 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
          *                          provide access to
          * @param numRows           The number of rows in the view
          * @param numCols           The number of columns in the view
-         * @param paddingPerColumn  The number of unused elements inserted after each column to ensure aligned access to
+         * @param paddingPerColumn  The number of unused elements added to each column to ensure aligned access to
          *                          individual columns when using SIMD operations
          */
         FortranContiguousView(T* array, uint32 numRows, uint32 numCols, uint32 paddingPerColumn = 0)
@@ -93,7 +93,7 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
          * @return          A `value_const_iterator` to the end of the column
          */
         typename DenseMatrix<T>::value_const_iterator values_cend(uint32 column) const {
-            return &DenseMatrix<T>::array[(column * numRowsWithPadding_) + Matrix::numRows];
+            return &DenseMatrix<T>::array[(column * numRowsWithPadding_) + numRowsWithPadding_];
         }
 
         /**
@@ -113,7 +113,7 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
          * @return          A `value_iterator` to the end of the column
          */
         typename DenseMatrix<T>::value_iterator values_end(uint32 column) {
-            return &DenseMatrix<T>::array[(column * numRowsWithPadding_) + Matrix::numRows];
+            return &DenseMatrix<T>::array[(column * numRowsWithPadding_) + numRowsWithPadding_];
         }
 
         /**
