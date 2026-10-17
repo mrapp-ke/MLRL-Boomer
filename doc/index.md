@@ -135,8 +135,7 @@ hidden: true
 maxdepth: 2
 ---
 developer_guide/project_structure
-developer_guide/compilation
-developer_guide/documentation
+developer_guide/building/index
 developer_guide/continuous_integration
 developer_guide/coding_standards
 developer_guide/api/python/index
