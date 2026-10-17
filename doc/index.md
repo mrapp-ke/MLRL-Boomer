@@ -136,8 +136,10 @@ maxdepth: 2
 ---
 developer_guide/project_structure
 developer_guide/building/index
+developer_guide/coding_standards/index
 developer_guide/continuous_integration
-developer_guide/coding_standards
+developer_guide/release_process
+developer_guide/versioning_scheme
 developer_guide/api/python/index
 developer_guide/api/cpp/index
 ```
