@@ -50,7 +50,7 @@ In addition, the following features that may speed up training or reduce the mem
 
 Our documentation provides an extensive [user guide](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/seco/index.html), as well as [Python](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/python/seco/mlrl.seco.html) and [C++](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/cpp/seco/filelist.html) API references for developers. If you are new to the project, you probably want to read about the following topics:
 
-- Instructions for [installing the software package](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/installation.html) or [building the project from source](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/compilation.html).
+- Instructions for [installing the software package](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/installation.html) or [building the project from source](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/building/compilation.html).
 - Examples of how to [use the algorithm](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/usage.html) in your own Python code or how to use the [command line API](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/testbed.html).
 - An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/seco/parameters.html).
 
