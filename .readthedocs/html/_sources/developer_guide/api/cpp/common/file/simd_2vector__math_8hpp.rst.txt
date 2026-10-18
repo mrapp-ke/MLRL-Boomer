@@ -1,0 +1,5 @@
+File simd/vector_math.hpp
+=========================
+
+.. doxygenfile:: simd/vector_math.hpp
+   :project: common

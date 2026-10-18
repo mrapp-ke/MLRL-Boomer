@@ -1,0 +1,5 @@
+File subtract_constant_from_subset_generic.hpp
+==============================================
+
+.. doxygenfile:: subtract_constant_from_subset_generic.hpp
+   :project: common
