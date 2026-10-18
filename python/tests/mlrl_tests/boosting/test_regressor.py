@@ -54,15 +54,23 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
             StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
         ],
     )
-    def test_decomposable_head_type(self, head_type: str, statistic_type: str):
+    @pytest.mark.parametrize(
+        'simd',
+        [
+            False,
+            True,
+        ],
+    )
+    def test_decomposable_head_type(self, head_type: str, statistic_type: str, simd: bool):
         builder = (
             self.create_cmd_builder()
             .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_DECOMPOSABLE)
             .statistic_type(statistic_type)
             .head_type(head_type)
             .print_model_characteristics()
+            .use_simd(simd)
         )
-        CmdRunner(builder).run(f'decomposable-{head_type}-heads_{statistic_type}-statistics')
+        CmdRunner(builder).run(f'decomposable-{head_type}-heads_{statistic_type}-statistics_simd-{str(simd).lower()}')
 
     @pytest.mark.parametrize(
         'head_type',
@@ -80,7 +88,14 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
             StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
         ],
     )
-    def test_non_decomposable_head_type(self, head_type: str, statistic_type: str):
+    @pytest.mark.parametrize(
+        'simd',
+        [
+            False,
+            True,
+        ],
+    )
+    def test_non_decomposable_head_type(self, head_type: str, statistic_type: str, simd: bool):
         builder = (
             self.create_cmd_builder()
             .loss(
@@ -89,5 +104,8 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
             .statistic_type(statistic_type)
             .head_type(head_type)
             .print_model_characteristics()
+            .use_simd(simd)
         )
-        CmdRunner(builder).run(f'non-decomposable-{head_type}-heads_{statistic_type}-statistics')
+        CmdRunner(builder).run(
+            f'non-decomposable-{head_type}-heads_{statistic_type}-statistics_simd-{str(simd).lower()}'
+        )

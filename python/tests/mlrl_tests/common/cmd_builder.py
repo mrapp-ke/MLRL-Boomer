@@ -220,3 +220,13 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
             self.add_algorithmic_argument('--feature-binning', feature_binning)
 
         return self
+
+    def use_simd(self, use_simd: bool = True):
+        """
+        Configures whether the algorithm should use single instruction, multiple data (SIMD) operations or not.
+
+        :param use_simd:    True, if SIMD operations should be used, False otherwise
+        :return:            The builder itself
+        """
+        self.add_algorithmic_argument('--simd', str(use_simd).lower())
+        return self
