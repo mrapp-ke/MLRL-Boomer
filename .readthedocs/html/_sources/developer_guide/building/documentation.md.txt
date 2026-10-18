@@ -1,6 +1,6 @@
 (documentation)=
 
-# Generating the Documentation
+# Building the Documentation
 
 The documentation of the BOOMER algorithm and other software provided by this project is publicly available at [https://mlrl-boomer.readthedocs.io](https://mlrl-boomer.readthedocs.io/en/latest/). This website should be the primary source of information for everyone who wants to learn about our work. However, if you want to generate the documentation from scratch, e.g., for offline use on your own computer, follow the instructions below.
 
@@ -54,7 +54,7 @@ By running the following command, the C++ API documentation is generated via Dox
    ```
 ````
 
-The resulting HTML files should be located in the directory `doc/developer_guide/api/cpp/`.
+The resulting HTML files should be located in the directory `../api/cpp`.
 
 ## Building the Python API Documentation
 
@@ -78,7 +78,7 @@ Similarly, the following command generates an API documentation from the project
    ```
 ````
 
-The files produced by the above command should be saved to the directory `doc/developer_guide/api/python/`.
+The files produced by the above command should be saved to the directory `../api/python`.
 
 ```{note}
 If you want to generate the API documentation for the C++ and Python code simultaneously, it is possible to use the build target `apidoc` instead of `apidoc_cpp` and `apidoc_python`.
@@ -106,7 +106,7 @@ To generate the final documentation's HTML files via [sphinx](https://www.sphinx
    ```
 ````
 
-Afterward, the generated files can be found in the directory `doc/_build/html/`.
+Afterward, the generated files can be found in the directory `../../_build/html`.
 
 `````{note}
 By default, the above command uses the [Sphinx builder](https://www.sphinx-doc.org/en/master/usage/builders/index.html) `html`. Alternatively, the environment variable `SPHINX_BUILDER` can be set to `linkcheck` to check the documentation for broken links:
