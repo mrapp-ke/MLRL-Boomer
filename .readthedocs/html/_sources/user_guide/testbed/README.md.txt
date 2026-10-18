@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_testbed_dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_testbed_light.svg">
-    <img alt="mlrl-testbed" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/logo_testbed_light.svg">
+    <img alt="mlrl-testbed" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/logo_testbed_light.svg" width="75%">
   </picture>
 </p>
 
@@ -10,9 +10,18 @@
 
 **🔗 Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
-<!-- documentation-start -->
-
 This software package provides **mlrl-testbed - a command line utility for running machine learning experiments**. It implements a *straightforward*, *easily configurable*, and *extensible* workflow for conducting experiments.
+
+<figure align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/user_guide/testbed/screenshot_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/user_guide/testbed/screenshot_light.svg">
+    <img alt="Exemplary log output of "mlrl-testbed" when running an experiment" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/doc/user_guide/testbed/screenshot_light.inkscape.svg" width="75%">
+  </picture>
+  <figcaption>Log output of "mlrl-testbed" when running an experiment.</figcaption>
+</figure>
+
+<!-- documentation-start -->
 
 # mlrl-testbed
 
