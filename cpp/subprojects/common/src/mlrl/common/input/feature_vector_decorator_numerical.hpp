@@ -24,7 +24,7 @@ static inline std::optional<NumericalFeatureVector> createFilteredNumericalFeatu
     if (numFilteredElements > 0
         && (featureVector.sparse
             || !isEqual(featureVector[start].value, featureVector[numFilteredElements - 1].value))) {
-        return NumericalFeatureVector(&featureVector.array[start], numFilteredElements, featureVector.sparseValue,
+        return NumericalFeatureVector(&featureVector.array[start], numFilteredElements, 0, featureVector.sparseValue,
                                       featureVector.sparse);
     }
 
