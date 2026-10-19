@@ -24,10 +24,10 @@ class MLRLCOMMON_API View {
         T* array;
 
         /**
-         * @param array         A pointer to an array of template type `T` that stores the values, the view should
-         *                      provide access to
+         * @param array A pointer to an array of template type `T` that stores the values, the view should provide
+         *              access to
          */
-        explicit View(T* array, uint32 = 0) : array(array) {}
+        explicit View(T* array, uint32 = 0, uint32 = 0) : array(array) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
@@ -125,7 +125,7 @@ class MLRLCOMMON_API Allocator : public View {
         explicit Allocator(uint32 numElements, bool init = false)
             : View(MemoryAllocator::template allocateMemory<typename View::value_type>(
                      numElements + MemoryAllocator::template getPadding<typename View::value_type>(numElements), init),
-                   numElements) {}
+                   numElements, MemoryAllocator::template getPadding<typename View::value_type>(numElements)) {}
 
         /**
          * @param other A reference to an object of type `Allocator` that should be copied
@@ -175,68 +175,6 @@ class MLRLCOMMON_API Allocator : public View {
  */
 template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
 using AllocatedView = Allocator<View<T>, MemoryAllocator>;
-
-/**
- * Allocates the memory, a view provides access to, and allows to resize it afterwards.
- *
- * @tparam View             The type of the view
- * @tparam MemoryAllocator  The type of the memory allocator to be used
- */
-template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
-class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator> {
-    public:
-
-        /**
-         * The maximum number of elements in the view.
-         */
-        uint32 maxCapacity;
-
-        /**
-         * @param numElements   The number of elements in the view
-         * @param init          True, if all elements in the view should be value-initialized, false otherwise
-         */
-        explicit ResizableAllocator(uint32 numElements, bool init = false)
-            : Allocator<View, MemoryAllocator>(numElements, init), maxCapacity(numElements) {}
-
-        /**
-         * @param other A reference to an object of type `ResizableAllocator` that should be copied
-         */
-        ResizableAllocator(const ResizableAllocator<View, MemoryAllocator>& other) = delete;
-
-        /**
-         * @param other A reference to an object of type `ResizableAllocator` that should be moved
-         */
-        ResizableAllocator(ResizableAllocator<View, MemoryAllocator>&& other)
-            : Allocator<View, MemoryAllocator>(std::move(other)), maxCapacity(other.maxCapacity) {}
-
-        virtual ~ResizableAllocator() override {}
-
-        /**
-         * Resizes the view by re-allocating the memory it provides access to.
-         *
-         * @param numElements   The number of elements to which the view should be resized
-         * @param freeMemory    True, if unused memory should be freed, false otherwise
-         */
-        void resize(uint32 numElements, bool freeMemory) {
-            if (numElements < maxCapacity) {
-                if (freeMemory) {
-                    View::array = MemoryAllocator::reallocateMemory(
-                      View::array,
-                      maxCapacity + MemoryAllocator::template getPadding<typename View::value_type>(maxCapacity),
-                      numElements + MemoryAllocator::template getPadding<typename View::value_type>(numElements));
-                    maxCapacity = numElements;
-                }
-            } else if (numElements > maxCapacity) {
-                View::array = MemoryAllocator::reallocateMemory(
-                  View::array,
-                  maxCapacity + MemoryAllocator::template getPadding<typename View::value_type>(maxCapacity),
-                  numElements + MemoryAllocator::template getPadding<typename View::value_type>(numElements));
-                maxCapacity = numElements;
-            }
-
-            View::numElements = numElements;
-        }
-};
 
 /**
  * A base class for all data structures that are backed by a view.

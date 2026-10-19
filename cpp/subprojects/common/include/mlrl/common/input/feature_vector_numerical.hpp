@@ -27,12 +27,14 @@ class MLRLCOMMON_API NumericalFeatureVector : public Vector<IndexedValue<float32
          * @param array         A pointer to an array of type `IndexedValue<float32>` that stores the values in the
          *                      feature vector
          * @param numElements   The number of elements in the vector, excluding those associated with the sparse value
+         * @param padding       The number of elements added to the vector to ensure aligned memory access when using
+         *                      SIMD operations
          * @param sparseValue   The value of sparse elements not explicitly stored in the vector
          * @param sparse        True, if there are any sparse elements not explicitly stored in the vector, false
          *                      otherwise
          */
-        NumericalFeatureVector(IndexedValue<float32>* array, uint32 numElements, float32 sparseValue = 0,
-                               bool sparse = false);
+        NumericalFeatureVector(IndexedValue<float32>* array, uint32 numElements, uint32 padding = 0,
+                               float32 sparseValue = 0, bool sparse = false);
 
         /**
          * @param other A const reference to an object of type `NumericalFeatureVector` that should be copied
