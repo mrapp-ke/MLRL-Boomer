@@ -83,6 +83,11 @@ In addition to the features mentioned above, several techniques that may speed u
 ### Parallelization
 
 - **Multi-threading** can be used for parallelizing the evaluation of a rule's potential refinements across several features, updating the gradients and Hessians of individual examples in parallel, or obtaining predictions for several examples in parallel.
+- **Single instruction, multiple data (SIMD)** operations supported by modern CPUs are used for parallelizing vector calculations.
+
+### Other Optimizations
+
+- **High- or low-precision data types** can be used for gradients and Hessians to trade off training accuracy and speed differently.
 
 <!-- documentation-end -->
 
@@ -90,7 +95,7 @@ In addition to the features mentioned above, several techniques that may speed u
 
 Our documentation provides an extensive [user guide](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/boosting/index.html), as well as [Python](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/python/boosting/mlrl.boosting.html) and [C++](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/cpp/boosting/filelist.html) API references for developers. If you are new to the project, you probably want to read about the following topics:
 
-- Instructions for [installing the software package](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/installation.html) or [building the project from source](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/compilation.html).
+- Instructions for [installing the software package](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/installation.html) or [building the project from source](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/building/compilation.html).
 - Examples of how to [use the algorithm](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/usage.html) in your own Python code or how to use the [command line API](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/testbed.html).
 - An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/boosting/parameters.html).
 
