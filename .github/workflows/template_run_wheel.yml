@@ -137,7 +137,13 @@ jobs:
           .\.venv\Scripts\uv pip install --find-links wheelhouse --no-index --no-deps $env:PACKAGE_NAME
       - name: Run wheel
         if: ${{ !startsWith(inputs.os, 'windows-') }}
-        run: .venv/bin/mlrl-testbed mlrl.${{ inputs.subproject }} --version
+        run: |-
+          .venv/bin/mlrl-testbed mlrl.${{ inputs.subproject }} --version | tee version.txt
+          grep --quiet "HDF5 version (" version.txt || (echo "HDF5 version is not reported" && exit 1)
       - name: Run wheel
         if: ${{ startsWith(inputs.os, 'windows-') }}
-        run: .\.venv\Scripts\mlrl-testbed mlrl.${{ inputs.subproject }} --version
+        run: |-
+          $output = .\.venv\Scripts\mlrl-testbed mlrl.${{ inputs.subproject }} --version | Out-String
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Output $output
+          if ($output -notmatch 'HDF5 version \(') { Write-Error "HDF5 version is not reported"; exit 1 }

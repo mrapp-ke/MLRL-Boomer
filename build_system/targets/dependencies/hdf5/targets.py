@@ -5,6 +5,8 @@ Implements targets for compiling the native library dependency "HDF5" from sourc
 """
 
 import platform
+import shutil
+
 from os import environ
 from pathlib import Path
 
@@ -19,6 +21,8 @@ from targets.project import Project
 from targets.version_files import VersionTextFile
 
 INSTALL_DIRECTORY = Path('hdf5')
+
+LICENSE_FILE = INSTALL_DIRECTORY / 'COPYING'
 
 
 def __get_version() -> str:
@@ -84,6 +88,8 @@ def compile_hdf5(_: BuildUnit):
     ]
 
     if platform.system().lower() == 'darwin':
+        # Use the absolute path of the installed library as its install name, such that "delocate" can find it
+        args.append('-DHDF5_BUILD_WITH_INSTALL_NAME=ON')
         args.extend(__get_macos_arguments())
 
     cmake_build_directory = install_directory / 'build'
@@ -91,3 +97,8 @@ def compile_hdf5(_: BuildUnit):
     Cmake('-S', str(source_directory), '-B', str(cmake_build_directory), *args).run()
     Cmake('--build', str(cmake_build_directory), '--config', 'Release', '--parallel').run()
     Cmake('--install', str(cmake_build_directory), '--config', 'Release').run()
+    # Depending on the platform, CMake installs the license file into different directories (e.g., "share/" on Linux
+    # and macOS). For this reason, it is copied from the source directory to a platform-independent location
+    license_file = install_directory / LICENSE_FILE.name
+    Log.info(f'Copying license file to "{license_file}"...')
+    shutil.copy(source_directory / 'COPYING', license_file)

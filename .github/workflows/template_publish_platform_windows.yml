@@ -90,6 +90,14 @@ jobs:
         uses: JesseTG/rm@v1.0.3
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
+      - name: Install HDF5
+        run: .\build.bat dependency_hdf5
+      - name: Remove virtual environment
+        run: .\build.bat --clean
+      - name: Add HDF5 to search paths
+        run: |-
+          "INCLUDE=$env:INCLUDE;$($pwd.Path)\hdf5\include" >> $env:GITHUB_ENV
+          "LIB=$env:LIB;$($pwd.Path)\hdf5\lib" >> $env:GITHUB_ENV
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
@@ -99,7 +107,7 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.build_identifier }}
           CIBW_BEFORE_BUILD: .\build.bat pyproject_toml
-          CIBW_REPAIR_WHEEL_COMMAND: delvewheel repair --ignore-existing -w {dest_dir} -v {wheel}
+          CIBW_REPAIR_WHEEL_COMMAND: delvewheel repair --ignore-existing --add-path ${{ github.workspace }}\hdf5\bin -w {dest_dir} -v {wheel}
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Upload wheels as artifacts

@@ -82,9 +82,11 @@ jobs:
         env:
           CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT SIMD_SUPPORT GPU_SUPPORT
           CIBW_BUILD: ${{ matrix.build_identifier }}
-          CIBW_BEFORE_ALL: yum install -y ccache 2>/dev/null || apk add --no-cache ccache 2>/dev/null || true
+          CIBW_BEFORE_ALL: (yum install -y ccache 2>/dev/null || apk add --no-cache ccache 2>/dev/null || true) && PATH="/opt/python/cp312-cp312/bin:$PATH"
+            ./build dependency_hdf5 && PATH="/opt/python/cp312-cp312/bin:$PATH" ./build --clean
           CIBW_BEFORE_BUILD: ./build pyproject_toml
-          CIBW_ENVIRONMENT: PATH="/usr/lib/ccache:/usr/lib64/ccache:$PATH" CCACHE_DIR=/ccache
+          CIBW_ENVIRONMENT: PATH="/usr/lib/ccache:/usr/lib64/ccache:$PATH" CCACHE_DIR=/ccache PKG_CONFIG_PATH=/project/hdf5/lib/pkgconfig
+            CPATH=/project/hdf5/include LIBRARY_PATH=/project/hdf5/lib LD_LIBRARY_PATH="/project/hdf5/lib:$LD_LIBRARY_PATH"
           CIBW_CONTAINER_ENGINE: 'docker; create_args: --volume ${{ env.CCACHE_DIR }}:/ccache'
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/

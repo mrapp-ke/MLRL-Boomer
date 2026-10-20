@@ -4,6 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for building and installing wheel packages.
 """
 
+import shutil
+
 from os import environ
 from pathlib import Path
 from typing import cast, override
@@ -17,6 +19,7 @@ from util.log import Log
 from util.package_manager import PackageManager
 from util.requirements import Package, Requirement, RequirementsTextFile, RequirementVersion
 
+from targets.dependencies.hdf5.targets import LICENSE_FILE as HDF5_LICENSE_FILE
 from targets.packaging.auditwheel import Auditwheel
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
@@ -97,6 +100,16 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
 
         return new_lines
 
+    @staticmethod
+    def __is_hdf5_license_included(package_module: PythonPackageModule) -> bool:
+        # The license of HDF5 must be included in packages that contain native code if the library has been compiled
+        # from source, because it may be bundled with these packages when repairing them
+        return not package_module.pure and HDF5_LICENSE_FILE.is_file()
+
+    @staticmethod
+    def __get_hdf5_license_file(package_module: PythonPackageModule) -> Path:
+        return package_module.root_directory / 'COPYING_HDF5'
+
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
@@ -108,21 +121,42 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
         pyproject_toml_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_file)
         pyproject_toml_file.write_lines(*self.__generate_pyproject_toml(template_file))
 
+        if self.__is_hdf5_license_included(package_module):
+            license_file = self.__get_hdf5_license_file(package_module)
+            Log.info(f'Copying license file "{HDF5_LICENSE_FILE}" to "{license_file}"...')
+            shutil.copy(HDF5_LICENSE_FILE, license_file)
+
     @override
     def get_input_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
-        return [package_module.pyproject_toml_template_file]
+        input_files = [package_module.pyproject_toml_template_file]
+
+        if self.__is_hdf5_license_included(package_module):
+            input_files.append(HDF5_LICENSE_FILE)
+
+        return input_files
 
     @override
     def get_output_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
-        return [package_module.pyproject_toml_file]
+        output_files = [package_module.pyproject_toml_file]
+
+        if self.__is_hdf5_license_included(package_module):
+            output_files.append(self.__get_hdf5_license_file(package_module))
+
+        return output_files
 
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         Log.info(f'Removing pyproject.toml file from directory "{package_module.root_directory}"')
-        return super().get_clean_files(build_unit, package_module)
+        clean_files = super().get_clean_files(build_unit, package_module)
+        license_file = self.__get_hdf5_license_file(package_module)
+
+        if license_file not in clean_files:
+            clean_files.append(license_file)
+
+        return clean_files
 
 
 class BuildPythonWheels(BuildTarget.Runnable):

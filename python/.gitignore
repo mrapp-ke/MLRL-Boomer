@@ -18,3 +18,4 @@
 
 # Generated files
 **/pyproject.toml
+**/COPYING_HDF5
