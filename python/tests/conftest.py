@@ -55,7 +55,7 @@ def __get_test_cost(item) -> int:
 
     try:
         source = inspect.getsource(item.function)
-        cost = 4 if source.find('.set_mode(ExperimentMode.BATCH)') else 1
+        cost = 4 if '.set_mode(ExperimentMode.BATCH)' in source else 1
         multiplier = max(1, source.count('CmdRunner('))
         return multiplier * cost
     except (OSError, TypeError):
