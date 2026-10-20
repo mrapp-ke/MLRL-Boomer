@@ -98,6 +98,7 @@ source_files = [
     'src/mlrl/common/stopping/stopping_criterion_no.cpp',
     'src/mlrl/common/stopping/stopping_criterion_size.cpp',
     'src/mlrl/common/stopping/stopping_criterion_time.cpp',
+    'src/mlrl/common/util/hdf5.cpp',
     'src/mlrl/common/library_info.cpp'
 ]
 
@@ -136,10 +137,27 @@ target_architecture = host_machine.cpu_family()
 # Dependencies
 opencl_dep = dependency('OpenCL', required : get_option('gpu_support'))
 xsimd_dep = dependency('xsimd', fallback : ['xsimd', 'xsimd_dep'], required : get_option('simd_support'))
+# Note: The lookup via the config-tool "h5cc" is not used, because it requires a C compiler
+hdf5_dep = dependency('hdf5', language : 'c', method : 'pkg-config', required : false)
+cpp = meson.get_compiler('cpp')
+
+if not hdf5_dep.found()
+    # Fallback for environments without pkg-config (typically Windows): Rely on the INCLUDE and LIB environment variables
+    hdf5_lib = cpp.find_library('hdf5', required : false)
+
+    if hdf5_lib.found() and cpp.has_header('hdf5.h', dependencies : hdf5_lib)
+        hdf5_dep = hdf5_lib
+    endif
+endif
+
+if not hdf5_dep.found()
+    error('HDF5 is required, but could not be found. See doc/developer_guide/compilation.md')
+endif
 
 dependencies = [
     opencl_dep,
-    xsimd_dep
+    xsimd_dep,
+    hdf5_dep
 ]
 
 # Set configuration options
@@ -210,6 +228,11 @@ if os == 'windows'
     cpp_args += '-DMLRLCOMMON_EXPORTS'
     cpp_args += '/wd4250'  # Supress MSVC compiler warning C4250 ("inherits via dominance")
     cpp_args += '/bigobj'  # Increase the number of sections an object file can contain
+
+    # HDF5 is linked dynamically, which must be specified explicitly on Windows
+    if cpp.get_define('H5_BUILT_AS_DYNAMIC_LIB', prefix : '#include <H5pubconf.h>', dependencies : hdf5_dep) == ''
+        cpp_args += '-DH5_BUILT_AS_DYNAMIC_LIB'
+    endif
 
     if multi_threading_support_enabled
         cpp_args += '/openmp'

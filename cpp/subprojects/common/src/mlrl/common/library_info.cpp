@@ -4,6 +4,7 @@
 #include "mlrl/common/util/opencl.hpp"
 #include "mlrl/common/util/threads.hpp"
 #include "mlrl/common/util/xsimd.hpp"
+#include "util/hdf5.hpp"
 
 static inline std::string formatVector(const std::vector<std::string>& vector) {
     if (!vector.empty()) {
@@ -53,6 +54,9 @@ class CommonLibraryInfo final : public ILibraryInfo {
             BuildOption simdBuildOption("SIMD_SUPPORT_ENABLED", "SIMD support",
                                         SIMD_SUPPORT_ENABLED ? "enabled" : "disabled");
             visitor(simdBuildOption);
+
+            BuildOption hdf5BuildOption("HDF5_VERSION", "HDF5 version", util::getHdf5Version());
+            visitor(hdf5BuildOption);
         }
 
         void visitHardwareResources(HardwareResourceVisitor visitor) const override {
