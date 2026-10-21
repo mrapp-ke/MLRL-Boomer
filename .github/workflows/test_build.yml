@@ -230,7 +230,7 @@ jobs:
       - test_pure_packages
     if: always()
     name: Publish test results
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Download C++ test results
         uses: actions/download-artifact@v8
