@@ -1,0 +1,5 @@
+File xsimd.hpp
+==============
+
+.. doxygenfile:: xsimd.hpp
+   :project: common

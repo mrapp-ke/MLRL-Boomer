@@ -1,0 +1,5 @@
+File add_constant_to_subset_gather.hpp
+======================================
+
+.. doxygenfile:: add_constant_to_subset_gather.hpp
+   :project: common

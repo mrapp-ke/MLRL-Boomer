@@ -123,6 +123,7 @@ maxdepth: 2
 user_guide/foundations/index
 user_guide/boosting/index
 user_guide/seco/index
+user_guide/optimizations/index
 user_guide/testbed/index
 user_guide/references
 ```
@@ -134,10 +135,11 @@ hidden: true
 maxdepth: 2
 ---
 developer_guide/project_structure
-developer_guide/compilation
-developer_guide/documentation
+developer_guide/building/index
+developer_guide/coding_standards/index
 developer_guide/continuous_integration
-developer_guide/coding_standards
+developer_guide/release_process
+developer_guide/versioning_scheme
 developer_guide/api/python/index
 developer_guide/api/cpp/index
 ```
