@@ -21,7 +21,7 @@ namespace boosting {
 
     void OutputWiseBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
                                                View<float64>::const_iterator scoresEnd,
-                                               BinaryLilMatrix::row predictionRow) const {
+                                               BinaryLilMatrix::row& predictionRow) const {
         uint32 numPredictions = scoresEnd - scoresBegin;
 
         for (uint32 i = 0; i < numPredictions; i++) {

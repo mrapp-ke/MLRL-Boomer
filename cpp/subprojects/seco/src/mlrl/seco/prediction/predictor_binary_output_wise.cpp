@@ -233,9 +233,9 @@ namespace seco {
 
     template<typename ScoreIterator, typename IndexIterator>
     static inline void applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                 BinaryLilMatrix::row predictionRow, uint32 numLabels) {
+                                 BinaryLilMatrix::row& predictionRow, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
-            if (predictionRow.size() > 0) {
+            if (predictionRow.numElements > 0) {
                 auto end = predictionRow.end();
                 auto start = std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
@@ -284,7 +284,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
+    static inline void applyHead(const IHead& head, BinaryLilMatrix::row& predictionRow, uint32 numLabels) {
         auto completeBinaryHeadVisitor = [&](const CompleteHead<uint8>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), IndexIterator(0),
@@ -314,7 +314,7 @@ namespace seco {
     static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
+                                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels,
                                                    uint32 exampleIndex) {
         for (; rulesBegin != rulesEnd; rulesBegin++) {
             const RuleList::Rule& rule = *rulesBegin;
@@ -330,7 +330,7 @@ namespace seco {
     static inline void predictForExampleInternally(const CsrView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
+                                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels,
                                                    uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.numCols;
         Array<float32> tmpArray1(numFeatures);
@@ -385,10 +385,10 @@ namespace seco {
                                              typename Model::const_iterator rulesBegin,
                                              typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                              uint32 exampleIndex, uint32 predictionIndex) const override {
-                        auto& predictionRow = predictionMatrix_[predictionIndex];
+                        auto predictionRow = predictionMatrix_[predictionIndex];
                         predictForExampleInternally(featureMatrix, rulesBegin, rulesEnd, predictionRow, numLabels_,
                                                     exampleIndex);
-                        return static_cast<uint32>(predictionRow.size());
+                        return static_cast<uint32>(predictionRow.numElements);
                     }
             };
 
