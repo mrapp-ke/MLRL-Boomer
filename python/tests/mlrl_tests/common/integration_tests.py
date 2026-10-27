@@ -18,6 +18,7 @@ from mlrl.common.config.parameters import (
 from mlrl.common.learners import SparsePolicy
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.util.cli import NONE
+from mlrl.util.options import BooleanOption
 
 from ..cmd_runner import CmdRunner
 from ..datasets import Dataset
@@ -197,6 +198,11 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
             .feature_format(feature_format)
         )
         CmdRunner(builder).run(f'feature-binning-{feature_binning}_{dataset_name}-features-{feature_format}')
+
+    @pytest.mark.parametrize('use_simd', [BooleanOption.FALSE, BooleanOption.TRUE])
+    def test_simd(self, use_simd: BooleanOption, dataset: Dataset):
+        builder = self.create_cmd_builder(dataset=dataset.default).use_simd(use_simd)
+        CmdRunner(builder).run(f'simd-{use_simd}')
 
 
 class ClassificationRuleLearnerIntegrationTestsMixin(RuleLearnerIntegrationTestsMixin):
