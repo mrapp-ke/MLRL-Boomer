@@ -1,0 +1,5 @@
+File copy_generic.hpp
+=====================
+
+.. doxygenfile:: copy_generic.hpp
+   :project: common
