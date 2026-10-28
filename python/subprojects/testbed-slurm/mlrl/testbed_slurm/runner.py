@@ -375,7 +375,7 @@ class SlurmRunner(BatchMode.Runner):
                 Log.separator(f'Submitting Slurm job ({format_progress(i + 1, num_jobs)})')
                 job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
                 command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
-                Log.source_code(str(command), language='bash', box_title='Command')
+                Log.source_code(f'{command}', language='bash', box_title='Command')
                 dataset_name = DatasetArguments.DATASET_NAME.get_value(command.to_namespace())
                 job_name = dataset_name if dataset_name else 'sbatch'
                 slurm_config_file = SlurmRunner.__read_config_file(args)

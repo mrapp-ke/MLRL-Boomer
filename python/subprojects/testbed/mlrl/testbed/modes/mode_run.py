@@ -49,7 +49,7 @@ class RunMode(InputMode):
                 highlight=True,
             )
 
-        Log.source_code(str(meta_data_command), language='bash', box_title='Command')
+        Log.source_code(f'{meta_data_command}', language='bash', box_title='Command')
         Log.info('')
         subprocess.run(list(meta_data_command), check=False)
 

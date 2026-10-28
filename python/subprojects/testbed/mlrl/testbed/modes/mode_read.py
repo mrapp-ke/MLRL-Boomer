@@ -143,7 +143,7 @@ class ReadMode(InputMode):
     def __run_single_experiment(
         args: Namespace, recipe: Recipe, input_directory: Path, command: Command
     ) -> ExperimentState:
-        Log.source_code(str(command), language='bash', box_title='Command')
+        Log.source_code(f'{command}', language='bash', box_title='Command')
         Log.info('')
         return OutputUtil(
             args=args, recipe=recipe, command=command, input_directory=input_directory

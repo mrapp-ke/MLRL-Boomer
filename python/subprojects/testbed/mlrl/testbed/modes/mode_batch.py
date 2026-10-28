@@ -121,7 +121,7 @@ class BatchMode(Mode):
 
                 with Log.indented():
                     Log.separator(f'Running experiment ({format_progress(i + 1, num_experiments)})')
-                    Log.source_code(str(command), language='bash', box_title='Command')
+                    Log.source_code(f'{command}', language='bash', box_title='Command')
                     Log.info('')
 
                     recipe.create_experiment_builder(
