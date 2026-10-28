@@ -24,6 +24,7 @@ from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.log import Log
 from mlrl.testbed.util.io import open_readable_file
 from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
+from mlrl.util.format import format_value
 
 
 def normalize_attribute_name(name: str) -> str:
@@ -175,16 +176,16 @@ class ArffFileSource(DatasetFileSource):
             :return:                The ARFF dataset that has been created
             """
             if file_path.is_file():
-                Log.verbose(f'Parsing meta-data from file "{file_path}"...', highlight=True)
+                Log.verbose(f'Parsing meta-data from file {format_value(file_path)}...', highlight=True)
                 xml_doc = minidom.parse(str(file_path))
                 tags = xml_doc.getElementsByTagName('label')
                 output_names = {normalize_attribute_name(tag.getAttribute('name')) for tag in tags}
             else:
                 output_names = None
                 Log.verbose(
-                    f'Mulan XML file "{file_path}" does not exist. If possible, information about the dataset\'s '
-                    f"outputs is parsed from the ARFF file's @relation declaration as intended by the MEKA dataset "
-                    f'format...',
+                    f'Mulan XML file {format_value(file_path)} does not exist. If possible, information about the '
+                    "dataset's outputs is parsed from the ARFF file's @relation declaration as intended by the MEKA "
+                    'dataset format...',
                     highlight=True,
                 )
 

@@ -384,7 +384,7 @@ class SlurmRunner(BatchMode.Runner):
                 )
 
                 if save_file:
-                    Log.info(f'Slurm script saved to file "{sbatch_file}"', highlight=True)
+                    Log.info(f'Slurm script saved to file {format_value(sbatch_file)}', highlight=True)
 
                 if print_file:
                     Log.info(self.__read_sbatch_file(sbatch_file), box=True, box_title='Slurm script')

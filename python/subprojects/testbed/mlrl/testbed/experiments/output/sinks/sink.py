@@ -15,6 +15,7 @@ from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, 
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.log import Log
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -79,7 +80,7 @@ class FileSink(Sink, ABC):
         file_path = FilePath(
             directory=directory, file_name=output_data.properties.file_name, suffix=self.suffix, context=context
         ).resolve(state)
-        Log.verbose(f'Writing to file "{file_path}"...', highlight=True)
+        Log.verbose(f'Writing to file {format_value(file_path)}...', highlight=True)
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod
