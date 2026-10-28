@@ -6,7 +6,7 @@ Provides classes that allow writing output data to the log.
 
 from collections.abc import Callable
 from pathlib import Path
-from typing import cast, override
+from typing import override
 
 from rich.console import ConsoleRenderable
 
@@ -56,7 +56,7 @@ class LogSink(Sink):
             Log.info('')
 
             if language:
-                Log.source_code(cast(str, text), language=language, box_title=box_title)
+                Log.source_code(str(text), language=language, box_title=box_title)
             else:
                 Log.info(text, box=True, box_title=box_title)
 
