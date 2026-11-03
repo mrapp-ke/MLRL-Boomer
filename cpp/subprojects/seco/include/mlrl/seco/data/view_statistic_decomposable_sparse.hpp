@@ -25,12 +25,15 @@ namespace seco {
              * @param numRows   The number of rows in the view
              * @param numCols   The number of columns in the view
              */
-            SparseDecomposableStatisticView(uint32 numRows, uint32 numCols);
+            SparseDecomposableStatisticView(uint32 numRows, uint32 numCols)
+                : Matrix(numRows, numCols), correctIndices_(numRows, numCols), incorrectIndices_(numRows, numCols) {}
 
             /**
              * @param other A reference to an object of type `SparseDecomposableStatisticView` that should be copied
              */
-            SparseDecomposableStatisticView(SparseDecomposableStatisticView&& other);
+            SparseDecomposableStatisticView(SparseDecomposableStatisticView&& other)
+                : Matrix(other), correctIndices_(std::move(other.correctIndices_)),
+                  incorrectIndices_(std::move(other.incorrectIndices_)) {}
 
             virtual ~SparseDecomposableStatisticView() override {}
 
@@ -61,7 +64,9 @@ namespace seco {
              * @param row   The row
              * @return      An `index_const_iterator` to the beginning of the given row
              */
-            index_const_iterator correct_indices_cbegin(uint32 row) const;
+            index_const_iterator correct_indices_cbegin(uint32 row) const {
+                return correctIndices_.values_cbegin(row);
+            }
 
             /**
              * Returns an `index_const_iterator` to the end of the indices at a specific row that correspond to the
@@ -70,7 +75,9 @@ namespace seco {
              * @param row   The row
              * @return      An `index_const_iterator` to the end of the given row
              */
-            index_const_iterator correct_indices_cend(uint32 row) const;
+            index_const_iterator correct_indices_cend(uint32 row) const {
+                return correctIndices_.values_cend(row);
+            }
 
             /**
              * Returns an `index_iterator` to the beginning of the indices at a specific row that correspond to the
@@ -79,7 +86,9 @@ namespace seco {
              * @param row   The row
              * @return      An `index_iterator` to the beginning of the given row
              */
-            index_iterator correct_indices_begin(uint32 row);
+            index_iterator correct_indices_begin(uint32 row) {
+                return correctIndices_.values_begin(row);
+            }
 
             /**
              * Returns an `index_iterator` to the end of the indices at a specific row that correspond to the labels for
@@ -88,7 +97,9 @@ namespace seco {
              * @param row   The row
              * @return      An `index_iterator` to the end of the given row
              */
-            index_iterator correct_indices_end(uint32 row);
+            index_iterator correct_indices_end(uint32 row) {
+                return correctIndices_.values_end(row);
+            }
 
             /**
              * Returns a view that provides read-only access to a specific row in the view that correspond to the labels
@@ -97,7 +108,9 @@ namespace seco {
              * @param row   The index of the row
              * @return      A `const_row`
              */
-            const_row correct_indices_const_row(uint32 row) const;
+            const_row correct_indices_const_row(uint32 row) const {
+                return correctIndices_[row];
+            }
 
             /**
              * Returns a view that provides access to a specific row in the view that correspond to the labels for which
@@ -106,7 +119,9 @@ namespace seco {
              * @param row   The index of the row
              * @return      A `row`
              */
-            row correct_indices_row(uint32 row);
+            row correct_indices_row(uint32 row) {
+                return correctIndices_[row];
+            }
 
             /**
              * Returns an `index_const_iterator` to the beginning of the indices at a specific row that correspond to
@@ -115,7 +130,9 @@ namespace seco {
              * @param row   The row
              * @return      An `index_const_iterator` to the beginning of the given row
              */
-            index_const_iterator incorrect_indices_cbegin(uint32 row) const;
+            index_const_iterator incorrect_indices_cbegin(uint32 row) const {
+                return incorrectIndices_.values_cbegin(row);
+            }
 
             /**
              * Returns an `index_const_iterator` to the end of the indices at a specific row that correspond to the
@@ -124,7 +141,9 @@ namespace seco {
              * @param row   The row
              * @return      An `index_const_iterator` to the end of the given row
              */
-            index_const_iterator incorrect_indices_cend(uint32 row) const;
+            index_const_iterator incorrect_indices_cend(uint32 row) const {
+                return incorrectIndices_.values_cend(row);
+            }
 
             /**
              * Returns an `index_iterator` to the beginning of the indices at a specific row that correspond to the
@@ -133,7 +152,9 @@ namespace seco {
              * @param row   The row
              * @return      An `index_iterator` to the beginning of the given row
              */
-            index_iterator incorrect_indices_begin(uint32 row);
+            index_iterator incorrect_indices_begin(uint32 row) {
+                return incorrectIndices_.values_begin(row);
+            }
 
             /**
              * Returns an `index_iterator` to the end of the indices at a specific row that correspond to the labels for
@@ -142,7 +163,9 @@ namespace seco {
              * @param row   The row
              * @return      An `index_iterator` to the end of the given row
              */
-            index_iterator incorrect_indices_end(uint32 row);
+            index_iterator incorrect_indices_end(uint32 row) {
+                return incorrectIndices_.values_end(row);
+            }
 
             /**
              * Returns a view that provides read-only access to a specific row in the view that correspond to the labels
@@ -151,7 +174,9 @@ namespace seco {
              * @param row   The index of the row
              * @return      A `const_row`
              */
-            const_row incorrect_indices_const_row(uint32 row) const;
+            const_row incorrect_indices_const_row(uint32 row) const {
+                return incorrectIndices_[row];
+            }
 
             /**
              * Returns a view that provides access to a specific row in the view that correspond to the labels for which
@@ -160,11 +185,16 @@ namespace seco {
              * @param row   The index of the row
              * @return      A `row`
              */
-            row incorrect_indices_row(uint32 row);
+            row incorrect_indices_row(uint32 row) {
+                return incorrectIndices_[row];
+            }
 
             /**
              * Sets all values stored in the view to zero.
              */
-            void clear();
+            void clear() {
+                correctIndices_.clear();
+                incorrectIndices_.clear();
+            }
     };
 }
