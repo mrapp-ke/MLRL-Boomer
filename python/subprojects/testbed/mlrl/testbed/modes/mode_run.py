@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import InputMode, Mode
 from mlrl.util.cli import Argument
-from mlrl.util.format import format_iterable
+from mlrl.util.format import format_iterable, format_value
 
 
 class RunMode(InputMode):
@@ -43,8 +43,9 @@ class RunMode(InputMode):
             merged_arguments = meta_data_arguments | overridden_arguments.to_dict()
             meta_data_command = Command.from_dict(meta_data_command.module_name, ArgumentDict(merged_arguments))
             Log.verbose(
-                f'{len(overridden_arguments)} {"arguments" if len(overridden_arguments) > 1 else "argument"} modifying '
-                f'the original experiments have been provided: {format_iterable(overridden_arguments, separator=" ")}',
+                f'{format_value(len(overridden_arguments))} '
+                f'{"arguments" if len(overridden_arguments) > 1 else "argument"} modifying the original experiments '
+                f'have been provided: {format_iterable(overridden_arguments, separator=" ")}',
                 highlight=True,
             )
 

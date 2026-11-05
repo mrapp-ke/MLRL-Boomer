@@ -36,6 +36,7 @@ from mlrl.testbed.modes.util import OutputUtil
 from mlrl.testbed.util.format import format_progress
 from mlrl.testbed.util.yml import read_and_validate_yaml
 from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
+from mlrl.util.format import format_value
 from mlrl.util.options import BooleanOption, Options
 
 Batch = list[Command]
@@ -113,7 +114,8 @@ class BatchMode(Mode):
             for i, command in enumerate(batch):
                 if i == 0:
                     Log.info(
-                        f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...\n',
+                        f'Running {format_value(num_experiments)} '
+                        f'{("experiments" if num_experiments > 1 else "experiment")}...\n',
                         highlight=True,
                     )
 
@@ -130,7 +132,7 @@ class BatchMode(Mode):
 
             if num_experiments > 0:
                 Log.success(
-                    f'Successfully finished {num_experiments} '
+                    f'Successfully finished {format_value(num_experiments)} '
                     f'{("experiments" if num_experiments > 1 else "experiment")} after {run_time}'
                 )
             else:
@@ -337,10 +339,10 @@ class BatchMode(Mode):
 
         if num_skipped > 0:
             Log.info(
-                f'Skipping {num_skipped} of {len(batch)} {("experiments" if num_skipped > 1 else "experiment")}, '
-                f'because all of their output files do already exist. Use the argument '
-                f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run all '
-                f'experiments.',
+                f'Skipping {format_value(num_skipped)} of {format_value(len(batch))} '
+                f'{("experiments" if num_skipped > 1 else "experiment")}, because all of their output files do already '
+                f'exist. Use the argument "{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to '
+                f'force-run all experiments.',
                 highlight=True,
             )
             sys.exit(0)

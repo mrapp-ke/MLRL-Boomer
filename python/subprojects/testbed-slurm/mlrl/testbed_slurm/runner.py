@@ -26,6 +26,7 @@ from mlrl.testbed.util.io import open_readable_file, open_writable_file
 from mlrl.testbed.util.yml import read_and_validate_yaml
 from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.sbatch import Sbatch
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 from mlrl.util.validation import ValidationError
 
@@ -362,7 +363,8 @@ class SlurmRunner(BatchMode.Runner):
         submit_command = not save_file and not print_file and self.__is_command_available()
         num_experiments = len(batch)
         Log.info(
-            f'Submitting {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} to Slurm...\n',
+            f'Submitting {format_value(num_experiments)} {("experiments" if num_experiments > 1 else "experiment")} to '
+            f'Slurm...\n',
             highlight=True,
         )
         command_or_job_arrays = self.__assign_to_job_arrays(batch)
