@@ -21,7 +21,7 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
-from mlrl.testbed.util.format import format_percentage
+from mlrl.testbed.util.format import OPTION_DECIMALS, format_percentage, get_format_kwargs
 from mlrl.testbed.util.math import divide_or_zero
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
@@ -72,19 +72,20 @@ class RuleModelCharacteristics(TabularOutputData):
         self.statistics = statistics
 
     @override
-    def to_text(self, options: Options, **_) -> str | ConsoleRenderable | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         aggregated_rule_statistics = reduce(
             lambda aggr, rule_statistics: aggr + rule_statistics, self.statistics.rule_statistics, RuleStatistics()
         )
+        format_kwargs = {**get_format_kwargs(options, **kwargs), OPTION_DECIMALS: 2}
         return Group(
             self.__format_aggregated_body_statistics(aggregated_rule_statistics),
             Text(''),
             self.__format_aggregated_head_statistics(aggregated_rule_statistics),
             Text(''),
-            self.__format_aggregated_rule_statistics(aggregated_rule_statistics),
+            self.__format_aggregated_rule_statistics(aggregated_rule_statistics, **format_kwargs),
         )
 
     @staticmethod
@@ -158,22 +159,26 @@ class RuleModelCharacteristics(TabularOutputData):
             column_alignments=column_alignments,
         )
 
-    def __format_aggregated_rule_statistics(self, aggregated_rule_statistics: RuleStatistics) -> ConsoleRenderable:
+    def __format_aggregated_rule_statistics(
+        self, aggregated_rule_statistics: RuleStatistics, **format_kwargs
+    ) -> ConsoleRenderable:
         statistics = self.statistics
         num_rules = statistics.num_rules
+        avg_conditions = divide_or_zero(aggregated_rule_statistics.body_statistics.num_conditions, num_rules)
+        avg_predictions = divide_or_zero(aggregated_rule_statistics.head_statistics.num_predictions, num_rules)
         headers = ['Statistics per local rule', 'Minimum', 'Average', 'Maximum']
         table = RowWiseTable(*headers)
         table.add_row(
             'Conditions',
-            format_value(statistics.min_conditions),
-            format_value(divide_or_zero(aggregated_rule_statistics.body_statistics.num_conditions, num_rules)),
-            format_value(statistics.max_conditions),
+            format_value(statistics.min_conditions, **format_kwargs),
+            format_value(avg_conditions, **format_kwargs),
+            format_value(statistics.max_conditions, **format_kwargs),
         )
         table.add_row(
             'Predictions',
-            format_value(statistics.min_predictions),
-            format_value(divide_or_zero(aggregated_rule_statistics.head_statistics.num_predictions, num_rules)),
-            format_value(statistics.max_predictions),
+            format_value(statistics.min_predictions, **format_kwargs),
+            format_value(avg_predictions, **format_kwargs),
+            format_value(statistics.max_predictions, **format_kwargs),
         )
         column_styles = [Column.Style.HEADER] + [Column.Style.VALUE for _ in range(len(headers) - 1)]
         column_alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
@@ -185,7 +190,7 @@ class RuleModelCharacteristics(TabularOutputData):
         )
 
     @override
-    def to_table(self, options: Options, **_) -> Table | None:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
@@ -208,6 +213,8 @@ class RuleModelCharacteristics(TabularOutputData):
             self.COLUMN_NUM_PREDICTIONS_NEGATIVE,
         )
 
+        format_kwargs = {**get_format_kwargs(options, **kwargs), OPTION_DECIMALS: 2}
+
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
             rule_name = f'Rule {i + 1}'
 
@@ -218,19 +225,19 @@ class RuleModelCharacteristics(TabularOutputData):
             head_statistics = rule_statistics.head_statistics
             table.add_row(
                 rule_name,
-                body_statistics.num_conditions,
-                body_statistics.num_numerical,
-                body_statistics.num_numerical_leq,
-                body_statistics.num_numerical_gr,
-                body_statistics.num_ordinal,
-                body_statistics.num_ordinal_leq,
-                body_statistics.num_ordinal_gr,
-                body_statistics.num_nominal,
-                body_statistics.num_nominal_eq,
-                body_statistics.num_nominal_neq,
-                head_statistics.num_predictions,
-                head_statistics.num_positive_predictions,
-                head_statistics.num_negative_predictions,
+                format_value(body_statistics.num_conditions, **format_kwargs),
+                format_value(body_statistics.num_numerical, **format_kwargs),
+                format_value(body_statistics.num_numerical_leq, **format_kwargs),
+                format_value(body_statistics.num_numerical_gr, **format_kwargs),
+                format_value(body_statistics.num_ordinal, **format_kwargs),
+                format_value(body_statistics.num_ordinal_leq, **format_kwargs),
+                format_value(body_statistics.num_ordinal_gr, **format_kwargs),
+                format_value(body_statistics.num_nominal, **format_kwargs),
+                format_value(body_statistics.num_nominal_eq, **format_kwargs),
+                format_value(body_statistics.num_nominal_neq, **format_kwargs),
+                format_value(head_statistics.num_predictions, **format_kwargs),
+                format_value(head_statistics.num_positive_predictions, **format_kwargs),
+                format_value(head_statistics.num_negative_predictions, **format_kwargs),
             )
 
         return table

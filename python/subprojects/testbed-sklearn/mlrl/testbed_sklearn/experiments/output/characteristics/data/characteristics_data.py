@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, get_format_kwargs
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import (
     Characteristic,
@@ -93,13 +93,9 @@ class DataCharacteristics(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
-        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
         characteristics = OutputValue.filter_values(self.characteristics, options)
-        values = [
-            characteristic.format(value, percentage=percentage, decimals=decimals)
-            for characteristic, value in self.values
-        ]
+        format_kwargs = get_format_kwargs(options, **(dict(kwargs) | {OPTION_PERCENTAGE: True}))
+        values = [characteristic.format(value, **format_kwargs) for characteristic, value in self.values]
         return RowWiseTable(*characteristics).add_row(*values)
 
 
