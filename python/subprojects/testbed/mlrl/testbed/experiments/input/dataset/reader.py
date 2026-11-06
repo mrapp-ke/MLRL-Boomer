@@ -49,7 +49,7 @@ class DatasetReader(InputReader):
                 if source.read_from_source(new_state, self.input_data):
                     return new_state
             except Exception as error:  # noqa: BLE001
-                Log.error(str(error))
+                Log.error(f'{error}')
 
         Log.error('Failed to load dataset!')
         sys.exit(1)

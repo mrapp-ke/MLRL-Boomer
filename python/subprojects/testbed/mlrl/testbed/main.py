@@ -168,7 +168,7 @@ def main():
         try:
             runnable.run(mode, control_arguments, algorithmic_arguments, args)
         except ValidationError as error:
-            Log.error(str(error))
+            Log.error(f'{error}')
             sys.exit(1)
         except Exception as error:  # noqa: BLE001
             Log.error('An unexpected error occurred', error=error)
