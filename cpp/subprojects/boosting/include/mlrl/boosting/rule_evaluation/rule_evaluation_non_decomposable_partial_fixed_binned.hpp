@@ -4,9 +4,9 @@
 #pragma once
 
 #include "mlrl/boosting/binning/label_binning.hpp"
+#include "mlrl/boosting/math/blas.hpp"
+#include "mlrl/boosting/math/lapack.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable.hpp"
-#include "mlrl/boosting/util/blas.hpp"
-#include "mlrl/boosting/util/lapack.hpp"
 
 #include <memory>
 
@@ -16,7 +16,10 @@ namespace boosting {
      * Allows to create instances of the class `INonDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of partial rules, which predict for a predefined number of outputs, using gradient-based label
      * binning.
+     *
+     * @tparam MemoryAllocator The type of the memory allocator to be used
      */
+    template<typename MemoryAllocator>
     class NonDecomposableFixedPartialBinnedRuleEvaluationFactory final : public INonDecomposableRuleEvaluationFactory {
         private:
 
@@ -64,20 +67,20 @@ namespace boosting {
               float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
               const BlasFactory& blasFactory, const LapackFactory& lapackFactory);
 
-            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>> create(
-              const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>> create(
+              const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>> create(
-              const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>> create(
+              const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
-              const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>> create(
+              const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
-              const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>> create(
+              const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 

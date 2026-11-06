@@ -4,11 +4,12 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * A struct that stores a numerical score that represents a quality.
  */
-struct Quality {
+struct MLRLCOMMON_API Quality {
     public:
 
         Quality() {}

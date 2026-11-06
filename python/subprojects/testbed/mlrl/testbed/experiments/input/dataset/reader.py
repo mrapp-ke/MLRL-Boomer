@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class DatasetReader(InputReader):
@@ -49,7 +49,7 @@ class DatasetReader(InputReader):
                 if source.read_from_source(new_state, self.input_data):
                     return new_state
             except Exception as error:  # noqa: BLE001
-                Log.error(str(error))
+                Log.error(f'{error}')
 
         Log.error('Failed to load dataset!')
         sys.exit(1)

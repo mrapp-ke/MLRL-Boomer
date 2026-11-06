@@ -8,4 +8,4 @@
 /**
  * An one-dimensional sparse vector that stores the indices of labels that are relevant to an example.
  */
-using LabelVector = BinarySparseArrayVector;
+using LabelVector = BinarySparseArrayVector<>;

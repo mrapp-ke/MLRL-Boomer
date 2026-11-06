@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 #include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
+#include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
 #include "mlrl/common/measures/measure_evaluation.hpp"
 #include "statistics_decomposable_common.hpp"
@@ -18,11 +19,14 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a decomposable loss function using
      * C-contiguous arrays.
      *
-     * @tparam StatisticType The type of the gradients and Hessians
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Statistic<StatisticType>>>> {
+        : public ClearableViewDecorator<ViewDecorator<
+            DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>, MemoryAllocator>>> {
         public:
 
             /**
@@ -30,21 +34,27 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             DenseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Statistic<StatisticType>>>>(
-                    AllocatedCContiguousView<Statistic<StatisticType>>(numRows, numCols)) {}
+                : ClearableViewDecorator<ViewDecorator<
+                    DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>, MemoryAllocator>>>(
+                    DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>, MemoryAllocator>(
+                      numRows, numCols, numCols)) {}
 
             /**
-             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
-             * to be added are multiplied by a specific weight.
+             * Returns the number rows in the matrix.
              *
-             * @param row       The row
-             * @param begin     An iterator to the beginning of the vector
-             * @param end       An iterator to the end of the vector
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             * @return The number of rows
              */
-            void addToRow(uint32 row, typename View<Statistic<StatisticType>>::const_iterator begin,
-                          typename View<Statistic<StatisticType>>::const_iterator end, uint32 weight) {
-                util::addToViewWeighted(this->view.values_begin(row), begin, this->getNumCols(), weight);
+            uint32 getNumRows() const {
+                return this->getView().getNumRows();
+            }
+
+            /**
+             * Returns the number of columns in the matrix.
+             *
+             * @return The number of columns
+             */
+            uint32 getNumCols() const {
+                return this->getView().getNumGradients();
             }
     };
 
@@ -64,34 +74,40 @@ namespace boosting {
      * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function and
      * are stored using dense data structures.
      *
-     * @tparam Loss                 The type of the loss function
-     * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
-     *                              examples
-     * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
+     * @tparam Loss               The type of the loss function
+     * @tparam OutputMatrix       The type of the matrix that provides access to the ground truth of the training
+     *                            examples
+     * @tparam EvaluationMeasure  The type of the evaluation that should be used to access the quality of predictions
+     * @tparam MemoryAllocator    The type of the memory allocator to be used
+     * @tparam VectorMath         The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename MemoryAllocator,
+             typename VectorMath>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix,
-                                                DenseDecomposableStatisticMatrix<typename Loss::statistic_type>,
-                                                NumericCContiguousMatrix<typename Loss::statistic_type>, Loss,
-                                                EvaluationMeasure, IDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<
+            OutputMatrix, DenseDecomposableStatisticMatrix<typename Loss::statistic_type, MemoryAllocator, VectorMath>,
+            NumericCContiguousMatrix<typename Loss::statistic_type, MemoryAllocator>, Loss, EvaluationMeasure,
+            IDecomposableRuleEvaluationFactory> {
         private:
 
             using statistic_type = Loss::statistic_type;
 
+            using ScoreMatrix = NumericCContiguousMatrix<typename Loss::statistic_type, MemoryAllocator>;
+
+            using StatisticMatrix = DenseDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>;
+
             using StatisticsState =
-              DecomposableBoostingStatisticsState<OutputMatrix, DenseDecomposableStatisticMatrix<statistic_type>,
-                                                  NumericCContiguousMatrix<statistic_type>, Loss>;
+              DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>;
+
+            using StatisticVector = DenseDecomposableStatisticVector<statistic_type, MemoryAllocator, VectorMath>;
 
             template<typename WeightVector, typename IndexVector>
-            using StatisticsSubset =
-              BoostingStatisticsSubset<StatisticsState, DenseDecomposableStatisticVector<statistic_type>, WeightVector,
-                                       IndexVector, IDecomposableRuleEvaluationFactory>;
+            using StatisticsSubset = BoostingStatisticsSubset<StatisticsState, StatisticVector, WeightVector,
+                                                              IndexVector, IDecomposableRuleEvaluationFactory>;
 
             template<typename WeightVector>
             using WeightedStatistics =
-              WeightedStatistics<StatisticsState, DenseDecomposableStatisticVector<statistic_type>, WeightVector,
-                                 IDecomposableRuleEvaluationFactory>;
+              WeightedStatistics<StatisticsState, StatisticVector, WeightVector, IDecomposableRuleEvaluationFactory>;
 
         public:
 
@@ -111,13 +127,13 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseDecomposableStatistics(
-              std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
-              const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
-              std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr,
-              std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticMatrix<statistic_type>,
-                                                 NumericCContiguousMatrix<statistic_type>, Loss, EvaluationMeasure,
+            DenseDecomposableStatistics(std::unique_ptr<Loss> lossPtr,
+                                        std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+                                        const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
+                                        const OutputMatrix& outputMatrix,
+                                        std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                        std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
+                : AbstractDecomposableStatistics<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss, EvaluationMeasure,
                                                  IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}

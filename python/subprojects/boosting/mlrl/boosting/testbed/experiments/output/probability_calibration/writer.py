@@ -22,7 +22,7 @@ from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import ColumnWiseTable
-from mlrl.util.log import Log
+from mlrl.testbed.log import Log
 from mlrl.util.options import Options
 
 

@@ -582,7 +582,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         except ValueError as error:
             message = str(error)
             pattern = r'X has \d+ features, but .+ is expecting \d+ features as input.'
-            raise ValueError('Reshape your data. ' + message) if regex.fullmatch(pattern, message) else error
+            raise ValueError(f'Reshape your data. {message}') if regex.fullmatch(pattern, message) else error
 
         if is_sparse(x):
             Log.verbose(

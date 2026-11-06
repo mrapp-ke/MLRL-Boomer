@@ -14,7 +14,7 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
                                                         Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                         uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the first ordinal feature value `f < majorityValue` as covered...
-    NominalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
+    auto valueIterator = featureVector.values_cbegin();
     uint32 numValues = featureVector.numBins;
     int32 majorityValue = featureVector.majorityValue;
     uint32 numCovered = 0;

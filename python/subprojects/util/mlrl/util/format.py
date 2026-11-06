@@ -10,6 +10,8 @@ from functools import reduce
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
     """
@@ -70,15 +72,27 @@ def format_set(objects: Iterable[Any]) -> str:
     return f'{{{format_iterable(sorted(objects, key=str), delimiter='"')}}}'
 
 
-def format_value(value: Any) -> str:
+def format_value(value: Any, percentage: bool = False, decimals: int = 2, thousands_separators: bool = True) -> str:
     """
     Creates and returns a textual representation of a given value.
 
-    :param value:   The value to be formatted
-    :return:        The textual representation that has been created
+    :param value:                   The value to be formatted
+    :param percentage:              True, if floating point values should be formatted as percentages, False otherwise
+    :param decimals:                The number of decimals floating point values should be rounded to or 0, if the
+                                    number of decimals should not be restricted
+    :param thousands_separators:    True, if thousands separators should be added to numerical values, False otherwise
+    :return:                        The textual representation that has been created
     """
     if isinstance(value, str):
         return f'"{value}"'
     if isinstance(value, Path):
         return f'"{value}"'
+    if isinstance(value, (int, np.integer)) and thousands_separators:
+        return f'{value:,}'
+    if isinstance(value, (float, np.floating)):
+        if percentage:
+            value = value * 100
+        if decimals > 0:
+            rounded_value = round(value, decimals)
+            return f'{rounded_value:{"," if thousands_separators else ""}.{decimals}f}'
     return str(value)

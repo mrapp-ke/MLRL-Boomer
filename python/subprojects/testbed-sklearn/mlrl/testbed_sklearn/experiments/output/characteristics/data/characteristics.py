@@ -8,12 +8,14 @@ from collections.abc import Callable
 from numbers import Number
 from typing import Any, override
 
+from rich.console import ConsoleRenderable
+
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, OPTION_THOUSANDS_SEPARATORS, get_format_kwargs
 from mlrl.util.options import Options
 
 
@@ -63,26 +65,22 @@ class OutputCharacteristics(TabularOutputData):
         self.characteristics = [characteristic for characteristic, _ in values]
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
+        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2, OPTION_THOUSANDS_SEPARATORS: True}
         table = self.to_table(options, **kwargs)
-        return table.format() if table else None
+        return table.to_rich_table() if table else None
 
     @override
     def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
-        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
         characteristics = Characteristic.filter_values(self.characteristics, options)
-        values = [
-            characteristic.format(value, percentage=percentage, decimals=decimals)
-            for characteristic, value in self.values
-        ]
+        format_kwargs = get_format_kwargs(options, **(dict(kwargs) | {OPTION_PERCENTAGE: True}))
+        values = [characteristic.format(value, **format_kwargs) for characteristic, value in self.values]
         return RowWiseTable(*characteristics).add_row(*values)
 
 

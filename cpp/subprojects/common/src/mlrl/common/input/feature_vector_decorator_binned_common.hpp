@@ -14,15 +14,15 @@ static inline void updateCoverageMaskAndStatisticsBasedOnBinnedFeatureVector(con
                                                                              CoverageMask& coverageMask,
                                                                              uint32 indicatorValue,
                                                                              IWeightedStatistics& statistics) {
-    const FeatureVector& featureVector = view.getView().firstView;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    const FeatureVector& featureVector = view.getView().featureVector;
+    auto coverageMaskIterator = coverageMask.begin();
 
     if (interval.inverse) {
         // Discard the indices that correspond to the values in the range [interval.start, interval.end) and set the
         // corresponding values in `coverageMask` to `indicatorValue`, which marks them as uncovered...
         for (uint32 i = interval.start; i < interval.end; i++) {
-            typename FeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-            typename FeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+            auto indexIterator = featureVector.indices_cbegin(i);
+            auto indicesEnd = featureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indexIterator;
 
             for (uint32 j = 0; j < numIndices; j++) {
@@ -41,8 +41,8 @@ static inline void updateCoverageMaskAndStatisticsBasedOnBinnedFeatureVector(con
         // Retain the indices in the range [interval.start, interval.end) and set the corresponding values in the given
         // `coverageMask` to `indicatorValue` to mark them as covered...
         for (uint32 i = interval.start; i < interval.end; i++) {
-            typename FeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-            typename FeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+            auto indexIterator = featureVector.indices_cbegin(i);
+            auto indicesEnd = featureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indexIterator;
 
             for (uint32 j = 0; j < numIndices; j++) {
@@ -64,21 +64,22 @@ class AbstractBinnedFeatureVectorDecorator : public AbstractFeatureVectorDecorat
     public:
 
         /**
-         * @param firstView   A reference to an object of template type `AllocatedFeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of template type `AllocatedFeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        AbstractBinnedFeatureVectorDecorator(AllocatedFeatureVector&& firstView,
-                                             AllocatedMissingFeatureVector&& secondView)
-            : AbstractFeatureVectorDecorator<AllocatedFeatureVector>(std::move(firstView), std::move(secondView)) {}
+        AbstractBinnedFeatureVectorDecorator(AllocatedFeatureVector&& featureVector,
+                                             AllocatedMissingFeatureVector&& missingFeatureVector)
+            : AbstractFeatureVectorDecorator<AllocatedFeatureVector>(std::move(featureVector),
+                                                                     std::move(missingFeatureVector)) {}
 
         /**
          * @param other A reference to an object of type `AbstractBinnedFeatureVectorDecorator` that should be copied
          */
         AbstractBinnedFeatureVectorDecorator(const AbstractBinnedFeatureVectorDecorator& other)
             : AbstractBinnedFeatureVectorDecorator<AllocatedFeatureVector>(
-                AllocatedFeatureVector(other.view.firstView.numBins,
-                                       other.view.firstView.indptr[other.view.firstView.numBins],
-                                       other.view.firstView.majorityValue),
+                AllocatedFeatureVector(other.view.featureVector.numBins,
+                                       other.view.featureVector.indptr[other.view.featureVector.numBins],
+                                       other.view.featureVector.majorityValue),
                 AllocatedMissingFeatureVector()) {}
 
         virtual ~AbstractBinnedFeatureVectorDecorator() override {}

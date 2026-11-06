@@ -18,34 +18,35 @@ class IStatisticsUpdateCandidate : public Quality {
     public:
 
         /**
-         * A visitor function for handling objects of type `BitScoreVector`.
+         * A visitor function for handling objects of type `BitScoreVectorView`.
          *
          * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
          *                      scores correspond to
          */
         template<typename IndexVector>
-        using BitVisitor = std::function<void(const BitScoreVector<IndexVector>&, IStatisticsUpdateFactory<uint8>&)>;
+        using BitVisitor =
+          std::function<void(const BitScoreVectorView<IndexVector>&, IStatisticsUpdateFactory<uint8>&)>;
 
         /**
-         * A visitor function for handling objects of type `DenseScoreVector`.
+         * A visitor function for handling objects of type `DenseScoreVectorView`.
          *
          * @tparam ScoreType    The type of the scores that stored by the vector
          * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
          *                      scores correspond to
          */
         template<typename ScoreType, typename IndexVector>
-        using DenseVisitor =
-          std::function<void(const DenseScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory<ScoreType>&)>;
+        using DenseVisitor = std::function<void(const DenseScoreVectorView<ScoreType, IndexVector>&,
+                                                IStatisticsUpdateFactory<ScoreType>&)>;
 
         /**
-         * A visitor function for handling objects of type `DenseBinnedScoreVector`.
+         * A visitor function for handling objects of type `DenseBinnedScoreVectorView`.
          *
          * @tparam ScoreType    The type of the scores that stored by the vector
          * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
          *                      scores correspond to
          */
         template<typename ScoreType, typename IndexVector>
-        using DenseBinnedVisitor = std::function<void(const DenseBinnedScoreVector<ScoreType, IndexVector>&,
+        using DenseBinnedVisitor = std::function<void(const DenseBinnedScoreVectorView<ScoreType, IndexVector>&,
                                                       IStatisticsUpdateFactory<ScoreType>&)>;
 
         /**
@@ -53,25 +54,25 @@ class IStatisticsUpdateCandidate : public Quality {
          * vector that stores the calculated scores.
          *
          * @param completeBitVisitor                The visitor function for handling objects of type
-         *                                          `BitScoreVector<CompleteIndexVector>`
+         *                                          `BitScoreVectorView<CompleteIndexVector>`
          * @param partialBitVisitor                 The visitor function for handling objects of type
-         *                                          `BitScoreVector<PartialIndexVector>`
+         *                                          `BitScoreVectorView<PartialIndexVector>`
          * @param completeDense32BitVisitor         The visitor function for handling objects of type
-         *                                          `DenseScoreVector<float32, CompleteIndexVector>`
+         *                                          `DenseScoreVectorView<float32, CompleteIndexVector>`
          * @param partialDense32BitVisitor          The visitor function for handling objects of type
-         *                                          `DenseScoreVector<float32, PartialIndexVector>`
+         *                                          `DenseScoreVectorView<float32, PartialIndexVector>`
          * @param completeDense64BitVisitor         The visitor function for handling objects of type
-         *                                          `DenseScoreVector<float64, CompleteIndexVector>`
+         *                                          `DenseScoreVectorView<float64, CompleteIndexVector>`
          * @param partialDense64BitVisitor          The visitor function for handling objects of type
-         *                                          `DenseScoreVector<float64, PartialIndexVector>`
+         *                                          `DenseScoreVectorView<float64, PartialIndexVector>`
          * @param completeDenseBinned32BitVisitor   The visitor function for handling objects of type
-         *                                          `DenseBinnedScoreVector<float32, CompleteIndexVector>`
+         *                                          `DenseBinnedScoreVectorView<float32, CompleteIndexVector>`
          * @param partialDenseBinned32BitVisitor    The visitor function for handling objects of type
-         *                                          `DenseBinnedScoreVector<float32, PartialIndexVector>`
+         *                                          `DenseBinnedScoreVectorView<float32, PartialIndexVector>`
          * @param completeDenseBinned64BitVisitor   The visitor function for handling objects of type
-         *                                          `DenseBinnedScoreVector<float32, CompleteIndexVector>`
+         *                                          `DenseBinnedScoreVectorView<float32, CompleteIndexVector>`
          * @param partialDenseBinned64BitVisitor    The visitor function for handling objects of type
-         *                                          `DenseBinnedScoreVector<float64, PartialIndexVector>`
+         *                                          `DenseBinnedScoreVectorView<float64, PartialIndexVector>`
          */
         virtual void visit(BitVisitor<CompleteIndexVector> completeBitVisitor,
                            BitVisitor<PartialIndexVector> partialBitVisitor,

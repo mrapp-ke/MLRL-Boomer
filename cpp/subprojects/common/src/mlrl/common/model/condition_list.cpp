@@ -33,7 +33,7 @@ void ConditionList::removeLastCondition() {
 }
 
 std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
-    std::unique_ptr<ConjunctiveBody> bodyPtr = std::make_unique<ConjunctiveBody>(
+    auto bodyPtr = std::make_unique<ConjunctiveBody>(
       numConditionsPerComparator_[NUMERICAL_LEQ], numConditionsPerComparator_[NUMERICAL_GR],
       numConditionsPerComparator_[ORDINAL_LEQ], numConditionsPerComparator_[ORDINAL_GR],
       numConditionsPerComparator_[NOMINAL_EQ], numConditionsPerComparator_[NOMINAL_NEQ]);

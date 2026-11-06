@@ -135,8 +135,8 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
          * @param numCols           The number of columns in the view
          */
         BinaryCscViewAllocator(uint32 numDenseElements, uint32 numRows, uint32 numCols)
-            : Matrix(util::allocateMemory<uint32>(numDenseElements), util::allocateMemory<uint32>(numCols + 1), numRows,
-                     numCols) {
+            : Matrix(DefaultMemoryAllocator::allocateMemory<uint32>(numDenseElements),
+                     DefaultMemoryAllocator::allocateMemory<uint32>(numCols + 1), numRows, numCols) {
             Matrix::indptr[0] = 0;
             Matrix::indptr[numCols] = numDenseElements;
         }
@@ -144,9 +144,7 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
         /**
          * @param other A reference to an object of type `BinaryCscViewAllocator` that should be copied
          */
-        BinaryCscViewAllocator(const BinaryCscViewAllocator<Matrix>& other) : Matrix(other) {
-            throw std::runtime_error("Objects of type BinaryCscViewAllocator cannot be copied");
-        }
+        BinaryCscViewAllocator(const BinaryCscViewAllocator<Matrix>& other) = delete;
 
         /**
          * @param other A reference to an object of type `BinaryCscViewAllocator` that should be moved
@@ -157,12 +155,12 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
         }
 
         virtual ~BinaryCscViewAllocator() override {
-            util::freeMemory(Matrix::indices);
-            util::freeMemory(Matrix::indptr);
+            DefaultMemoryAllocator::freeMemory(Matrix::indices);
+            DefaultMemoryAllocator::freeMemory(Matrix::indptr);
         }
 };
 
 /**
- * Allocates the memory, a `BinaryCscView` provides access to
+ * Allocates the memory, a `BinaryCscView` provides access to.
  */
 using AllocatedBinaryCscView = BinaryCscViewAllocator<BinaryCscView>;

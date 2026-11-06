@@ -19,8 +19,10 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
          * @param majorityValue The majority value, i.e., the most frequent value, of the nominal feature
          */
         AllocatedNominalFeatureVector(uint32 numValues, uint32 numIndices, int32 majorityValue = 0)
-            : NominalFeatureVector(util::allocateMemory<int32>(numValues), util::allocateMemory<uint32>(numIndices),
-                                   util::allocateMemory<uint32>(numValues + 1), numValues, numIndices, majorityValue) {
+            : NominalFeatureVector(DefaultMemoryAllocator::allocateMemory<int32>(numValues),
+                                   DefaultMemoryAllocator::allocateMemory<uint32>(numIndices),
+                                   DefaultMemoryAllocator::allocateMemory<uint32>(numValues + 1), numValues, numIndices,
+                                   majorityValue) {
             NominalFeatureVector::indptr[0] = 0;
             NominalFeatureVector::indptr[numValues] = numIndices;
         }
@@ -28,9 +30,7 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
         /**
          * @param other A reference to an object of type `AllocatedNominalFeatureVector` that should be copied
          */
-        AllocatedNominalFeatureVector(const AllocatedNominalFeatureVector& other) : NominalFeatureVector(other) {
-            throw std::runtime_error("Objects of type AllocatedNominalFeatureVector cannot be copied");
-        }
+        AllocatedNominalFeatureVector(const AllocatedNominalFeatureVector& other) = delete;
 
         /**
          * @param other A reference to an object of type `AllocatedNominalFeatureVector` that should be moved
@@ -42,9 +42,9 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
         }
 
         virtual ~AllocatedNominalFeatureVector() override {
-            util::freeMemory(NominalFeatureVector::values);
-            util::freeMemory(NominalFeatureVector::indices);
-            util::freeMemory(NominalFeatureVector::indptr);
+            DefaultMemoryAllocator::freeMemory(NominalFeatureVector::values);
+            DefaultMemoryAllocator::freeMemory(NominalFeatureVector::indices);
+            DefaultMemoryAllocator::freeMemory(NominalFeatureVector::indptr);
         }
 
         /**
@@ -55,9 +55,13 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
          *                      be resized
          */
         void resize(uint32 numValues, uint32 numIndices) {
-            NominalFeatureVector::values = util::reallocateMemory(NominalFeatureVector::values, numValues);
-            NominalFeatureVector::indices = util::reallocateMemory(NominalFeatureVector::indices, numIndices);
-            NominalFeatureVector::indptr = util::reallocateMemory(NominalFeatureVector::indptr, numValues + 1);
+            uint32 previousValues = NominalFeatureVector::numBins;
+            NominalFeatureVector::values =
+              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::values, previousValues, numValues);
+            NominalFeatureVector::indices = DefaultMemoryAllocator::reallocateMemory(
+              NominalFeatureVector::indices, NominalFeatureVector::indptr[previousValues], numIndices);
+            NominalFeatureVector::indptr =
+              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::indptr, previousValues + 1, numValues + 1);
             NominalFeatureVector::numBins = numValues;
             NominalFeatureVector::indptr[numValues] = numIndices;
         }
