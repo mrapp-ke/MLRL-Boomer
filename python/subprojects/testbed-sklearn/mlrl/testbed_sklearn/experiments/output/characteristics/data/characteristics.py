@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, get_format_kwargs
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, OPTION_THOUSANDS_SEPARATORS, get_format_kwargs
 from mlrl.util.options import Options
 
 
@@ -69,7 +69,7 @@ class OutputCharacteristics(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
+        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2, OPTION_THOUSANDS_SEPARATORS: True}
         table = self.to_table(options, **kwargs)
         return table.to_rich_table() if table else None
 
