@@ -545,6 +545,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
+    - `thousands_separators` (Default value = `true`) `true`, if the characteristics should be formatted using thousands separators, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be printed, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be printed, `false` otherwise.
     - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be printed, `false` otherwise.
@@ -580,6 +581,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
+    - `thousands_separators` (Default value = `true`) `true`, if the characteristics should be formatted using thousands separators, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be printed, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be printed, `false` otherwise.
     - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be printed, `false` otherwise.
@@ -685,7 +687,9 @@ The following arguments are only available when using the {ref}`BOOMER algorithm
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.
     - `decimals_body` (Default value = `2`) The number of decimals to be used for numerical thresholds of conditions in a rule's body or 0, if the number of decimals should not be restricted.
+    - `thousands_separators_body` (Default value = `true`) `true`, if the numerical thresholds of conditions in a rule's body should be formatted using thousands separators, `false` otherwise.
     - `decimals_head` (Default value = `2`) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
+    - `thousands_separators_head` (Default value = `true`) `true`, if the predictions in a rule's head should be formatted using thousands separators, `false` otherwise.
 
   - `false` The induced rules are not printed on the console.
 
@@ -699,7 +703,9 @@ The following arguments are only available when using the {ref}`BOOMER algorithm
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.
     - `decimals_body` (Default value = `2`) The number of decimals to be used for numerical thresholds of conditions in a rule's body or 0, if the number of decimals should not be restricted.
+    - `thousands_separators_body` (Default value = `true`) `true`, if the numerical thresholds of conditions in a rule's body should be formatted using thousands separators, `false` otherwise.
     - `decimals_head` (Default value = `2`) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
+    - `thousands_separators_head` (Default value = `true`) `true`, if the predictions in a rule's head should be formatted using thousands separators, `false` otherwise.
 
   - `false` The induced rules are not written to a text file.
 

@@ -8,3 +8,4 @@
 # mlrl-testbed
 
 - The package `mlrl-testbed` now depends on [rich](https://github.com/Textualize/rich), which enables colorized and better structured console output.
+- Thousands separators are now included in log output for clearer presentation of integer and floating point numbers.

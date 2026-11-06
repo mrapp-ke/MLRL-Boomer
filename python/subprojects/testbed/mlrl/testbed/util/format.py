@@ -14,6 +14,8 @@ OPTION_DECIMALS = 'decimals'
 
 OPTION_PERCENTAGE = 'percentage'
 
+OPTION_THOUSANDS_SEPARATORS = 'thousands_separators'
+
 
 def get_format_kwargs(default_options: Options | None = None, **kwargs) -> dict[str, Any]:
     """
@@ -28,6 +30,9 @@ def get_format_kwargs(default_options: Options | None = None, **kwargs) -> dict[
     return {
         OPTION_DECIMALS: options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0)),
         OPTION_PERCENTAGE: options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, False)),
+        OPTION_THOUSANDS_SEPARATORS: options.get_bool(
+            OPTION_THOUSANDS_SEPARATORS, kwargs.get(OPTION_THOUSANDS_SEPARATORS, False)
+        ),
     }
 
 

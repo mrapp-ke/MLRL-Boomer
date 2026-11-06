@@ -41,6 +41,10 @@ class RuleModelAsText(TextualOutputData):
 
     OPTION_DECIMALS_HEAD = 'decimals_head'
 
+    OPTION_THOUSANDS_SEPARATORS_BODY = 'thousands_separators_body'
+
+    OPTION_THOUSANDS_SEPARATORS_HEAD = 'thousands_separators_head'
+
     @staticmethod
     def __format_rule_model(rule_model: RuleModel, dataset: TabularDataset, options: Options) -> str:
         text = StringIO()
@@ -77,6 +81,7 @@ class RuleModelAsText(TextualOutputData):
         print_feature_names = options.get_bool(RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, True)
         print_nominal_values = options.get_bool(RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, True)
         decimals = options.get_int(RuleModelAsText.OPTION_DECIMALS_BODY, 2)
+        thousands_separators = options.get_bool(RuleModelAsText.OPTION_THOUSANDS_SEPARATORS_BODY, True)
         features = dataset.features
 
         for i, condition in enumerate(body):
@@ -104,7 +109,7 @@ class RuleModelAsText(TextualOutputData):
                 else:
                     text.write(str(nominal_value))
             else:
-                text.write(format_value(threshold, decimals=decimals))
+                text.write(format_value(threshold, decimals=decimals, thousands_separators=thousands_separators))
 
     @staticmethod
     def __format_complete_head(text: StringIO, head: CompleteHead, dataset: TabularDataset, options: Options):
@@ -113,6 +118,7 @@ class RuleModelAsText(TextualOutputData):
         if options.get_bool(RuleModelAsText.OPTION_PRINT_HEADS, True):
             print_output_names = options.get_bool(RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES, True)
             decimals = options.get_int(RuleModelAsText.OPTION_DECIMALS_HEAD, 2)
+            thousands_separators = options.get_bool(RuleModelAsText.OPTION_THOUSANDS_SEPARATORS_HEAD, True)
             outputs = dataset.outputs
 
             if print_bodies:
@@ -127,7 +133,7 @@ class RuleModelAsText(TextualOutputData):
                 output_index = prediction.output_index
                 text.write(outputs[output_index].name if print_output_names and len(outputs) > i else str(output_index))
                 text.write(' = ')
-                text.write(format_value(prediction.value, decimals=decimals))
+                text.write(format_value(prediction.value, decimals=decimals, thousands_separators=thousands_separators))
 
             text.write(')\n')
         elif print_bodies:
@@ -140,6 +146,7 @@ class RuleModelAsText(TextualOutputData):
         if options.get_bool(RuleModelAsText.OPTION_PRINT_HEADS, True):
             print_output_names = options.get_bool(RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES, True)
             decimals = options.get_int(RuleModelAsText.OPTION_DECIMALS_HEAD, 2)
+            thousands_separators = options.get_bool(RuleModelAsText.OPTION_THOUSANDS_SEPARATORS_HEAD, True)
             outputs = dataset.outputs
 
             if print_bodies:
@@ -159,7 +166,7 @@ class RuleModelAsText(TextualOutputData):
                     text.write(str(output_index))
 
                 text.write(' = ')
-                text.write(format_value(prediction.value, decimals=decimals))
+                text.write(format_value(prediction.value, decimals=decimals, thousands_separators=thousands_separators))
 
             text.write(')\n')
         elif print_bodies:

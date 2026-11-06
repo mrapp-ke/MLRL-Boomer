@@ -21,7 +21,7 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_percentage, get_format_kwargs
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_THOUSANDS_SEPARATORS, format_percentage, get_format_kwargs
 from mlrl.testbed.util.math import divide_or_zero
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
@@ -79,7 +79,8 @@ class RuleModelCharacteristics(TabularOutputData):
         aggregated_rule_statistics = reduce(
             lambda aggr, rule_statistics: aggr + rule_statistics, self.statistics.rule_statistics, RuleStatistics()
         )
-        format_kwargs = {**get_format_kwargs(options, **kwargs), OPTION_DECIMALS: 2}
+        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2, OPTION_THOUSANDS_SEPARATORS: True}
+        format_kwargs = get_format_kwargs(options, **kwargs)
         return Group(
             self.__format_aggregated_body_statistics(aggregated_rule_statistics),
             Text(''),
@@ -213,7 +214,8 @@ class RuleModelCharacteristics(TabularOutputData):
             self.COLUMN_NUM_PREDICTIONS_NEGATIVE,
         )
 
-        format_kwargs = {**get_format_kwargs(options, **kwargs), OPTION_DECIMALS: 2}
+        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
+        format_kwargs = get_format_kwargs(options, **kwargs)
 
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
             rule_name = f'Rule {i + 1}'
