@@ -14,6 +14,7 @@ from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.log import Log
 from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
+from mlrl.util.format import format_value
 
 
 class GlobalPredictionFunction(PredictionFunction):
@@ -47,7 +48,7 @@ class GlobalPredictor(Predictor):
         """
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        Log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...', highlight=True)
+        Log.info(f'Predicting for {format_value(dataset.num_examples)} {dataset_type} examples...', highlight=True)
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)

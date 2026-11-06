@@ -26,6 +26,7 @@ from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.modes.util import OutputUtil
 from mlrl.testbed.util.format import format_progress
 from mlrl.util.cli import Argument
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -142,7 +143,7 @@ class ReadMode(InputMode):
     def __run_single_experiment(
         args: Namespace, recipe: Recipe, input_directory: Path, command: Command
     ) -> ExperimentState:
-        Log.source_code(str(command), language='bash', box_title='Command')
+        Log.source_code(f'{command}', language='bash', box_title='Command')
         Log.info('')
         return OutputUtil(
             args=args, recipe=recipe, command=command, input_directory=input_directory
@@ -181,7 +182,8 @@ class ReadMode(InputMode):
                 if num_tables > 0:
                     Log.error(
                         f'Evaluation results for {dataset_type} data of the dataset "{dataset_name}" are incomplete. '
-                        f'{num_missing} of {num_commands} {("files are" if num_missing > 1 else "file is")} missing.',
+                        f'{format_value(num_missing)} of {format_value(num_commands)} '
+                        f'{("files are" if num_missing > 1 else "file is")} missing.',
                         highlight=True,
                     )
             else:
@@ -237,7 +239,7 @@ class ReadMode(InputMode):
         batch = self.__get_batch(control_arguments, args, meta_data)
         num_experiments = len(batch)
         Log.info(
-            f'Reading experimental results of {num_experiments} '
+            f'Reading experimental results of {format_value(num_experiments)} '
             f'{("experiments" if num_experiments > 1 else "experiment")}...\n',
             highlight=True,
         )

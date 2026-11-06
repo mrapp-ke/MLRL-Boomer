@@ -26,6 +26,7 @@ from mlrl.testbed.util.io import open_readable_file, open_writable_file
 from mlrl.testbed.util.yml import read_and_validate_yaml
 from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.sbatch import Sbatch
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 from mlrl.util.validation import ValidationError
 
@@ -362,7 +363,8 @@ class SlurmRunner(BatchMode.Runner):
         submit_command = not save_file and not print_file and self.__is_command_available()
         num_experiments = len(batch)
         Log.info(
-            f'Submitting {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} to Slurm...\n',
+            f'Submitting {format_value(num_experiments)} {("experiments" if num_experiments > 1 else "experiment")} to '
+            f'Slurm...\n',
             highlight=True,
         )
         command_or_job_arrays = self.__assign_to_job_arrays(batch)
@@ -373,7 +375,7 @@ class SlurmRunner(BatchMode.Runner):
                 Log.separator(f'Submitting Slurm job ({format_progress(i + 1, num_jobs)})')
                 job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
                 command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
-                Log.source_code(str(command), language='bash', box_title='Command')
+                Log.source_code(f'{command}', language='bash', box_title='Command')
                 dataset_name = DatasetArguments.DATASET_NAME.get_value(command.to_namespace())
                 job_name = dataset_name if dataset_name else 'sbatch'
                 slurm_config_file = SlurmRunner.__read_config_file(args)
@@ -382,7 +384,7 @@ class SlurmRunner(BatchMode.Runner):
                 )
 
                 if save_file:
-                    Log.info(f'Slurm script saved to file "{sbatch_file}"', highlight=True)
+                    Log.info(f'Slurm script saved to file {format_value(sbatch_file)}', highlight=True)
 
                 if print_file:
                     Log.info(self.__read_sbatch_file(sbatch_file), box=True, box_title='Slurm script')

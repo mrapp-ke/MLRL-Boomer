@@ -28,6 +28,7 @@ from mlrl.testbed_sklearn.experiments.output.dataset.writer_prediction import Pr
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed_sklearn.experiments.output.label_vectors import LabelVectorWriter
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnProblem
+from mlrl.util.format import format_value
 
 
 class SkLearnExperiment(Experiment):
@@ -129,7 +130,7 @@ class SkLearnExperiment(Experiment):
             See :func:`mlrl.testbed.experiments.experiment.Experiment.TrainingProcedure.train`
             """
             with Log.indented():
-                Log.info(f'Fitting model to {dataset.num_examples} training examples...', highlight=True)
+                Log.info(f'Fitting model to {format_value(dataset.num_examples)} training examples...', highlight=True)
                 new_learner = self.__create_learner(parameters=parameters)
 
                 # Use existing model, if possible, otherwise train a new model...
