@@ -1,0 +1,5 @@
+File subtract_weighted.hpp
+==========================
+
+.. doxygenfile:: subtract_weighted.hpp
+   :project: common
