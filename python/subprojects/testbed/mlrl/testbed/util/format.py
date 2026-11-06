@@ -8,10 +8,27 @@ from numbers import Number
 from typing import Any
 
 from mlrl.util.format import format_value
+from mlrl.util.options import Options
 
 OPTION_DECIMALS = 'decimals'
 
 OPTION_PERCENTAGE = 'percentage'
+
+
+def get_format_kwargs(default_options: Options | None = None, **kwargs) -> dict[str, Any]:
+    """
+    Returns the keyword arguments to be passed to the function `mlrl.util.format.format_value`. Default values can be
+    overwritten by given `Options` or keyword arguments.
+
+    :param default_options: Options to be used instead of default values
+    :param kwargs:          Keyword arguments to be used instead of default values
+    :return:                A dictionary that stores the keyword arguments to be used
+    """
+    options = default_options if default_options else Options()
+    return {
+        OPTION_DECIMALS: options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0)),
+        OPTION_PERCENTAGE: options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, False)),
+    }
 
 
 def parse_value(value: Any) -> Any:
