@@ -20,7 +20,7 @@ from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure, Measure
 from mlrl.testbed.experiments.table import Cell, Column, ColumnWiseTable, RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS
+from mlrl.testbed.util.format import OPTION_DECIMALS, get_format_kwargs
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
@@ -116,6 +116,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                     measures.append((column_index, header))
 
             measures.sort(key=lambda x: x[1])
+            format_kwargs = get_format_kwargs(options, **kwargs)
 
             for i, (measure_index, measure) in enumerate(measures):
                 if i > 0:
@@ -147,7 +148,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                     aggregation_measure_indices=aggregation_measure_indices,
                     parameter_columns=parameter_columns,
                     num_columns=row_wise_table.num_columns,
-                    decimals=options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0)),
+                    **format_kwargs,
                 )
                 separators = self.__add_separator_rows(dataset_column, row_wise_table, averages=bool(average_rows))
 
@@ -178,7 +179,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         aggregation_measure_indices: dict[AggregationMeasure, int],
         parameter_columns: list[Column],
         num_columns: int,
-        decimals: int,
+        **format_kwargs,
     ) -> list[list[Cell]]:
         result = []
 
@@ -205,7 +206,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                             except ValueError:
                                 pass
 
-                row.append(format_value(np.asarray(values, dtype=float).mean(), decimals=decimals) if values else None)
+                row.append(format_value(np.asarray(values, dtype=float).mean(), **format_kwargs) if values else None)
 
             result.append(row)
 
@@ -272,7 +273,7 @@ class AggregatedEvaluationResult(TabularOutputData):
 
             aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
             aggregated_table.add_column(*dataset_column, header=self.COLUMN_DATASET, position=0)
-            decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
+            format_kwargs = get_format_kwargs(options, **kwargs)
             aggregation_measures = OutputValue.filter_values(self.AGGREGATION_MEASURES, options)
 
             for column_index in range(aggregated_table.num_columns - 1, -1, -1):
@@ -294,7 +295,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                         if value is not None:
                             float_value = float(value)
                             values_by_dataset[-1].append(float_value)
-                            column[row_index] = format_value(float_value, decimals=decimals)
+                            column[row_index] = format_value(float_value, **format_kwargs)
                     except ValueError:
                         pass
 
@@ -323,7 +324,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                                 )
                             )
                             aggregated_table.add_column(
-                                *(format_value(value, decimals=decimals) for value in aggregated_column),
+                                *(format_value(value, **format_kwargs) for value in aggregated_column),
                                 header=f'{aggregation_measure.name} {header}',
                                 position=column_index + 1,
                             )

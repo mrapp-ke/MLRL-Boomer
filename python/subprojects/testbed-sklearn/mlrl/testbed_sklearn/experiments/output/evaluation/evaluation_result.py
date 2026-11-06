@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, get_format_kwargs
 from mlrl.util.options import Options
 
 
@@ -155,8 +155,6 @@ class TabularEvaluationResult(EvaluationResult):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
-        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
         enable_all = options.get_bool(
             AggregatedEvaluationResult.OPTION_ENABLE_ALL, kwargs.get(AggregatedEvaluationResult.OPTION_ENABLE_ALL, True)
         )
@@ -165,7 +163,8 @@ class TabularEvaluationResult(EvaluationResult):
         headers, measures = tee(
             filter(lambda measure: options.get_bool(measure.option_key, enable_all), dictionary.keys())
         )
-        values = (measure.format(dictionary[measure], percentage=percentage, decimals=decimals) for measure in measures)
+        format_kwargs = get_format_kwargs(options, **(dict(kwargs) | {OPTION_PERCENTAGE: True}))
+        values = (measure.format(dictionary[measure], **format_kwargs) for measure in measures)
         return RowWiseTable(*headers).add_row(*values)
 
 

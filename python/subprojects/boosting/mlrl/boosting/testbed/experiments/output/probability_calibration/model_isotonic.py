@@ -18,7 +18,7 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Column, ColumnWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS
+from mlrl.testbed.util.format import OPTION_DECIMALS, get_format_kwargs
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
@@ -162,13 +162,13 @@ class IsotonicRegressionModel(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
         table = ColumnWiseTable()
+        format_kwargs = get_format_kwargs(options, **kwargs)
 
         for list_index, bin_list in self.bin_lists.items():
-            thresholds = (format_value(value, decimals=decimals) for value in bin_list.thresholds)
+            thresholds = (format_value(value, **format_kwargs) for value in bin_list.thresholds)
             table.add_column(*thresholds, header=self._format_threshold_header(list_index))
-            probabilities = (format_value(value, decimals=decimals) for value in bin_list.probabilities)
+            probabilities = (format_value(value, **format_kwargs) for value in bin_list.probabilities)
             table.add_column(*probabilities, header=self._format_probability_header(list_index))
 
         return table
