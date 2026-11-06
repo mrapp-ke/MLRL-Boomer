@@ -198,13 +198,13 @@ Some algorithmic parameters, including the parameter `feature_binning`, allow to
 
 In the following subsections provide a complete overview of all command line arguments that are available for controlling the behavior of experiments conducted by mlrl-testbed.
 
-## Performance Evaluation
+### Performance Evaluation
 
 > A more detailed description of the following arguments can be found {ref}`here<evaluation>`.
 
 One of the most important capabilities of mlrl-testbed is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterward, whereas the evaluation metrics depend on the type of predictions provided by a model.
 
-### Strategies for Data Splitting
+#### Strategies for Data Splitting
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
 
@@ -222,7 +222,7 @@ One of the most important capabilities of mlrl-testbed is to train machine learn
 
   - `none` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data must be stored pin a file named `dataset-name.arff`.
 
-### Types of Predictions
+#### Types of Predictions
 
 - `--prediction-type` (Default value = `binary`, {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`)
 
@@ -240,7 +240,7 @@ One of the most important capabilities of mlrl-testbed is to train machine learn
   - `true` Predictions are obtained for the test data.
   - `false` Predictions are not obtained for the test data.
 
-### Incremental Evaluation
+#### Incremental Evaluation
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
 
@@ -254,13 +254,13 @@ One of the most important capabilities of mlrl-testbed is to train machine learn
 
   - `false` Models are evaluated only once as a whole.
 
-## Data Pre-Processing
+### Data Pre-Processing
 
 > A more detailed description of the following arguments can be found {ref}`here<pre-processing>`.
 
 Depending on the characteristics of a dataset, it might be desirable to apply one of the following pre-processing techniques before training and evaluating machine learning models.
 
-### One-Hot-Encoding
+#### One-Hot-Encoding
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
 
@@ -269,7 +269,7 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
   - `true` One-hot-encoding is used to encode nominal features.
   - `false` The algorithm's ability to natively handle nominal features is used.
 
-## Saving and Loading Data
+### Saving and Loading Data
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -307,7 +307,7 @@ The package mlrl-testbed allows saving data gathered during experiments to outpu
   - `true` All output data is written to files.
   - `false` No output data is written to files.
 
-### Meta-Data
+#### Meta-Data
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -324,7 +324,7 @@ Saving meta-data can help improving the reproducibility of experiments. Among ot
   - `true` The meta-data is always saved to the directory `--base-dir`
   - `false` No meta-data is saved.
 
-### Models
+#### Models
 
 > A more detailed description of the following arguments can be found {ref}`here<model-persistence>`.
 
@@ -348,7 +348,7 @@ Because the training of models can be time-consuming, it might be desirable to s
   - `true` Models are saved to output files.
   - `false` Models are not saved to output files.
 
-### Algorithmic Parameters
+#### Algorithmic Parameters
 
 > A more detailed description of the following arguments can be found {ref}`here<parameter-persistence>`.
 
@@ -377,7 +377,7 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
   - `true` Algorithmic parameters are saved to output files
   - `false` Algorithmic parameters are not saved to output files
 
-### Experimental Results
+#### Experimental Results
 
 > A more detailed description of the following arguments can be found {ref}`here<experimental-results>`.
 
@@ -389,7 +389,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-evaluation-results)=
 
-#### Evaluation Results
+##### Evaluation Results
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -480,7 +480,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-predictions)=
 
-#### Predictions
+##### Predictions
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -524,7 +524,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-prediction-characteristics)=
 
-#### Prediction Characteristics
+##### Prediction Characteristics
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -559,7 +559,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-data-characteristics)=
 
-#### Data Characteristics
+##### Data Characteristics
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -606,7 +606,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-label-vectors)=
 
-#### Label Vectors
+##### Label Vectors
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
