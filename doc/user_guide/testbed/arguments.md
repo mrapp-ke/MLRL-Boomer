@@ -4,17 +4,17 @@
 
 In addition to the mandatory arguments that must be provided to the command line API to specify the dataset to be used for training, a wide variety of optional arguments are available as well. In the following, we provide an overview of these arguments and discuss their respective purposes.
 
-```{note}
+## Help
+
 The arguments `-h` or `--help` result in a description of all available command line arguments being printed.
-```
 
-```{note}
+## Version Information
+
 When running the program with the argument `-v` or `--version`, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the {ref}`build options<build-options>` that have been used for building the package, as well as information about hardware resources it may utilize.
-```
 
-```{note}
+## Log Level
+
 The argument `--log-level` controls the level of detail used for log messages (Default value = `info`). It can be set to the values `debug`, `info`, `warning`, `error`, `critical`, `fatal` or `notset`, where the first one provides the greatest level of detail and the last one disables logging entirely.
-```
 
 (arguments-basic-usage)=
 
