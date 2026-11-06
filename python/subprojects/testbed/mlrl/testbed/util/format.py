@@ -62,8 +62,7 @@ def format_percentage(fraction: float, decimals: int = 2) -> str:
     :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
     :return:            The textual representation that has been created
     """
-    percentage = float(fraction) * 100
-    return f'{format_value(percentage, decimals)} %'
+    return f'{format_value(float(fraction), percentage=True, decimals=decimals)} %'
 
 
 def format_progress(num_completed: int, num_total: int) -> str:

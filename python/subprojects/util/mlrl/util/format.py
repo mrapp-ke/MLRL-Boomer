@@ -72,11 +72,12 @@ def format_set(objects: Iterable[Any]) -> str:
     return f'{{{format_iterable(sorted(objects, key=str), delimiter='"')}}}'
 
 
-def format_value(value: Any, decimals: int = 2) -> str:
+def format_value(value: Any, percentage: bool = False, decimals: int = 2) -> str:
     """
     Creates and returns a textual representation of a given value.
 
     :param value:       The value to be formatted
+    :param percentage:  True, if floating point values should be formatted as percentages, False otherwise
     :param decimals:    The number of decimals floating point values should be rounded to or 0, if the number of
                         decimals should not be restricted
     :return:            The textual representation that has been created
@@ -85,7 +86,9 @@ def format_value(value: Any, decimals: int = 2) -> str:
         return f'"{value}"'
     if isinstance(value, Path):
         return f'"{value}"'
-    if isinstance(value, (float, np.floating)) and decimals > 0:
-        rounded_value = round(value, decimals)
-        return f'{rounded_value:.{decimals}f}'
+    if isinstance(value, (float, np.floating)):
+        if percentage:
+            value = value * 100
+        if decimals > 0:
+            return f'{round(value, decimals):.{decimals}f}'
     return str(value)
