@@ -11,6 +11,7 @@ from mlrl.common.config.parameters import (
     RulePruningParameter,
 )
 from mlrl.common.learners import SparsePolicy
+from mlrl.util.options import BooleanOption
 
 from ..cmd_builder import CmdBuilder
 
@@ -219,4 +220,14 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         if feature_binning:
             self.add_algorithmic_argument('--feature-binning', feature_binning)
 
+        return self
+
+    def use_simd(self, use_simd: BooleanOption):
+        """
+        Configures the algorithm to use single instruction, multiple data (SIMD) operations.
+
+        :param use_simd:    `BooleanOption.TRUE`, if SIMD operations should be used, `BooleanOption.FALSE` otherwise
+        :return:            The builder itself
+        """
+        self.add_algorithmic_argument('--simd', use_simd)
         return self
