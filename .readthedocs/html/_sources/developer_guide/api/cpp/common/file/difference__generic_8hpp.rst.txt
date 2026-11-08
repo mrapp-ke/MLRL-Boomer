@@ -1,0 +1,5 @@
+File difference_generic.hpp
+===========================
+
+.. doxygenfile:: difference_generic.hpp
+   :project: common
