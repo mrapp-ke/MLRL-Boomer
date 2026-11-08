@@ -5,8 +5,10 @@ Provides classes that allow to run automated tests via the external program "pyt
 """
 
 from functools import reduce
+from os import environ
 
 from core.build_unit import BuildUnit
+from util.env import Env, set_env
 from util.run import PythonModule
 
 from targets.testing.python.modules import PythonTestModule
@@ -38,6 +40,13 @@ class Pytest(PythonModule):
 
         return arguments
 
+    @staticmethod
+    def __create_environment() -> Env:
+        env = environ.copy()
+        # Use Haswell BLAS kernel on all machines, regardless of their architecture, to ensure reproducible test results
+        set_env(env, 'OPENBLAS_CORETYPE', 'Haswell')
+        return env
+
     def __init__(self, build_unit: BuildUnit, module: PythonTestModule):
         """
         :param build_unit:  The build unit from which the program should be run
@@ -61,5 +70,6 @@ class Pytest(PythonModule):
         self.add_conditional_arguments(module.num_workers is not None, f'--numprocesses={module.num_workers}')
         self.set_accepted_exit_codes(0, 5)
         self.print_arguments(True)
+        self.use_environment(self.__create_environment())
         self.set_build_unit(build_unit)
         self.add_dependencies('pandas', 'pytest-xdist')
