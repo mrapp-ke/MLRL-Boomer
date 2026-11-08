@@ -5,7 +5,7 @@
 
 #include <numeric>
 
-static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<float64, float64>>::row bins) {
+static inline void sortByThresholdsAndEliminateDuplicates(IndexedListsView<std::pair<float64, float64>>::list bins) {
     // Sort bins in increasing order by their threshold...
     std::sort(bins.begin(), bins.end(),
               [=](const std::pair<float64, float64>& lhs, const std::pair<float64, float64>& rhs) {
@@ -37,7 +37,7 @@ static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<
     bins.resize(n);
 }
 
-static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, float64>>::row bins) {
+static inline void aggregateNonIncreasingBins(IndexedListsView<std::pair<float64, float64>>::list bins) {
     // We apply the "pool adjacent violators algorithm" (PAVA) to merge adjacent bins with non-increasing
     // probabilities. A temporary array `pools` is used to mark the beginning and end of subsequences with
     // non-increasing probabilities. If such a subsequence was found in range [i, j] then `pools[i] = j` and
@@ -104,7 +104,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
     bins.shrink_to_fit();
 }
 
-static inline float64 calibrateProbability(ListOfLists<std::pair<float64, float64>>::const_row bins,
+static inline float64 calibrateProbability(IndexedListsView<std::pair<float64, float64>>::const_list bins,
                                            float64 probability) {
     // Find the bins that impose a lower and upper bound on the probability...
     auto begin = bins.cbegin();
@@ -138,14 +138,23 @@ static inline float64 calibrateProbability(ListOfLists<std::pair<float64, float6
 }
 
 IsotonicProbabilityCalibrationModel::IsotonicProbabilityCalibrationModel(uint32 numLists)
-    : IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<std::pair<float64, float64>>>>(
-        AllocatedListOfLists<std::pair<float64, float64>>(numLists, 0)) {}
+    : ViewDecorator<AllocatedIndexedListsView<std::pair<float64, float64>>>(
+        AllocatedIndexedListsView<std::pair<float64, float64>>(numLists)) {}
+
+IsotonicProbabilityCalibrationModel::const_bin_list IsotonicProbabilityCalibrationModel::operator[](
+  uint32 labelIndex) const {
+    return this->getView()[labelIndex];
+}
+
+IsotonicProbabilityCalibrationModel::bin_list IsotonicProbabilityCalibrationModel::operator[](uint32 labelIndex) {
+    return this->getView()[labelIndex];
+}
 
 void IsotonicProbabilityCalibrationModel::fit() {
     uint32 numLists = this->getNumBinLists();
 
     for (uint32 i = 0; i < numLists; i++) {
-        row bins = (*this)[i];
+        auto& bins = this->getView()[i];
         sortByThresholdsAndEliminateDuplicates(bins);
         aggregateNonIncreasingBins(bins);
     }
@@ -153,28 +162,27 @@ void IsotonicProbabilityCalibrationModel::fit() {
 
 float64 IsotonicProbabilityCalibrationModel::calibrateMarginalProbability(uint32 labelIndex,
                                                                           float64 marginalProbability) const {
-    return calibrateProbability((*this)[labelIndex], marginalProbability);
+    return calibrateProbability(this->getView()[labelIndex], marginalProbability);
 }
 
 float64 IsotonicProbabilityCalibrationModel::calibrateJointProbability(uint32 labelVectorIndex,
                                                                        float64 jointProbability) const {
-    return calibrateProbability((*this)[labelVectorIndex], jointProbability);
+    return calibrateProbability(this->getView()[labelVectorIndex], jointProbability);
 }
 
 uint32 IsotonicProbabilityCalibrationModel::getNumBinLists() const {
-    return this->view.numRows;
+    return this->view.numLists;
 }
 
 void IsotonicProbabilityCalibrationModel::addBin(uint32 listIndex, float64 threshold, float64 probability) {
-    row row = (*this)[listIndex];
-    row.emplace_back(threshold, probability);
+    this->getView()[listIndex].emplace_back(threshold, probability);
 }
 
 void IsotonicProbabilityCalibrationModel::visit(BinVisitor visitor) const {
     uint32 numLists = this->getNumBinLists();
 
     for (uint32 i = 0; i < numLists; i++) {
-        const_row bins = (*this)[i];
+        auto& bins = this->getView()[i];
 
         for (auto it = bins.cbegin(); it != bins.cend(); it++) {
             const std::pair<float64, float64>& bin = *it;
