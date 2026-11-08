@@ -12,10 +12,6 @@ The arguments `-h` or `--help` result in a description of all available command 
 
 When running the program with the argument `-v` or `--version`, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the {ref}`build options<build-options>` that have been used for building the package, as well as information about hardware resources it may utilize.
 
-## Log Level
-
-The argument `--log-level` controls the level of detail used for log messages (Default value = `info`). It can be set to the values `debug`, `info`, `warning`, `error`, `critical`, `fatal` or `notset`, where the first one provides the greatest level of detail and the last one disables logging entirely.
-
 (arguments-basic-usage)=
 
 ## Basic Usage
@@ -39,6 +35,21 @@ The following optional arguments allow additional control over the loading mecha
 - `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending {py:class}`mlrl.testbed.runnables.Runnable` that resides within the module or source file specified via the argument `<module_or_source_file>`.
 
 The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with mlrl-testbed. You can learn about this {ref}`here<runnables>`.
+
+### Logging
+
+The following arguments can be used to control the detail and appearance of log messages:
+
+- `--log-level` (Default value = `info`) Controls the level of detail used for log messages. It can be set to the following values, where the first one provides the greatest level of detail and the last one disables logging entirely.
+
+  - `debug`
+  - `info`
+  - `warning`
+  - `error`
+
+- `--log-width` The width of the log output in characters.
+
+- `--log-plain` If this flag is present, the console output is restricted to plain text, without any colors or structural elements.
 
 (argument-mode)=
 
@@ -534,6 +545,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
+    - `thousands_separators` (Default value = `true`) `true`, if the characteristics should be formatted using thousands separators, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be printed, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be printed, `false` otherwise.
     - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be printed, `false` otherwise.
@@ -569,6 +581,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
+    - `thousands_separators` (Default value = `true`) `true`, if the characteristics should be formatted using thousands separators, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be printed, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be printed, `false` otherwise.
     - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be printed, `false` otherwise.
@@ -674,7 +687,9 @@ The following arguments are only available when using the {ref}`BOOMER algorithm
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.
     - `decimals_body` (Default value = `2`) The number of decimals to be used for numerical thresholds of conditions in a rule's body or 0, if the number of decimals should not be restricted.
+    - `thousands_separators_body` (Default value = `true`) `true`, if the numerical thresholds of conditions in a rule's body should be formatted using thousands separators, `false` otherwise.
     - `decimals_head` (Default value = `2`) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
+    - `thousands_separators_head` (Default value = `true`) `true`, if the predictions in a rule's head should be formatted using thousands separators, `false` otherwise.
 
   - `false` The induced rules are not printed on the console.
 
@@ -688,7 +703,9 @@ The following arguments are only available when using the {ref}`BOOMER algorithm
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.
     - `decimals_body` (Default value = `2`) The number of decimals to be used for numerical thresholds of conditions in a rule's body or 0, if the number of decimals should not be restricted.
+    - `thousands_separators_body` (Default value = `true`) `true`, if the numerical thresholds of conditions in a rule's body should be formatted using thousands separators, `false` otherwise.
     - `decimals_head` (Default value = `2`) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
+    - `thousands_separators_head` (Default value = `true`) `true`, if the predictions in a rule's head should be formatted using thousands separators, `false` otherwise.
 
   - `false` The induced rules are not written to a text file.
 

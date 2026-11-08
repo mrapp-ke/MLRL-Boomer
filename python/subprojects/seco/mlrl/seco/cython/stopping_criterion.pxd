@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport float64
+from mlrl.common.cython._types cimport float32
 
 
 cdef extern from "mlrl/seco/stopping/stopping_criterion_coverage.hpp" namespace "seco" nogil:
@@ -7,9 +7,9 @@ cdef extern from "mlrl/seco/stopping/stopping_criterion_coverage.hpp" namespace 
 
         # Functions:
 
-        float64 getThreshold() const
+        float32 getMinCoverage() const
 
-        ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) except +
+        ICoverageStoppingCriterionConfig& setMinCoverage(float32 minCoverage) except +
 
 
 cdef class CoverageStoppingCriterionConfig:

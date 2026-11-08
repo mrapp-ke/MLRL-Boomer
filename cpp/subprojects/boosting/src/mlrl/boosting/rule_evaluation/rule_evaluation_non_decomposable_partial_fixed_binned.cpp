@@ -14,10 +14,11 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
      *                          predictions should be calculated
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename MemoryAllocator>
     class DenseNonDecomposableFixedPartialBinnedRuleEvaluation final
-        : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
+        : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector, MemoryAllocator> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
@@ -36,14 +37,13 @@ namespace boosting {
                                                float32 l2RegularizationWeight) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                  statisticVector.hessians_diagonal_cbegin();
-                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_diagonal_cbegin();
+                auto tmpIterator = tmpVector_.begin();
                 sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
                                        l1RegularizationWeight, l2RegularizationWeight);
-                PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
-                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                auto indexIterator = indexVectorPtr_->begin();
+                auto labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
                     const IndexedValue<statistic_type>& entry = tmpIterator[i];
@@ -78,74 +78,85 @@ namespace boosting {
               float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               std::unique_ptr<ILabelBinning<statistic_type>> binningPtr, std::unique_ptr<Blas<statistic_type>> blasPtr,
               std::unique_ptr<Lapack<statistic_type>> lapackPtr)
-                : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
+                : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector, MemoryAllocator>(
                     *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                     std::move(binningPtr), std::move(blasPtr), std::move(lapackPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
                   tmpVector_(labelIndices.getNumElements()) {}
     };
 
-    NonDecomposableFixedPartialBinnedRuleEvaluationFactory::NonDecomposableFixedPartialBinnedRuleEvaluationFactory(
-      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float32 l1RegularizationWeight,
-      float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
-      const BlasFactory& blasFactory, const LapackFactory& lapackFactory)
+    template<typename MemoryAllocator>
+    NonDecomposableFixedPartialBinnedRuleEvaluationFactory<MemoryAllocator>::
+      NonDecomposableFixedPartialBinnedRuleEvaluationFactory(
+        float32 labelRatio, uint32 minLabels, uint32 maxLabels, float32 l1RegularizationWeight,
+        float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
+        const BlasFactory& blasFactory, const LapackFactory& lapackFactory)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blasFactory_(blasFactory),
           lapackFactory_(lapackFactory) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
-      NonDecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+    template<typename MemoryAllocator>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>>
+      NonDecomposableFixedPartialBinnedRuleEvaluationFactory<MemoryAllocator>::create(
+        const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
+          math::calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);
         return std::make_unique<DenseNonDecomposableFixedPartialBinnedRuleEvaluation<
-          DenseNonDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float32>, CompleteIndexVector, MemoryAllocator>>(
           indexVector, maxBins, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
           std::move(labelBinningPtr), blasFactory_.create32Bit(), lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
-      NonDecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+    template<typename MemoryAllocator>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>>
+      NonDecomposableFixedPartialBinnedRuleEvaluationFactory<MemoryAllocator>::create(
+        const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<
-          DenseNonDecomposableStatisticVector<float32>, PartialIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float32>, PartialIndexVector, MemoryAllocator>>(
           indexVector, maxBins, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr),
           blasFactory_.create32Bit(), lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
-      NonDecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+    template<typename MemoryAllocator>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>>
+      NonDecomposableFixedPartialBinnedRuleEvaluationFactory<MemoryAllocator>::create(
+        const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
+          math::calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);
         return std::make_unique<DenseNonDecomposableFixedPartialBinnedRuleEvaluation<
-          DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float64>, CompleteIndexVector, MemoryAllocator>>(
           indexVector, maxBins, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
           std::move(labelBinningPtr), blasFactory_.create64Bit(), lapackFactory_.create64Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
-      NonDecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+    template<typename MemoryAllocator>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>>
+      NonDecomposableFixedPartialBinnedRuleEvaluationFactory<MemoryAllocator>::create(
+        const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<
-          DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float64>, PartialIndexVector, MemoryAllocator>>(
           indexVector, maxBins, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr),
           blasFactory_.create64Bit(), lapackFactory_.create64Bit());
     }
 
+    template class NonDecomposableFixedPartialBinnedRuleEvaluationFactory<DefaultMemoryAllocator>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class NonDecomposableFixedPartialBinnedRuleEvaluationFactory<SimdMemoryAllocator>;
+#endif
 }

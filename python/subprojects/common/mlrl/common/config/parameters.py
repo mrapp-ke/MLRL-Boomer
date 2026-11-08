@@ -26,6 +26,7 @@ from mlrl.common.cython.learner import (
     NoPartitionSamplingMixin,
     NoRulePruningMixin,
     NoSequentialPostOptimizationMixin,
+    NoSimdMixin,
     NoSizeStoppingCriterionMixin,
     NoTimeStoppingCriterionMixin,
     ParallelPredictionMixin,
@@ -37,6 +38,7 @@ from mlrl.common.cython.learner import (
     RNGMixin,
     RoundRobinOutputSamplingMixin,
     SequentialPostOptimizationMixin,
+    SimdMixin,
     SizeStoppingCriterionMixin,
     TimeStoppingCriterionMixin,
 )
@@ -49,6 +51,7 @@ from mlrl.common.cython.learner_classification import (
 from mlrl.common.cython.package_info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.util.cli import NONE, Argument, SetArgument
+from mlrl.util.format import format_value
 from mlrl.util.log import Log
 from mlrl.util.options import BooleanOption, Options, parse_param, parse_param_and_options
 
@@ -120,7 +123,7 @@ class Parameter(ABC):
         """
         The name of a command line argument that corresponds to the parameter.
         """
-        return '--' + self.name.replace('_', '-')
+        return f'--{self.name.replace("_", "-")}'
 
     @override
     def __eq__(self, other):
@@ -327,6 +330,8 @@ class RuleInductionParameter(NominalParameter):
 
     OPTION_MAX_CONDITIONS = 'max_conditions'
 
+    OPTION_ALLOW_NEGATIONS = 'allow_negations'
+
     OPTION_MAX_HEAD_REFINEMENTS = 'max_head_refinements'
 
     OPTION_RECALCULATE_PREDICTIONS = 'recalculate_predictions'
@@ -347,6 +352,7 @@ class RuleInductionParameter(NominalParameter):
                 self.OPTION_MIN_COVERAGE,
                 self.OPTION_MIN_SUPPORT,
                 self.OPTION_MAX_CONDITIONS,
+                self.OPTION_ALLOW_NEGATIONS,
                 self.OPTION_MAX_HEAD_REFINEMENTS,
                 self.OPTION_RECALCULATE_PREDICTIONS,
             },
@@ -358,6 +364,7 @@ class RuleInductionParameter(NominalParameter):
                 self.OPTION_MIN_COVERAGE,
                 self.OPTION_MIN_SUPPORT,
                 self.OPTION_MAX_CONDITIONS,
+                self.OPTION_ALLOW_NEGATIONS,
                 self.OPTION_MAX_HEAD_REFINEMENTS,
                 self.OPTION_RECALCULATE_PREDICTIONS,
                 self.OPTION_BEAM_WIDTH,
@@ -372,6 +379,7 @@ class RuleInductionParameter(NominalParameter):
             conf.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, conf.get_min_coverage()))
             conf.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, conf.get_min_support()))
             conf.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, conf.get_max_conditions()))
+            conf.set_negations_allowed(options.get_bool(self.OPTION_ALLOW_NEGATIONS, conf.are_negations_allowed()))
             conf.set_max_head_refinements(
                 options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements())
             )
@@ -383,6 +391,7 @@ class RuleInductionParameter(NominalParameter):
             conf.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, conf.get_min_coverage()))
             conf.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, conf.get_min_support()))
             conf.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, conf.get_max_conditions()))
+            conf.set_negations_allowed(options.get_bool(self.OPTION_ALLOW_NEGATIONS, conf.are_negations_allowed()))
             conf.set_max_head_refinements(
                 options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements())
             )
@@ -745,13 +754,13 @@ class ParallelRuleRefinementParameter(NominalParameter):
             conf.set_num_preferred_threads(num_preferred_threads)
             if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
                 Log.warning(
-                    f'{num_preferred_threads} threads should be used for rule refinement, but multi-threading support '
-                    f'is disabled'
+                    f'{format_value(num_preferred_threads)} threads should be used for rule refinement, but '
+                    f'multi-threading support is disabled'
                 )
             elif num_preferred_threads > get_num_cpu_cores():
                 Log.warning(
-                    f'{num_preferred_threads} threads should be used for rule refinement, but only '
-                    f'{get_num_cpu_cores()} CPU cores are available'
+                    f'{format_value(num_preferred_threads)} threads should be used for rule refinement, but only '
+                    f'{format_value(get_num_cpu_cores())} CPU cores are available'
                 )
 
 
@@ -781,13 +790,13 @@ class ParallelStatisticUpdateParameter(NominalParameter):
             conf.set_num_preferred_threads(num_preferred_threads)
             if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
                 Log.warning(
-                    f'{num_preferred_threads} threads should be used for statistic updates, but multi-threading '
-                    f'support is disabled'
+                    f'{format_value(num_preferred_threads)} threads should be used for statistic updates, but '
+                    f'multi-threading support is disabled'
                 )
             elif num_preferred_threads > get_num_cpu_cores():
                 Log.warning(
-                    f'{num_preferred_threads} threads should be used for statistic updates, but only '
-                    f'{get_num_cpu_cores()} CPU cores are available'
+                    f'{format_value(num_preferred_threads)} threads should be used for statistic updates, but only '
+                    f'{format_value(get_num_cpu_cores())} CPU cores are available'
                 )
 
 
@@ -815,14 +824,35 @@ class ParallelPredictionParameter(NominalParameter):
             conf.set_num_preferred_threads(num_preferred_threads)
             if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
                 Log.warning(
-                    f'{num_preferred_threads} threads should be used for prediction, but multi-threading support is '
-                    f'disabled'
+                    f'{format_value(num_preferred_threads)} threads should be used for prediction, but multi-threading '
+                    f'support is disabled'
                 )
             elif num_preferred_threads > get_num_cpu_cores():
                 Log.warning(
-                    f'{num_preferred_threads} threads should be used for prediction, but only {get_num_cpu_cores()} '
-                    f'CPU cores are available'
+                    f'{format_value(num_preferred_threads)} threads should be used for prediction, but only '
+                    f'{format_value(get_num_cpu_cores())} CPU cores are available'
                 )
+
+
+class SimdParameter(NominalParameter):
+    """
+    A parameter that allows to configure whether single instruction, multiple data (SIMD) operations should be used or
+    not.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name='simd', description='Whether single instruction, multiple data (SIMD) operations should be used or not'
+        )
+        self.add_value(name=BooleanOption.FALSE, mixin=NoSimdMixin)
+        self.add_value(name=BooleanOption.TRUE, mixin=SimdMixin)
+
+    @override
+    def _configure(self, config, value: str, options: Options):
+        if value == BooleanOption.FALSE:
+            config.use_no_simd_operations()
+        else:
+            config.use_simd_operations()
 
 
 class SizeStoppingCriterionParameter(IntParameter):
@@ -915,6 +945,7 @@ RULE_LEARNER_PARAMETERS = {
     ParallelRuleRefinementParameter(),
     ParallelStatisticUpdateParameter(),
     ParallelPredictionParameter(),
+    SimdParameter(),
     SizeStoppingCriterionParameter(),
     TimeStoppingCriterionParameter(),
     PostOptimizationParameter(),

@@ -16,10 +16,11 @@ using ArrayDecorator = IndexableViewDecorator<ViewDecorator<Array>>;
 /**
  * An array that provides random read and write access to newly allocated memory.
  *
- * @tparam T The type of the values stored in the array
+ * @tparam T                The type of the values stored in the array
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-class Array : public ArrayDecorator<AllocatedView<T>> {
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+class Array : public ArrayDecorator<AllocatedView<T, MemoryAllocator>> {
     public:
 
         /**
@@ -27,5 +28,5 @@ class Array : public ArrayDecorator<AllocatedView<T>> {
          * @param init          True, if all elements in the array should be value-initialized, false otherwise
          */
         explicit Array(uint32 numElements, bool init = false)
-            : ArrayDecorator<AllocatedView<T>>(AllocatedView<T>(numElements, init)) {}
+            : ArrayDecorator<AllocatedView<T, MemoryAllocator>>(AllocatedView<T, MemoryAllocator>(numElements, init)) {}
 };

@@ -18,6 +18,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
+from mlrl.util.format import format_value
 from mlrl.util.log import Log
 
 
@@ -66,7 +67,7 @@ class IncrementalPredictor(Predictor):
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
-            raise TypeError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
+            raise TypeError(f'Cannot obtain incremental predictions from a model of type {type(learner.__name__)}')
 
         prediction_function = IncrementalPredictionFunction(learner)
         incremental_predictor = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
@@ -85,8 +86,8 @@ class IncrementalPredictor(Predictor):
 
             while incremental_predictor.has_next():
                 Log.info(
-                    f'Predicting for {dataset.num_examples} {dataset_type} examples using a model of size '
-                    f'{current_size}...'
+                    f'Predicting for {format_value(dataset.num_examples)} {dataset_type} examples using a model of '
+                    f'size {format_value(current_size)}...'
                 )
                 start_time = Timer.start()
                 predictions = incremental_predictor.apply_next(next_step_size)

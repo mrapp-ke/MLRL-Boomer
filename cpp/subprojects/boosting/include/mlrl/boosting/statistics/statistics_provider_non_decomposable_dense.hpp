@@ -18,9 +18,11 @@ namespace boosting {
      * provide access to an object of type `INonDecomposableStatistics` using dense data structures for storing the
      * statistics.
      *
-     * @tparam StatisticType The type of the statistics
+     * @tparam StatisticType    The type of the statistics
+     * @tparam MemoryAllocator  the type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseNonDecomposableClassificationStatisticsProviderFactory final
         : public IClassificationStatisticsProviderFactory {
         private:
@@ -87,9 +89,11 @@ namespace boosting {
      * Allows to create instances of the class `IStatisticsProvider` that can be used in regression problems and provide
      * access to an object of type `INonDecomposableStatistics` using dense data structures for storing the statistics.
      *
-     * @tparam StatisticType The type of the statistics
+     * @tparam StatisticType    The type of the statistics
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseNonDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
         private:
 
@@ -157,9 +161,11 @@ namespace boosting {
      * `INonDecomposableStatistics`, which uses dense data structures to store the statistics and can be converted into
      * an object of type `IDecomposableStatistics`.
      *
-     * @tparam StatisticType The type of the statistics
+     * @tparam StatisticType    The type of the statistics
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory final
         : public IClassificationStatisticsProviderFactory {
         private:
@@ -227,9 +233,11 @@ namespace boosting {
      * `INonDecomposableStatistics`, which uses dense data structures to store the statistics and can be converted into
      * an object of type `IDecomposableStatistics`.
      *
-     * @tparam StatisticType The type of the statistics
+     * @tparam StatisticType    The type of the statistics
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory final
         : public IRegressionStatisticsProviderFactory {
         private:

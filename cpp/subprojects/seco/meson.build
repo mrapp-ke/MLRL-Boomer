@@ -2,9 +2,8 @@ project('seco', 'cpp', meson_version : '>=1.1')
 
 # Source files
 source_files = [
-    'src/mlrl/seco/data/matrix_coverage_dense.cpp',
-    'src/mlrl/seco/data/vector_confusion_matrix_dense.cpp',
-    'src/mlrl/seco/data/matrix_statistic_decomposable_dense.cpp',
+    'src/mlrl/seco/data/vector_statistic_decomposable_dense.cpp',
+    'src/mlrl/seco/data/view_statistic_decomposable_sparse.cpp',
     'src/mlrl/seco/heuristics/heuristic_accuracy.cpp',
     'src/mlrl/seco/heuristics/heuristic_f_measure.cpp',
     'src/mlrl/seco/heuristics/heuristic_laplace.cpp',
@@ -21,7 +20,7 @@ source_files = [
     'src/mlrl/seco/rule_evaluation/head_type_single.cpp',
     'src/mlrl/seco/rule_evaluation/rule_evaluation_decomposable_partial.cpp',
     'src/mlrl/seco/rule_evaluation/rule_evaluation_decomposable_single.cpp',
-    'src/mlrl/seco/statistics/statistics_provider_decomposable_dense.cpp',
+    'src/mlrl/seco/statistics/statistics_provider_decomposable_sparse.cpp',
     'src/mlrl/seco/stopping/stopping_criterion_coverage.cpp',
     'src/mlrl/seco/learner_seco_classifier.cpp',
     'src/mlrl/seco/library_info.cpp'
@@ -52,11 +51,13 @@ target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options
 configuration = configuration_data()
+configuration.set10('debug', get_option('buildtype').startswith('debug'))
 configuration.set('mlrlseco_library_name', 'lib' + library_name)
 configuration.set('mlrlseco_library_version', library_version)
 configuration.set('mlrlseco_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', common_project.get_variable('multi_threading_support_enabled'))
 configuration.set10('gpu_support_enabled', common_project.get_variable('gpu_support_enabled'))
+configuration.set10('simd_support_enabled', common_project.get_variable('simd_support_enabled'))
 configure_file(input : 'include/mlrl/seco/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration

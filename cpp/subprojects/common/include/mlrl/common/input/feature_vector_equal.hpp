@@ -22,11 +22,11 @@ class EqualFeatureVector final : public IFeatureVector {
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamlesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override;
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override;
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamlesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override;
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override;
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
                                              uint32 indicatorValue, IWeightedStatistics& statistics) const override;

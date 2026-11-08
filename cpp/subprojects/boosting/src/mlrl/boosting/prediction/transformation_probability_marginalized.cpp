@@ -12,16 +12,15 @@ namespace boosting {
                                                       View<float64>::iterator probabilitiesEnd) const {
         std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
           jointProbabilityFunctionPtr_->transformScoresIntoJointProbabilities(labelVectorSet_, scoresBegin, scoresEnd);
-        DenseVector<float64>::const_iterator jointProbabilityIterator = jointProbabilityVectorPtr->cbegin();
-        uint32 numLabels = probabilitiesEnd - probabilitiesBegin;
-        util::setViewToZeros(probabilitiesBegin, numLabels);
-        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet_.cbegin();
+        auto jointProbabilityIterator = jointProbabilityVectorPtr->cbegin();
+        std::fill(probabilitiesBegin, probabilitiesEnd, 0);
+        auto labelVectorIterator = labelVectorSet_.cbegin();
         uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
             const LabelVector& labelVector = *labelVectorIterator[i];
             uint32 numRelevantLabels = labelVector.getNumElements();
-            LabelVector::const_iterator labelIndexIterator = labelVector.cbegin();
+            auto labelIndexIterator = labelVector.cbegin();
             float64 jointProbability = jointProbabilityIterator[i];
 
             for (uint32 j = 0; j < numRelevantLabels; j++) {

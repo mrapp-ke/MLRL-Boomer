@@ -19,6 +19,7 @@ env:
   SUBPROJECTS: ${{ inputs.subproject }}
   RELEASE: ${{ inputs.release == true }}
   TEST_SUPPORT: disabled
+  SIMD_SUPPORT: disabled
   GPU_SUPPORT: disabled
 jobs:
   build_identifiers:

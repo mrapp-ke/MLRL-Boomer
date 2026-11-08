@@ -33,7 +33,7 @@ namespace seco {
 
             const StatisticVector* totalSumVector_;
 
-            StatisticVector tmpVector_;
+            StatisticVector tmpVector2_;
 
             std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
 
@@ -68,7 +68,7 @@ namespace seco {
                 : AbstractCoverageStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
                                                    RuleEvaluationFactory>(state, weights, outputIndices,
                                                                           ruleEvaluationFactory, subsetSumVector),
-                  totalSumVector_(&totalSumVector), tmpVector_(outputIndices.getNumElements()) {
+                  totalSumVector_(&totalSumVector), tmpVector2_(outputIndices.getNumElements()) {
                 if (excludedStatisticIndices.getNumIndices() > 0) {
                     // Create a vector for storing the total sums of statistics, if necessary...
                     totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*totalSumVector_);
@@ -91,7 +91,7 @@ namespace seco {
                     accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
                 } else {
                     // Add the sums of statistics to the accumulated sums of statistics...
-                    accumulatedSumVectorPtr_->add(this->sumVector_);
+                    accumulatedSumVectorPtr_->add(this->sumVector_.getView());
                 }
 
                 // Reset the sums of statistics to zero...
@@ -102,10 +102,12 @@ namespace seco {
              * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
+                auto& statisticMatrix = *this->state_.statisticMatrixPtr;
+                auto& statisticsCovered = accumulatedSumVectorPtr_->getView();
+                this->tmpVector_.difference(this->subsetSumVector_.getView(), this->outputIndices_, statisticsCovered);
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_,
-                  *accumulatedSumVectorPtr_);
+                  statisticMatrix.majority_label_indices_cbegin(), statisticMatrix.majority_label_indices_cend(),
+                  this->tmpVector_.getView(), statisticsCovered);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
 
@@ -113,11 +115,14 @@ namespace seco {
              * @see `IResettableStatisticsSubset::calculateScoresUncovered`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
-                tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), this->outputIndices_,
-                                      this->sumVector_.cbegin(), this->sumVector_.cend());
+                auto& statisticMatrix = *this->state_.statisticMatrixPtr;
+                this->tmpVector_.difference(totalSumVector_->getView(), this->outputIndices_,
+                                            this->sumVector_.getView());
+                auto& statisticsCovered = this->tmpVector_.getView();
+                tmpVector2_.difference(this->subsetSumVector_.getView(), this->outputIndices_, statisticsCovered);
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_, tmpVector_);
+                  statisticMatrix.majority_label_indices_cbegin(), statisticMatrix.majority_label_indices_cend(),
+                  tmpVector2_.getView(), statisticsCovered);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
 
@@ -125,11 +130,14 @@ namespace seco {
              * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
-                tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), this->outputIndices_,
-                                      accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
+                auto& statisticMatrix = *this->state_.statisticMatrixPtr;
+                this->tmpVector_.difference(totalSumVector_->getView(), this->outputIndices_,
+                                            accumulatedSumVectorPtr_->getView());
+                auto& statisticsCovered = this->tmpVector_.getView();
+                tmpVector2_.difference(this->subsetSumVector_.getView(), this->outputIndices_, statisticsCovered);
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_, tmpVector_);
+                  statisticMatrix.majority_label_indices_cbegin(), statisticMatrix.majority_label_indices_cend(),
+                  tmpVector2_.getView(), statisticsCovered);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
     };

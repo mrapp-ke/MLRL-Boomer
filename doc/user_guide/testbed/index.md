@@ -22,6 +22,28 @@ width: 100%
 ---
 ```
 
+This software package provides **mlrl-testbed - a command line utility for running machine learning experiments**. It implements a *straightforward*, *easily configurable*, and *extensible* workflow for conducting experiments.
+
+```{image} ../../_static/user_guide/testbed/screenshot_light.svg
+---
+align: center
+alt: Log output produced by "mlrl-testbed" when running an experiment
+class: only-light
+width: 75%
+---
+```
+
+```{image} ../../_static/user_guide/testbed/screenshot_dark.svg
+---
+align: center
+alt: Log output produced by "mlrl-testbed" when running an experiment
+class: only-dark
+width: 75%
+---
+```
+
+<p align="center"><em>Log output produced by "mlrl-testbed" when running an experiment.</em></p>
+
 ```{include} README.md
 ---
 start-after: <!-- documentation-start -->

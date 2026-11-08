@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDir
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, OPTION_THOUSANDS_SEPARATORS
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
 from mlrl.util.cli import Argument, BoolArgument
@@ -44,6 +44,7 @@ class TabularDataCharacteristicExtension(Extension):
             OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
             OPTION_DECIMALS,
             OPTION_PERCENTAGE,
+            OPTION_THOUSANDS_SEPARATORS,
         },
     )
 

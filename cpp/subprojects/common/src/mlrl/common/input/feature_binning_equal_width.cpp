@@ -3,7 +3,7 @@
 #include "feature_type_numerical_common.hpp"
 #include "feature_vector_decorator_binned.hpp"
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 #include <utility>
@@ -45,7 +45,7 @@ static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   AllocatedMissingFeatureVector&& missingFeatureVector, const NumericalFeatureVector& numericalFeatureVector,
   uint32 numExamples, float32 binRatio, uint32 minBins, uint32 maxBins) {
-    uint32 numWidths = util::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
+    uint32 numWidths = math::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
 
     if (numWidths > 0) {
         const std::pair<float32, float32> pair = getMinAndMaxFeatureValue(numericalFeatureVector);
@@ -56,8 +56,8 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
         float32 sparseValue = numericalFeatureVector.sparseValue;
         uint32 sparseBinIndex = getBinIndex(sparseValue, min, width, numWidths);
         AllocatedBinnedFeatureVector binnedFeatureVector(numWidths, numElements, sparseBinIndex);
-        AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = binnedFeatureVector.thresholds_begin();
-        AllocatedBinnedFeatureVector::index_iterator indptrIterator = binnedFeatureVector.indptr;
+        auto thresholdIterator = binnedFeatureVector.thresholds_begin();
+        auto indptrIterator = binnedFeatureVector.indptr;
 
         // Iterate all non-sparse feature values and determine the bins they should be assigned to...
         Array<uint32> numExamplesPerBin(numWidths, true);
@@ -109,7 +109,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
                     uint32 numExamplesInCurrentBin = numExamplesPerBin[originalBinIndex];
                     uint32 numRemaining = numExamplesInCurrentBin - 1;
                     numExamplesPerBin[originalBinIndex] = numRemaining;
-                    BinnedFeatureVector::index_iterator indexIterator = binnedFeatureVector.indices_begin(binIndex);
+                    auto indexIterator = binnedFeatureVector.indices_begin(binIndex);
                     indexIterator[numRemaining] = entry.index;
                 }
             }
@@ -157,14 +157,14 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
               createNumericalFeatureVector(featureIndex, featureMatrix);
 
             // Check if all feature values are equal...
-            const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+            const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().featureVector;
             uint32 numElements = numericalFeatureVector.numElements;
 
             if (numElements > 0
                 && !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value)) {
-                return createFeatureVectorInternally(std::move(featureVectorDecoratorPtr->getView().secondView),
-                                                     numericalFeatureVector, featureMatrix.numRows, binRatio_, minBins_,
-                                                     maxBins_);
+                return createFeatureVectorInternally(
+                  std::move(featureVectorDecoratorPtr->getView().missingFeatureVector), numericalFeatureVector,
+                  featureMatrix.numRows, binRatio_, minBins_, maxBins_);
             }
 
             return std::make_unique<EqualFeatureVector>();
@@ -177,7 +177,7 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
               createNumericalFeatureVector(featureIndex, featureMatrix);
 
             // Check if all feature values are equal...
-            NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+            NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().featureVector;
             uint32 numElements = numericalFeatureVector.numElements;
             uint32 numExamples = featureMatrix.numRows;
 
@@ -186,9 +186,9 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
                     || !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value))) {
                 numericalFeatureVector.sparseValue = featureMatrix.sparseValue;
                 numericalFeatureVector.sparse = numElements < numExamples;
-                return createFeatureVectorInternally(std::move(featureVectorDecoratorPtr->getView().secondView),
-                                                     numericalFeatureVector, numExamples, binRatio_, minBins_,
-                                                     maxBins_);
+                return createFeatureVectorInternally(
+                  std::move(featureVectorDecoratorPtr->getView().missingFeatureVector), numericalFeatureVector,
+                  numExamples, binRatio_, minBins_, maxBins_);
             }
 
             return std::make_unique<EqualFeatureVector>();
