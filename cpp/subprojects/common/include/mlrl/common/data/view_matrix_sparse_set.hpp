@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/common/data/view_indexed_lists.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/data/view_matrix_lil.hpp"
 #include "mlrl/common/data/view_vector_sparse_set.hpp"
 
 #include <utility>
@@ -26,7 +26,7 @@ template<typename T>
 class MLRLCOMMON_API SparseSetView : public Matrix {
     private:
 
-        AllocatedListOfLists<IndexedValue<T>> values_;
+        AllocatedIndexedListsView<IndexedValue<T>> values_;
 
         AllocatedCContiguousView<uint32> indices_;
 
@@ -42,7 +42,7 @@ class MLRLCOMMON_API SparseSetView : public Matrix {
          * @param numCols   The number of columns in the view
          */
         SparseSetView(uint32 numRows, uint32 numCols)
-            : Matrix(numRows, numCols), values_(numRows, numCols), indices_(numRows, numCols) {
+            : Matrix(numRows, numCols), values_(numRows), indices_(numRows, numCols) {
             std::fill(indices_.array, indices_.array + (indices_.numRows * indices_.numCols), MAX_INDEX);
         }
 
@@ -57,17 +57,17 @@ class MLRLCOMMON_API SparseSetView : public Matrix {
         /**
          * The type of the values, the view provides access to.
          */
-        using value_type = AllocatedListOfLists<IndexedValue<T>>::value_type;
+        using value_type = AllocatedIndexedListsView<IndexedValue<T>>::value_type;
 
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        using value_const_iterator = AllocatedListOfLists<IndexedValue<T>>::value_const_iterator;
+        using value_const_iterator = AllocatedIndexedListsView<IndexedValue<T>>::value_const_iterator;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        using value_iterator = AllocatedListOfLists<IndexedValue<T>>::value_iterator;
+        using value_iterator = AllocatedIndexedListsView<IndexedValue<T>>::value_iterator;
 
         /**
          * Provides read-only access to an individual row in the view.

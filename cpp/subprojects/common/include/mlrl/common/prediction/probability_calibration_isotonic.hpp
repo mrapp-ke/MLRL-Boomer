@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_matrix_lil.hpp"
+#include "mlrl/common/data/view_indexed_lists.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 
 #include <functional>
@@ -52,7 +52,7 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel : public IMarginalProb
  * A model for the calibration of marginal or joint probabilities via isotonic regression.
  */
 class IsotonicProbabilityCalibrationModel final
-    : public IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<std::pair<float64, float64>>>>,
+    : public ViewDecorator<AllocatedIndexedListsView<std::pair<float64, float64>>>,
       public IIsotonicProbabilityCalibrationModel {
     public:
 
@@ -60,6 +60,32 @@ class IsotonicProbabilityCalibrationModel final
          * @param numLists The total number of lists for storing bins
          */
         IsotonicProbabilityCalibrationModel(uint32 numLists);
+
+        /**
+         * Provides read-only access to the bins that correspond to a specific label.
+         */
+        using const_bin_list = IndexedListsView<std::pair<float64, float64>>::const_list;
+
+        /**
+         * Provides access to the bins that correspond to a specific label and allows to modify them.
+         */
+        using bin_list = IndexedListsView<std::pair<float64, float64>>::list;
+
+        /**
+         * Returns a list that stores the bins that correspond to a specific label.
+         *
+         * @param labelIndex  The index of the label
+         * @return            A `const_bin_list`
+         */
+        const_bin_list operator[](uint32 labelIndex) const;
+
+        /**
+         * Returns a list that stores the bins that correspond to a specific label and allows to modify them.
+         *
+         * @param labelIndex  The index of the label
+         * @return            A `bin_list`
+         */
+        bin_list operator[](uint32 labelIndex);
 
         /**
          * Fits the isotonic calibration model.
