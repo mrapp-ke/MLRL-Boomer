@@ -29,6 +29,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
         self.add_algorithmic_argument('--parallel-prediction', 'false')
         self.add_algorithmic_argument('--parallel-rule-refinement', 'false')
         self.add_algorithmic_argument('--parallel-statistic-update', 'false')
+        self.add_algorithmic_argument('--simd', 'false')
 
     def marginal_probability_calibration(self, probability_calibrator: str | None = PROBABILITY_CALIBRATION_ISOTONIC):
         """

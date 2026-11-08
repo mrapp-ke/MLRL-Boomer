@@ -31,6 +31,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
         self.add_algorithmic_argument('--parallel-prediction', 'false')
         self.add_algorithmic_argument('--parallel-rule-refinement', 'false')
         self.add_algorithmic_argument('--parallel-statistic-update', 'false')
+        self.add_algorithmic_argument('--simd', 'false')
 
     def min_coverage(self, min_coverage: float | None = 0.0):
         """
