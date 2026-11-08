@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
 import inspect
-from sys import platform
+import platform
 
 import numpy as np
 import pytest
@@ -11,6 +11,10 @@ import pytest
 ARGUMENT_NUM_BLOCKS = '--num-blocks'
 
 MAX_BLOCKS = 32
+
+SUPPORTED_TEST_PLATFORMS = {'linux'}
+
+SUPPORTED_TEST_ARCHITECTURES = {'x86_64', 'amd64'}
 
 
 def pytest_addoption(parser):
@@ -31,8 +35,17 @@ def pytest_collection_modifyitems(items):
 
     :param items: The test cases
     """
-    if not platform.startswith('linux'):
-        pytest.skip('Integration tests are only supported on Linux', allow_module_level=True)
+    if not platform.system().lower() in SUPPORTED_TEST_PLATFORMS:
+        pytest.skip(
+            f'Integration tests are only supported on the following platforms: {", ".join(SUPPORTED_TEST_PLATFORMS)}',
+            allow_module_level=True,
+        )
+    if not platform.machine().lower() in SUPPORTED_TEST_ARCHITECTURES:
+        pytest.skip(
+            f'Integration tests are only supported on the following architectures: '
+            f'{", ".join(SUPPORTED_TEST_ARCHITECTURES)}',
+            allow_module_level=True,
+        )
 
     if items:
         num_blocks = items[0].config.getoption(ARGUMENT_NUM_BLOCKS)
