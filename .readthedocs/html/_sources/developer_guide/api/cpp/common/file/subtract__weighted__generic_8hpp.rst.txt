@@ -1,0 +1,5 @@
+File subtract_weighted_generic.hpp
+==================================
+
+.. doxygenfile:: subtract_weighted_generic.hpp
+   :project: common
