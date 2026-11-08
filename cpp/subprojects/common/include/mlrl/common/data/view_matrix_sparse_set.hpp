@@ -12,10 +12,10 @@
 
 /**
  * A two-dimensional view that provides random read and write access, as well as row-wise read and write access via
- * iterators, to values stored in a sparse matrix in the list of lists (LIL) format. Compared to the view
- * `ListOfLists`, the ability to provide random access to the elements in the view comes at the expense of memory
- * efficiency, as it does not only require to maintain a sparse matrix, but also a dense matrix that stores for each
- * element the corresponding position in the sparse matrix, if available.
+ * iterators, to values stored in a sparse matrix in the list of lists (LIL) format. Compared to the view `ListOfLists`,
+ * the ability to provide random access to the elements in the view comes at the expense of memory efficiency, as it
+ * does not only require to maintain a sparse matrix, but also a dense matrix that stores for each element the
+ * corresponding position in the sparse matrix, if available.
  *
  * The data structure that is used for the representation of a single row is often referred to as an "unordered sparse
  * set". It was originally proposed in "An efficient representation for sparse sets", Briggs, Torczon, 1993.
