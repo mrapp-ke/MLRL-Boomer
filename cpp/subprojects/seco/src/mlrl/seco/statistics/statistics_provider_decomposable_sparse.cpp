@@ -15,7 +15,8 @@
 namespace seco {
 
     template<typename IndexIterator>
-    static inline void eraseIfPresent(SparseDecomposableStatisticView::row row, IndexIterator& iterator, uint32 index) {
+    static inline void eraseIfPresent(SparseDecomposableStatisticView::row& row, IndexIterator& iterator,
+                                      uint32 index) {
         auto end = row.end();
 
         while (iterator != end && *iterator < index) {
@@ -28,8 +29,8 @@ namespace seco {
     }
 
     template<typename IndexIterator>
-    static inline void eraseIfPresent(SparseDecomposableStatisticView::row correctIndices,
-                                      SparseDecomposableStatisticView::row incorrectIndices,
+    static inline void eraseIfPresent(SparseDecomposableStatisticView::row& correctIndices,
+                                      SparseDecomposableStatisticView::row& incorrectIndices,
                                       IndexIterator& correctIndicesIterator, IndexIterator& incorrectIndicesIterator,
                                       bool trueLabel, bool prediction, uint32 index) {
         if (trueLabel == prediction) {
@@ -46,8 +47,8 @@ namespace seco {
                                                     View<uint8>::const_iterator predictionIterator, uint32 numIndices) {
         auto groundTruthIterator = labelMatrix.values_cbegin(row);
         auto coverageIterator = coverageMatrix.values_begin(row);
-        auto& correctIndices = statisticView.correct_indices_row(row);
-        auto& incorrectIndices = statisticView.incorrect_indices_row(row);
+        SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(row);
+        SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(row);
         auto correctIndicesIterator = correctIndices.begin();
         auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
@@ -81,8 +82,8 @@ namespace seco {
         auto groundTruthIterator =
           createBinarySparseForwardIterator(labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row));
         auto coverageIterator = coverageMatrix.values_begin(row);
-        auto& correctIndices = statisticView.correct_indices_row(row);
-        auto& incorrectIndices = statisticView.incorrect_indices_row(row);
+        SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(row);
+        SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(row);
         auto correctIndicesIterator = correctIndices.begin();
         auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
@@ -113,7 +114,7 @@ namespace seco {
     }
 
     template<typename IndexIterator>
-    static inline void addIfNotPresent(SparseDecomposableStatisticView::row row, IndexIterator& iterator,
+    static inline void addIfNotPresent(SparseDecomposableStatisticView::row& row, IndexIterator& iterator,
                                        uint32 index) {
         auto end = row.end();
 
@@ -127,8 +128,8 @@ namespace seco {
     }
 
     template<typename IndexIterator>
-    static inline void addIfNotPresent(SparseDecomposableStatisticView::row correctIndices,
-                                       SparseDecomposableStatisticView::row incorrectIndices,
+    static inline void addIfNotPresent(SparseDecomposableStatisticView::row& correctIndices,
+                                       SparseDecomposableStatisticView::row& incorrectIndices,
                                        IndexIterator& correctIndicesIterator, IndexIterator& incorrectIndicesIterator,
                                        bool trueLabel, bool prediction, uint32 index) {
         if (trueLabel == prediction) {
@@ -145,8 +146,8 @@ namespace seco {
                                                     View<uint8>::const_iterator predictionIterator, uint32 numIndices) {
         auto groundTruthIterator = labelMatrix.values_cbegin(row);
         auto coverageIterator = coverageMatrix.values_begin(row);
-        auto& correctIndices = statisticView.correct_indices_row(row);
-        auto& incorrectIndices = statisticView.incorrect_indices_row(row);
+        SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(row);
+        SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(row);
         auto correctIndicesIterator = correctIndices.begin();
         auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
@@ -182,8 +183,8 @@ namespace seco {
         auto groundTruthIterator =
           createBinarySparseForwardIterator(labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row));
         auto coverageIterator = coverageMatrix.values_begin(row);
-        auto& correctIndices = statisticView.correct_indices_row(row);
-        auto& incorrectIndices = statisticView.incorrect_indices_row(row);
+        SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(row);
+        SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(row);
         auto correctIndicesIterator = correctIndices.begin();
         auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
@@ -289,8 +290,8 @@ namespace seco {
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numExamples; i++) {
-            auto& correctIndices = statisticView.correct_indices_row(i);
-            auto& incorrectIndices = statisticView.incorrect_indices_row(i);
+            SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(i);
+            SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(i);
             auto groundTruthIterator = labelMatrix.values_cbegin(i);
             auto majorityIterator =
               createBinarySparseForwardIterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
@@ -318,8 +319,8 @@ namespace seco {
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numExamples; i++) {
-            auto& correctIndices = statisticView.correct_indices_row(i);
-            auto& incorrectIndices = statisticView.incorrect_indices_row(i);
+            SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(i);
+            SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(i);
             auto groundTruthIterator =
               createBinarySparseForwardIterator(labelMatrix.indices_cbegin(i), labelMatrix.indices_cend(i));
             auto majorityIterator =

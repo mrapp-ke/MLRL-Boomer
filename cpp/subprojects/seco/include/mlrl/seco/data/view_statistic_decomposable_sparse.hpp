@@ -37,22 +37,22 @@ namespace seco {
             /**
              * Provides read-only access to an individual row in the view.
              */
-            using const_row = typename ListOfLists<uint32>::const_row;
+            using const_row = typename AllocatedListOfLists<uint32>::const_row;
 
             /**
              * Provides access to an individual row in the view and allows to modify it.
              */
-            using row = typename ListOfLists<uint32>::row;
+            using row = typename AllocatedListOfLists<uint32>::row;
 
             /**
              * An iterator that provides access to the label indices in the view and allows to modify them.
              */
-            using index_iterator = typename ListOfLists<uint32>::value_iterator;
+            using index_iterator = typename AllocatedListOfLists<uint32>::value_iterator;
 
             /**
              * An iterator that provides read-only access to the label indices in the view.
              */
-            using index_const_iterator = typename ListOfLists<uint32>::value_const_iterator;
+            using index_const_iterator = typename AllocatedListOfLists<uint32>::value_const_iterator;
 
             /**
              * Returns an `index_const_iterator` to the beginning of the indices at a specific row that correspond to

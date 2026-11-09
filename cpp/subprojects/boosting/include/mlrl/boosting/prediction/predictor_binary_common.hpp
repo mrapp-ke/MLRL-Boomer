@@ -238,11 +238,11 @@ namespace boosting {
                                 ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                                   .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                                      predictionIndex);
-                                auto& predictionRow = predictionMatrix_[predictionIndex];
+                                auto predictionRow = predictionMatrix_[predictionIndex];
                                 predictionRow.clear();
                                 binaryTransformation_.apply(realMatrix_.values_cbegin(predictionIndex),
                                                             realMatrix_.values_cend(predictionIndex), predictionRow);
-                                return static_cast<uint32>(predictionRow.size());
+                                return static_cast<uint32>(predictionRow.numElements);
                             }
                     };
 
@@ -315,9 +315,9 @@ namespace boosting {
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);
-                        auto& predictionRow = predictionMatrix_[predictionIndex];
+                        auto predictionRow = predictionMatrix_[predictionIndex];
                         binaryTransformation_.apply(realBegin, realEnd, predictionRow);
-                        return static_cast<uint32>(predictionRow.size());
+                        return static_cast<uint32>(predictionRow.numElements);
                     }
             };
 
