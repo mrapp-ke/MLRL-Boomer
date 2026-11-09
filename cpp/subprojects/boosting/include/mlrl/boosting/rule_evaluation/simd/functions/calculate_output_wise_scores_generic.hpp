@@ -54,7 +54,7 @@ namespace boosting {
             uint32 i = 0;
 
             for (; i < batchEnd; i += batchSize) {
-                const batch batchWeights = util::load_simd<batch, const uint32>(weights);
+                const batch batchWeights = util::load_simd<batch, const uint32>(weights + i);
                 batch batchGradients = util::load_simd<batch, const StatisticType>(gradients + i);
                 batch batchHessians = util::load_simd<batch, const StatisticType>(hessians + i);
                 batch l1Weighted = l1Weight * batchWeights;

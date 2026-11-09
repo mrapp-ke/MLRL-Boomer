@@ -3,6 +3,6 @@ command: mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debu
   atp7d --result-dir results --load-models true --model-load-dir models --model-save-dir
   models --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data
   true --save-models true --parallel-prediction false --parallel-rule-refinement false
-  --parallel-statistic-update false
+  --parallel-statistic-update false --simd false
 timestamp: <timestamp>
 version: <version>

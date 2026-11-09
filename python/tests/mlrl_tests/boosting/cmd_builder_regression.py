@@ -24,3 +24,4 @@ class BoomerRegressorCmdBuilder(RegressionCmdBuilder, BoomerCmdBuilderMixin):
         self.add_algorithmic_argument('--parallel-prediction', 'false')
         self.add_algorithmic_argument('--parallel-rule-refinement', 'false')
         self.add_algorithmic_argument('--parallel-statistic-update', 'false')
+        self.add_algorithmic_argument('--simd', 'false')
