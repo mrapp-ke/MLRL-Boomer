@@ -96,7 +96,7 @@ namespace boosting {
     }
 
     static inline void storePrediction(ResizableSparseArrayVector<float64>& tmpVector,
-                                       BinaryLilMatrix::row predictionRow, uint32 numLabels) {
+                                       BinaryLilMatrix::row& predictionRow, uint32 numLabels) {
         uint32 numRelevantLabels = tmpVector.getNumElements();
 
         if (numRelevantLabels > 0) {
@@ -158,9 +158,9 @@ namespace boosting {
 
     void GfmBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
                                         View<float64>::const_iterator scoresEnd,
-                                        BinaryLilMatrix::row predictionRow) const {
-        predictGfm<BinaryLilMatrix::row>(scoresBegin, scoresEnd, predictionRow, *jointProbabilityFunctionPtr_,
-                                         labelVectorSet_, maxLabelCardinality_);
+                                        BinaryLilMatrix::row& predictionRow) const {
+        predictGfm<BinaryLilMatrix::row&>(scoresBegin, scoresEnd, predictionRow, *jointProbabilityFunctionPtr_,
+                                          labelVectorSet_, maxLabelCardinality_);
     }
 
 }

@@ -32,11 +32,11 @@ namespace boosting {
              *
              * @param scoresBegin   An iterator to the beginning of the scores
              * @param scoresEnd     An iterator to the end of the scores
-             * @param predictionRow An object of type `BinaryLilMatrix::row` that should be used to store the binary
-             *                      predictions
+             * @param predictionRow A reference to an object of type `BinaryLilMatrix::row` that should be used to store
+             *                      the binary predictions
              */
             virtual void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
-                               BinaryLilMatrix::row predictionRow) const = 0;
+                               BinaryLilMatrix::row& predictionRow) const = 0;
     };
 
 }
