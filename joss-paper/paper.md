@@ -33,7 +33,7 @@ By default, mlrl-testbed executes a single experiment using a given dataset and 
 * **Read mode:** Allows inspecting the results of previous experiments and saving them to new output files. When viewing results obtained in batch mode, results are automatically aggregated across different experiments.
 * **Run mode:** Allows re-running previously conducted experiments with the option to partly override their configuration. Experiments for which results are already available can be skipped.
 
-Originally developed to support work on the BOOMER algorithm [@rapp2020; @rapp2021], mlrl-testbed has since evolved into a standalone utility for empirical machine learning studies.
+Originally developed to support work on the BOOMER algorithm [@rapp2021a; @rapp2021b], mlrl-testbed has since evolved into a standalone utility for empirical machine learning studies.
 
 # State of the Field
 
