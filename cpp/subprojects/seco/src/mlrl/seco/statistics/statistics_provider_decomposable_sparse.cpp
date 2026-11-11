@@ -14,9 +14,8 @@
 
 namespace seco {
 
-    template<typename IndexIterator>
-    static inline void eraseIfPresent(SparseDecomposableStatisticView::row& row, IndexIterator& iterator,
-                                      uint32 index) {
+    template<typename Row, typename IndexIterator>
+    static inline void eraseIfPresent(Row& row, IndexIterator& iterator, uint32 index) {
         auto end = row.end();
 
         while (iterator != end && *iterator < index) {
@@ -28,11 +27,10 @@ namespace seco {
         }
     }
 
-    template<typename IndexIterator>
-    static inline void eraseIfPresent(SparseDecomposableStatisticView::row& correctIndices,
-                                      SparseDecomposableStatisticView::row& incorrectIndices,
-                                      IndexIterator& correctIndicesIterator, IndexIterator& incorrectIndicesIterator,
-                                      bool trueLabel, bool prediction, uint32 index) {
+    template<typename Row, typename IndexIterator>
+    static inline void eraseIfPresent(Row& correctIndices, Row& incorrectIndices, IndexIterator& correctIndicesIterator,
+                                      IndexIterator& incorrectIndicesIterator, bool trueLabel, bool prediction,
+                                      uint32 index) {
         if (trueLabel == prediction) {
             eraseIfPresent(correctIndices, correctIndicesIterator, index);
         } else {
@@ -40,15 +38,16 @@ namespace seco {
         }
     }
 
-    static inline uint32 increaseCoverageInternally(uint32 row, const CContiguousView<const uint8>& labelMatrix,
-                                                    CContiguousView<uint32>& coverageMatrix,
-                                                    SparseDecomposableStatisticView& statisticView,
-                                                    PartialIndexVector::const_iterator indexIterator,
-                                                    View<uint8>::const_iterator predictionIterator, uint32 numIndices) {
+    template<typename MemoryAllocator>
+    static inline uint32 increaseCoverageInternally(
+      uint32 row, const CContiguousView<const uint8>& labelMatrix, CContiguousView<uint32>& coverageMatrix,
+      AllocatedSparseDecomposableStatisticView<MemoryAllocator>& statisticMatrix,
+      PartialIndexVector::const_iterator indexIterator, View<uint8>::const_iterator predictionIterator,
+      uint32 numIndices) {
         auto groundTruthIterator = labelMatrix.values_cbegin(row);
         auto coverageIterator = coverageMatrix.values_begin(row);
-        SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(row);
-        SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(row);
+        auto correctIndices = statisticMatrix.correct_indices_row(row);
+        auto incorrectIndices = statisticMatrix.incorrect_indices_row(row);
         auto correctIndicesIterator = correctIndices.begin();
         auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
@@ -74,16 +73,17 @@ namespace seco {
         return numModified;
     }
 
-    static inline uint32 increaseCoverageInternally(uint32 row, const BinaryCsrView& labelMatrix,
-                                                    CContiguousView<uint32>& coverageMatrix,
-                                                    SparseDecomposableStatisticView& statisticView,
-                                                    PartialIndexVector::const_iterator indexIterator,
-                                                    View<uint8>::const_iterator predictionIterator, uint32 numIndices) {
+    template<typename MemoryAllocator>
+    static inline uint32 increaseCoverageInternally(
+      uint32 row, const BinaryCsrView& labelMatrix, CContiguousView<uint32>& coverageMatrix,
+      AllocatedSparseDecomposableStatisticView<MemoryAllocator>& statisticMatrix,
+      PartialIndexVector::const_iterator indexIterator, View<uint8>::const_iterator predictionIterator,
+      uint32 numIndices) {
         auto groundTruthIterator =
           createBinarySparseForwardIterator(labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row));
         auto coverageIterator = coverageMatrix.values_begin(row);
-        SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(row);
-        SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(row);
+        auto correctIndices = statisticMatrix.correct_indices_row(row);
+        auto incorrectIndices = statisticMatrix.incorrect_indices_row(row);
         auto correctIndicesIterator = correctIndices.begin();
         auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
@@ -113,9 +113,8 @@ namespace seco {
         return numModified;
     }
 
-    template<typename IndexIterator>
-    static inline void addIfNotPresent(SparseDecomposableStatisticView::row& row, IndexIterator& iterator,
-                                       uint32 index) {
+    template<typename Row, typename IndexIterator>
+    static inline void addIfNotPresent(Row& row, IndexIterator& iterator, uint32 index) {
         auto end = row.end();
 
         while (iterator != end && *iterator < index) {
@@ -127,9 +126,8 @@ namespace seco {
         }
     }
 
-    template<typename IndexIterator>
-    static inline void addIfNotPresent(SparseDecomposableStatisticView::row& correctIndices,
-                                       SparseDecomposableStatisticView::row& incorrectIndices,
+    template<typename Row, typename IndexIterator>
+    static inline void addIfNotPresent(Row& correctIndices, Row& incorrectIndices,
                                        IndexIterator& correctIndicesIterator, IndexIterator& incorrectIndicesIterator,
                                        bool trueLabel, bool prediction, uint32 index) {
         if (trueLabel == prediction) {
@@ -139,15 +137,16 @@ namespace seco {
         }
     }
 
-    static inline uint32 decreaseCoverageInternally(uint32 row, const CContiguousView<const uint8>& labelMatrix,
-                                                    CContiguousView<uint32>& coverageMatrix,
-                                                    SparseDecomposableStatisticView& statisticView,
-                                                    PartialIndexVector::const_iterator indexIterator,
-                                                    View<uint8>::const_iterator predictionIterator, uint32 numIndices) {
+    template<typename MemoryAllocator>
+    static inline uint32 decreaseCoverageInternally(
+      uint32 row, const CContiguousView<const uint8>& labelMatrix, CContiguousView<uint32>& coverageMatrix,
+      AllocatedSparseDecomposableStatisticView<MemoryAllocator>& statisticMatrix,
+      PartialIndexVector::const_iterator indexIterator, View<uint8>::const_iterator predictionIterator,
+      uint32 numIndices) {
         auto groundTruthIterator = labelMatrix.values_cbegin(row);
         auto coverageIterator = coverageMatrix.values_begin(row);
-        SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(row);
-        SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(row);
+        auto correctIndices = statisticMatrix.correct_indices_row(row);
+        auto incorrectIndices = statisticMatrix.incorrect_indices_row(row);
         auto correctIndicesIterator = correctIndices.begin();
         auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
@@ -175,16 +174,17 @@ namespace seco {
         return numModified;
     }
 
-    static inline uint32 decreaseCoverageInternally(uint32 row, const BinaryCsrView& labelMatrix,
-                                                    CContiguousView<uint32>& coverageMatrix,
-                                                    SparseDecomposableStatisticView& statisticView,
-                                                    PartialIndexVector::const_iterator indexIterator,
-                                                    View<uint8>::const_iterator predictionIterator, uint32 numIndices) {
+    template<typename MemoryAllocator>
+    static inline uint32 decreaseCoverageInternally(
+      uint32 row, const BinaryCsrView& labelMatrix, CContiguousView<uint32>& coverageMatrix,
+      AllocatedSparseDecomposableStatisticView<MemoryAllocator>& statisticMatrix,
+      PartialIndexVector::const_iterator indexIterator, View<uint8>::const_iterator predictionIterator,
+      uint32 numIndices) {
         auto groundTruthIterator =
           createBinarySparseForwardIterator(labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row));
         auto coverageIterator = coverageMatrix.values_begin(row);
-        SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(row);
-        SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(row);
+        auto correctIndices = statisticMatrix.correct_indices_row(row);
+        auto incorrectIndices = statisticMatrix.incorrect_indices_row(row);
         auto correctIndicesIterator = correctIndices.begin();
         auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
@@ -216,8 +216,10 @@ namespace seco {
         return numModified;
     }
 
-    static inline uint32 initializeMajorityLabelVector(const CContiguousView<const uint8>& labelMatrix,
-                                                       ResizableBinarySparseArrayVector<>& majorityLabelVector) {
+    template<typename MemoryAllocator>
+    static inline uint32 initializeMajorityLabelVector(
+      const CContiguousView<const uint8>& labelMatrix,
+      ResizableBinarySparseArrayVector<MemoryAllocator>& majorityLabelVector) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         float64 threshold = numExamples / 2.0;
@@ -246,8 +248,9 @@ namespace seco {
         return numUncovered;
     }
 
-    static inline uint32 initializeMajorityLabelVector(const BinaryCsrView& labelMatrix,
-                                                       ResizableBinarySparseArrayVector<>& majorityLabelVector) {
+    template<typename MemoryAllocator>
+    static inline uint32 initializeMajorityLabelVector(
+      const BinaryCsrView& labelMatrix, ResizableBinarySparseArrayVector<MemoryAllocator>& majorityLabelVector) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         auto majorityIterator = majorityLabelVector.begin();
@@ -283,15 +286,17 @@ namespace seco {
         return numUncovered;
     }
 
-    static inline void initializeStatisticMatrix(const CContiguousView<const uint8>& labelMatrix,
-                                                 const ResizableBinarySparseArrayVector<>& majorityLabelVector,
-                                                 SparseDecomposableStatisticView& statisticView) {
+    template<typename MemoryAllocator>
+    static inline void initializeStatisticMatrix(
+      const CContiguousView<const uint8>& labelMatrix,
+      const ResizableBinarySparseArrayVector<MemoryAllocator>& majorityLabelVector,
+      AllocatedSparseDecomposableStatisticView<MemoryAllocator>& statisticMatrix) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numExamples; i++) {
-            SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(i);
-            SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(i);
+            auto correctIndices = statisticMatrix.correct_indices_row(i);
+            auto incorrectIndices = statisticMatrix.incorrect_indices_row(i);
             auto groundTruthIterator = labelMatrix.values_cbegin(i);
             auto majorityIterator =
               createBinarySparseForwardIterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
@@ -312,15 +317,16 @@ namespace seco {
         }
     }
 
-    static inline void initializeStatisticMatrix(const BinaryCsrView& labelMatrix,
-                                                 const ResizableBinarySparseArrayVector<>& majorityLabelVector,
-                                                 SparseDecomposableStatisticView& statisticView) {
+    template<typename MemoryAllocator>
+    static inline void initializeStatisticMatrix(
+      const BinaryCsrView& labelMatrix, const ResizableBinarySparseArrayVector<MemoryAllocator>& majorityLabelVector,
+      AllocatedSparseDecomposableStatisticView<MemoryAllocator>& statisticMatrix) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numExamples; i++) {
-            SparseDecomposableStatisticView::row correctIndices = statisticView.correct_indices_row(i);
-            SparseDecomposableStatisticView::row incorrectIndices = statisticView.incorrect_indices_row(i);
+            auto correctIndices = statisticMatrix.correct_indices_row(i);
+            auto incorrectIndices = statisticMatrix.incorrect_indices_row(i);
             auto groundTruthIterator =
               createBinarySparseForwardIterator(labelMatrix.indices_cbegin(i), labelMatrix.indices_cend(i));
             auto majorityIterator =
@@ -346,16 +352,17 @@ namespace seco {
     /**
      * A matrix that stores confusion matrix elements using a sparse matrix in the list of lists (LIL) format.
      *
-     * @tparam LabelMatrix  The type of the label matrix that provides random or row-wise access to the labels of the
-     *                      training examples
-     * @tparam VectorMath   The type that implements basic operations for calculating with numerical arrays
+     * @tparam LabelMatrix      The type of the label matrix that provides random or row-wise access to the labels of
+     *                          the training examples
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename LabelMatrix, typename VectorMath>
+    template<typename LabelMatrix, typename MemoryAllocator, typename VectorMath>
     class SparseDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<SparseDecomposableStatisticView>> {
+        : public ClearableViewDecorator<MatrixDecorator<AllocatedSparseDecomposableStatisticView<MemoryAllocator>>> {
         private:
 
-            ResizableBinarySparseArrayVector<> majorityLabelVector_;
+            ResizableBinarySparseArrayVector<MemoryAllocator> majorityLabelVector_;
 
             CContiguousMatrix<uint32> coverageMatrix_;
 
@@ -372,8 +379,9 @@ namespace seco {
              *                    row-wise access to the labels of the training examples
              */
             SparseDecomposableStatisticMatrix(const LabelMatrix& labelMatrix)
-                : ClearableViewDecorator<MatrixDecorator<SparseDecomposableStatisticView>>(
-                    SparseDecomposableStatisticView(labelMatrix.numRows, labelMatrix.numCols)),
+                : ClearableViewDecorator<MatrixDecorator<AllocatedSparseDecomposableStatisticView<MemoryAllocator>>>(
+                    AllocatedSparseDecomposableStatisticView<MemoryAllocator>(labelMatrix.numRows,
+                                                                              labelMatrix.numCols)),
                   majorityLabelVector_(labelMatrix.numCols),
                   coverageMatrix_(labelMatrix.numRows, labelMatrix.numCols, true), labelMatrix_(labelMatrix),
                   numTotalUncovered_(initializeMajorityLabelVector(labelMatrix_, majorityLabelVector_)),
@@ -459,24 +467,25 @@ namespace seco {
      */
     template<typename LabelMatrix, typename MemoryAllocator, typename VectorMath>
     class SparseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>,
-                                                IDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<
+            SparseDecomposableStatisticMatrix<LabelMatrix, MemoryAllocator, VectorMath>,
+            IDecomposableRuleEvaluationFactory> {
         private:
 
-            using StatisticMatrix = SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>;
+            using StatisticMatrix = SparseDecomposableStatisticMatrix<LabelMatrix, MemoryAllocator, VectorMath>;
 
             template<typename StatisticType>
             using StatisticVector = DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>;
 
             template<typename WeightVector, typename IndexVector, typename StatisticType>
             using StatisticsSubset = CoverageStatisticsSubset<
-              CoverageStatisticsState<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>>,
+              CoverageStatisticsState<SparseDecomposableStatisticMatrix<LabelMatrix, MemoryAllocator, VectorMath>>,
               StatisticVector<StatisticType>, WeightVector, IndexVector, IDecomposableRuleEvaluationFactory>;
 
             template<typename WeightVector, typename StatisticType>
-            using WeightedStatistics =
-              WeightedStatistics<CoverageStatisticsState<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>>,
-                                 StatisticVector<StatisticType>, WeightVector, IDecomposableRuleEvaluationFactory>;
+            using WeightedStatistics = WeightedStatistics<
+              CoverageStatisticsState<SparseDecomposableStatisticMatrix<LabelMatrix, MemoryAllocator, VectorMath>>,
+              StatisticVector<StatisticType>, WeightVector, IDecomposableRuleEvaluationFactory>;
 
         public:
 
@@ -489,9 +498,11 @@ namespace seco {
              */
             SparseDecomposableStatistics(const LabelMatrix& labelMatrix,
                                          const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractDecomposableStatistics<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>,
-                                                 IDecomposableRuleEvaluationFactory>(
-                    std::make_unique<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>>(labelMatrix),
+                : AbstractDecomposableStatistics<
+                    SparseDecomposableStatisticMatrix<LabelMatrix, MemoryAllocator, VectorMath>,
+                    IDecomposableRuleEvaluationFactory>(
+                    std::make_unique<SparseDecomposableStatisticMatrix<LabelMatrix, MemoryAllocator, VectorMath>>(
+                      labelMatrix),
                     ruleEvaluationFactory) {}
 
             /**
