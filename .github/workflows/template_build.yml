@@ -49,9 +49,9 @@ jobs:
     uses: ./.github/workflows/template_build_linux.yml
     with:
       subproject: ${{ inputs.subproject }}
-      compile: ${{ inputs.linux == true || inputs.compile == true }}
+      arm: ${{ inputs.linux == true || inputs.compile == true }}
       run_cpp_tests: ${{ inputs.run_cpp_tests == true }}
-      run_python_tests: ${{ inputs.run_python_tests == true }}
+      build_wheels: ${{ inputs.run_python_tests == true }}
       python_version: ${{ inputs.python_version }}
       multi_threading_support: ${{ inputs.multi_threading_support }}
       gpu_support: ${{ inputs.gpu_support }}
