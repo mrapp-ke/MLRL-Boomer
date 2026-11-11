@@ -47,29 +47,42 @@ on:
         type: boolean
         default: true
 jobs:
-  linux_build:
-    if: ${{ inputs.skip != true && (inputs.linux == true || inputs.compile == true || inputs.run_cpp_tests == true || inputs.run_python_tests == true) }}
-    name: Test Linux build (${{ inputs.subproject }})
+  test_build:
+    if: ${{ inputs.skip != true && (inputs.run_cpp_tests == true || inputs.run_python_tests == true) }}
+    name: Build test packages (${{ inputs.subproject }})
     uses: ./.github/workflows/template_build_linux.yml
     with:
       subproject: ${{ inputs.subproject }}
-      arm: ${{ inputs.linux == true || inputs.compile == true }}
       run_cpp_tests: ${{ inputs.run_cpp_tests == true }}
       build_wheels: ${{ inputs.run_python_tests == true }}
       python_version: ${{ inputs.python_version }}
       multi_threading_support: ${{ inputs.multi_threading_support }}
       simd_support: ${{ inputs.simd_support }}
+      simd_architecture: sse2
       gpu_support: ${{ inputs.gpu_support }}
       ccache: ${{ inputs.ccache }}
     secrets: inherit
   python_tests:
     if: ${{ inputs.skip != true && inputs.run_python_tests == true }}
-    needs: linux_build
-    name: Test Python packages (${{ inputs.subproject }})
+    needs: test_build
+    name: Run integration tests (${{ inputs.subproject }})
     uses: ./.github/workflows/template_test_python.yml
     with:
       subproject: ${{ inputs.subproject }}
       python_version: ${{ inputs.python_version }}
+    secrets: inherit
+  linux_build:
+    if: ${{ inputs.skip != true && (inputs.linux == true || inputs.compile == true) }}
+    name: Test Linux build (${{ inputs.subproject }})
+    uses: ./.github/workflows/template_build_linux.yml
+    with:
+      subproject: ${{ inputs.subproject }}
+      arm: ${{ inputs.linux == true || inputs.compile == true }}
+      python_version: ${{ inputs.python_version }}
+      multi_threading_support: ${{ inputs.multi_threading_support }}
+      simd_support: ${{ inputs.simd_support }}
+      gpu_support: ${{ inputs.gpu_support }}
+      ccache: ${{ inputs.ccache }}
     secrets: inherit
   macos_build:
     if: ${{ inputs.skip != true && (inputs.macos == true || inputs.compile == true) }}
