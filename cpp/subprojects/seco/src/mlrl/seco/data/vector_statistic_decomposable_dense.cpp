@@ -105,40 +105,47 @@ namespace seco {
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const SparseDecomposableStatisticView& view, uint32 row, StatisticType weight) {
-        VectorMath::addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
-                                        view.correct_indices_cend(row) - view.correct_indices_cbegin(row));
-        VectorMath::addConstantToSubset(this->incorrect_counts_begin(), weight, view.incorrect_indices_cbegin(row),
-                                        view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
+        auto& correctIndices = view.correct_indices_row(row);
+        VectorMath::addConstantToSubset(this->correct_counts_begin(), weight, correctIndices.cbegin(),
+                                        correctIndices.numElements);
+        auto& incorrectIndices = view.incorrect_indices_row(row);
+        VectorMath::addConstantToSubset(this->incorrect_counts_begin(), weight, incorrectIndices.cbegin(),
+                                        incorrectIndices.numElements);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::remove(
       const SparseDecomposableStatisticView& view, uint32 row, StatisticType weight) {
-        VectorMath::subtractConstantFromSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
-                                               view.correct_indices_cend(row) - view.correct_indices_cbegin(row));
-        VectorMath::subtractConstantFromSubset(this->incorrect_counts_begin(), weight,
-                                               view.incorrect_indices_cbegin(row),
-                                               view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
+        auto& correctIndices = view.correct_indices_row(row);
+        VectorMath::subtractConstantFromSubset(this->correct_counts_begin(), weight, correctIndices.cbegin(),
+                                               correctIndices.numElements);
+        auto& incorrectIndices = view.incorrect_indices_row(row);
+        VectorMath::subtractConstantFromSubset(this->incorrect_counts_begin(), weight, incorrectIndices.cbegin(),
+                                               incorrectIndices.numElements);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const SparseDecomposableStatisticView& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
-        VectorMath::addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
-                                        view.correct_indices_cend(row) - view.correct_indices_cbegin(row));
-        VectorMath::addConstantToSubset(this->incorrect_counts_begin(), weight, view.incorrect_indices_cbegin(row),
-                                        view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
+        auto& correctIndices = view.correct_indices_row(row);
+        VectorMath::addConstantToSubset(this->correct_counts_begin(), weight, correctIndices.cbegin(),
+                                        correctIndices.numElements);
+        auto& incorrectIndices = view.incorrect_indices_row(row);
+        VectorMath::addConstantToSubset(this->incorrect_counts_begin(), weight, incorrectIndices.cbegin(),
+                                        incorrectIndices.numElements);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const SparseDecomposableStatisticView& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
-        addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
-                            view.correct_indices_cend(row) - view.correct_indices_cbegin(row), indices);
-        addConstantToSubset(this->incorrect_counts_begin(), weight, view.incorrect_indices_cbegin(row),
-                            view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row), indices);
+        auto& correctIndices = view.correct_indices_row(row);
+        addConstantToSubset(this->correct_counts_begin(), weight, correctIndices.cbegin(), correctIndices.numElements,
+                            indices);
+        auto& incorrectIndices = view.incorrect_indices_row(row);
+        addConstantToSubset(this->incorrect_counts_begin(), weight, incorrectIndices.cbegin(),
+                            incorrectIndices.numElements, indices);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
