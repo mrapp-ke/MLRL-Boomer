@@ -148,6 +148,7 @@ multi_threading_support_enabled = get_option('multi_threading_support').enabled(
 gpu_support_enabled = opencl_dep.found()
 # Note: SIMD support is forced to be disabled on Windows
 simd_support_enabled = xsimd_dep.found() and os != 'windows'
+simd_architecture = get_option('simd_architecture')
 
 configuration = configuration_data()
 configuration.set10('debug', get_option('buildtype').startswith('debug'))
@@ -157,6 +158,7 @@ configuration.set('mlrlcommon_target_architecture', target_architecture + '-' + 
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
 configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configuration.set10('simd_support_enabled', simd_support_enabled)
+configuration.set('simd_architecture', simd_architecture)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # SIMD extensions

@@ -33,6 +33,8 @@ BUILD_OPTIONS = (
     .add(EnvBuildOption('test_support', 'common'))
     .add(EnvBuildOption('multi_threading_support', 'common'))
     .add(EnvBuildOption('gpu_support', 'common'))
+    .add(EnvBuildOption('simd_support', 'common'))
+    .add(EnvBuildOption('simd_architecture', 'common'))
 )
 
 MESON_OPTIONS = ['-D', f'library_version={Project.version(release=True)}']
