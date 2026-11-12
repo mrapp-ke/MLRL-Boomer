@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --save-evaluation true --save-meta-data false --print-evaluation false --save-evaluation false --save-models true --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --print-evaluation false --save-evaluation false --save-meta-data false --save-models true --estimator RandomForestRegressor
 Reading meta-data...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
@@ -15,8 +15,8 @@ Command:
 
 mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>
 --data-dir python/tests/res/data --dataset atp7d --result-dir results --load-models true --model-load-dir models
---model-save-dir models --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true
---save-models true --n-estimators 1 --estimator RandomForestRegressor
+--model-save-dir models --problem-type regression --save-evaluation true --save-meta-data true --save-models true
+--n-estimators 1 --estimator RandomForestRegressor
 
 Using separate training and test sets...
 
