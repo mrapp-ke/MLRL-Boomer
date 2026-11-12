@@ -54,6 +54,14 @@ SIMD support is currently not available on Windows.
 
 The algorithms provided by this project may use [single instruction, multiple data (SIMD)](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) instructions supported by modern CPUs. Support for SIMD instructions is enabled by default when compiled on a system where [xsimd](https://github.com/xtensor-stack/xsimd) is available. At compile time, the usage of SIMD instructions can be controlled explicitly by setting the build option `simd_support` to `enabled` or `disabled`. Alternatively, these values can be provided via the environment variable `SIMD_SUPPORT`.
 
+The build option `simd_architecture`, which is controlled via the environment variable `SIMD_ARCHITECTURE`, allows to restrict compilation to to one specific SIMD architecture. Besides `auto`, which is the default and enables support for all architectures, possible values are the following:
+
+- `neon64`
+- `avx512f`
+- `avx2`
+- `avx`
+- `sse2`
+
 When running the command `mlrl-testbed mlrl.boosting --version` or `mlrl-testbed mlrl.boosting -v`, the resulting output contains information about whether the program was built with SIMD support enabled or not. It also lists the instruction set extensions supported by the CPU for SIMD computations. At runtime, algorithms automatically pick an implementation best suited for the supported extensions.
 
 Information on the support of SIMD instruction can also be retrieved programmatically via the Python or C++ API (see {ref}`python-apidoc` and {ref}`cpp-apidoc`). An example is given below:
