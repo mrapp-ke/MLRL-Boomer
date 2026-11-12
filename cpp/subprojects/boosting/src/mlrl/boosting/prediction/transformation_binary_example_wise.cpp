@@ -26,11 +26,11 @@ namespace boosting {
 
     void ExampleWiseBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
                                                 View<float64>::const_iterator scoresEnd,
-                                                BinaryLilMatrix::row predictionRow) const {
+                                                BinaryLilMatrix::row& predictionRow) const {
         const LabelVector& labelVector =
           distanceMeasurePtr_->getClosestLabelVector(labelVectorSet_, scoresBegin, scoresEnd);
         uint32 numIndices = labelVector.getNumElements();
-        LabelVector::const_iterator indexIterator = labelVector.cbegin();
+        auto indexIterator = labelVector.cbegin();
         predictionRow.reserve(numIndices);
 
         for (uint32 i = 0; i < numIndices; i++) {

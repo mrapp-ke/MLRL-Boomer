@@ -54,6 +54,10 @@ cdef extern from "mlrl/common/library_info.hpp" nogil:
 
     vector[string] getGpuDevices()
 
+    bool isSimdSupportEnabled()
+
+    vector[string] getSupportedSimdExtensions()
+
 
 cdef extern from *:
     """

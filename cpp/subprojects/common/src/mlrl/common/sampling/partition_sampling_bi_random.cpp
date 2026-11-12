@@ -4,6 +4,8 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/util/validation.hpp"
 
+#include <numeric>
+
 /**
  * Allows to randomly split the training examples into two mutually exclusive sets that may be used as a training set
  * and a holdout set.
@@ -29,9 +31,9 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
         IPartition& partition() override {
             uint32 numTraining = partition_.getNumFirst();
             uint32 numHoldout = partition_.getNumSecond();
-            BiPartition::iterator trainingIterator = partition_.first_begin();
-            util::setViewToIncreasingValues(trainingIterator, numTraining, 0, 1);
-            BiPartition::iterator holdoutIterator = partition_.second_begin();
+            auto trainingIterator = partition_.first_begin();
+            std::iota(trainingIterator, partition_.first_end(), 0);
+            auto holdoutIterator = partition_.second_begin();
 
             for (uint32 i = 0; i < numHoldout; i++) {
                 holdoutIterator[i] = numTraining + i;

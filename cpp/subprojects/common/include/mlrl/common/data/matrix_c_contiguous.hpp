@@ -10,10 +10,11 @@
  * A two-dimensional dense matrix that provides row-wise read and write access via iterators to the values stores in a
  * newly allocated C-contiguous matrix.
  *
- * @tparam T The type of the data that is stored in the matrix
+ * @tparam T                The type of the data that is stored in the matrix
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-class CContiguousMatrix final : public DenseMatrixDecorator<AllocatedCContiguousView<T>> {
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+class CContiguousMatrix final : public DenseMatrixDecorator<AllocatedCContiguousView<T, MemoryAllocator>> {
     public:
 
         /**
@@ -22,5 +23,6 @@ class CContiguousMatrix final : public DenseMatrixDecorator<AllocatedCContiguous
          * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
          */
         CContiguousMatrix(uint32 numRows, uint32 numCols, bool init = false)
-            : DenseMatrixDecorator<AllocatedCContiguousView<T>>(AllocatedCContiguousView<T>(numRows, numCols, init)) {}
+            : DenseMatrixDecorator<AllocatedCContiguousView<T, MemoryAllocator>>(
+                AllocatedCContiguousView<T, MemoryAllocator>(numRows, numCols, init)) {}
 };

@@ -38,7 +38,7 @@ namespace boosting {
                        View<uint8>::iterator predictionBegin, View<uint8>::iterator predictionEnd) const override;
 
             void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
-                       BinaryLilMatrix::row predictionRow) const override;
+                       BinaryLilMatrix::row& predictionRow) const override;
     };
 
 }

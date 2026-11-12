@@ -5,12 +5,6 @@ from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfi
 
 cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
-    cdef cppclass INoCoverageStoppingCriterionMixin:
-
-        # Functions:
-
-        void useNoCoverageStoppingCriterion()
-
     cdef cppclass ICoverageStoppingCriterionMixin:
 
         # Functions:

@@ -13,7 +13,7 @@ namespace seco {
 
     /**
      * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of
-     * rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+     * rules as soon as a certain fraction of the available training examples and labels is covered.
      */
     class MLRLSECO_API ICoverageStoppingCriterionConfig {
         public:
@@ -21,40 +21,42 @@ namespace seco {
             virtual ~ICoverageStoppingCriterionConfig() {}
 
             /**
-             * Returns the threshold that is used by the stopping criterion.
+             * Returns the fraction of training examples and labels that must be covered before the induction of rules
+             * is stopped.
              *
-             * @return The threshold that is used by the stopping criterion
+             * @return The fraction that must be covered before the induction of rules is stopped
              */
-            virtual float64 getThreshold() const = 0;
+            virtual float32 getMinCoverage() const = 0;
 
             /**
-             * Sets the threshold that should be used by the stopping criterion.
+             * Sets the fraction of training examples and labels that must be covered before the induction of rules is
+             * stopped.
              *
-             * @param threshold The threshold that should be used by the stopping criterion. The threshold must be at
-             *                  least 0
-             * @return          A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
-             *                  configuration of the stopping criterion
+             * @param minCoverage   The fraction of training examples and labels that must be covered before the
+             *                      induction of rules is stopped. Must be in [0, 1)
+             * @return              A reference to an object of type `ICoverageStoppingCriterionConfig` that allows
+             *                      further configuration of the stopping criterion
              */
-            virtual ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) = 0;
+            virtual ICoverageStoppingCriterionConfig& setMinCoverage(float32 minCoverage) = 0;
     };
 
     /**
-     * Allows to configure a stopping criterion that stops the induction of rules as soon as the sum of the weights of
-     * the uncovered labels is smaller or equal to a certain threshold.
+     * Allows to configure a stopping criterion that stops the induction of rules as soon as a certain fraction of the
+     * available training examples and labels is covered.
      */
     class CoverageStoppingCriterionConfig final : public IStoppingCriterionConfig,
                                                   public ICoverageStoppingCriterionConfig {
         private:
 
-            float64 threshold_;
+            float32 minCoverage_;
 
         public:
 
             CoverageStoppingCriterionConfig();
 
-            float64 getThreshold() const override;
+            float32 getMinCoverage() const override;
 
-            ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) override;
+            ICoverageStoppingCriterionConfig& setMinCoverage(float32 minCoverage) override;
 
             /**
              * @see `IStoppingCriterionConfig::createStoppingCriterionFactory`

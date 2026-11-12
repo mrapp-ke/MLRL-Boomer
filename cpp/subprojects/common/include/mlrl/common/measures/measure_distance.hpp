@@ -47,8 +47,8 @@ class IDistanceMeasure {
         virtual const LabelVector& getClosestLabelVector(const LabelVectorSet& labelVectorSet,
                                                          typename View<ScoreType>::const_iterator scoresBegin,
                                                          typename View<ScoreType>::const_iterator scoresEnd) const {
-            LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
-            LabelVectorSet::frequency_const_iterator frequencyIterator = labelVectorSet.frequencies_cbegin();
+            auto labelVectorIterator = labelVectorSet.cbegin();
+            auto frequencyIterator = labelVectorSet.frequencies_cbegin();
             uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
             const LabelVector* closestLabelVector = labelVectorIterator[0].get();
             uint32 maxFrequency = frequencyIterator[0];

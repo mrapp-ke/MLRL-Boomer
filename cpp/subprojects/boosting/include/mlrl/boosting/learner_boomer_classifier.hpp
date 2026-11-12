@@ -73,6 +73,7 @@ namespace boosting {
                             virtual public IParallelRuleRefinementMixin,
                             virtual public IParallelStatisticUpdateMixin,
                             virtual public IParallelPredictionMixin,
+                            virtual public ISimdMixin,
                             virtual public ISizeStoppingCriterionMixin,
                             virtual public ITimeStoppingCriterionMixin,
                             virtual public IPrePruningMixin,

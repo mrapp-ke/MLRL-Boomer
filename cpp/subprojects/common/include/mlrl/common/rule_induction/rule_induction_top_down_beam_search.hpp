@@ -108,6 +108,22 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionConfig {
         virtual IBeamSearchTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) = 0;
 
         /**
+         * Returns whether refinements with nominal conditions that use negation are allowed, or not.
+         *
+         * @return True, if refinements with nominal conditions that use negation are allowed, false otherwise
+         */
+        virtual bool areNegationsAllowed() const = 0;
+
+        /**
+         * Sets whether refinements with nominal conditions that use negation should be allowed, or not.
+         *
+         * @param allowNegations    True, if negation should be allowed, false otherwise
+         * @return                  A reference to an object of type `IBeamSearchTopDownRuleInductionConfig` that allows
+         *                          further configuration of the algorithm for the induction of individual rules
+         */
+        virtual IBeamSearchTopDownRuleInductionConfig& setNegationsAllowed(bool allowNegations) = 0;
+
+        /**
          * Returns the maximum number of times, the head of a rule may be refinement after a new condition has been
          * added to its body.
          *
@@ -168,6 +184,8 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         uint32 maxConditions_;
 
+        bool allowNegations_;
+
         uint32 maxHeadRefinements_;
 
         bool recalculatePredictions_;
@@ -216,6 +234,10 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
         uint32 getMaxConditions() const override;
 
         IBeamSearchTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) override;
+
+        bool areNegationsAllowed() const override;
+
+        IBeamSearchTopDownRuleInductionConfig& setNegationsAllowed(bool allowNegations) override;
 
         uint32 getMaxHeadRefinements() const override;
 

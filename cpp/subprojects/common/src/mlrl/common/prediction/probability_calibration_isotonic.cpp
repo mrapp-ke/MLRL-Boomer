@@ -1,9 +1,11 @@
 #include "mlrl/common/prediction/probability_calibration_isotonic.hpp"
 
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
-static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<float64, float64>>::row bins) {
+#include <numeric>
+
+static inline void sortByThresholdsAndEliminateDuplicates(IndexedListsView<std::pair<float64, float64>>::list bins) {
     // Sort bins in increasing order by their threshold...
     std::sort(bins.begin(), bins.end(),
               [=](const std::pair<float64, float64>& lhs, const std::pair<float64, float64>& rhs) {
@@ -21,7 +23,7 @@ static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<
 
         if (isEqual(currentBin.first, previousBin.first)) {
             uint32 numAggregated = j - previousIndex + 1;
-            previousBin.second = util::iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
+            previousBin.second = math::iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
         } else {
             bins[n] = previousBin;
             n++;
@@ -35,14 +37,14 @@ static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<
     bins.resize(n);
 }
 
-static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, float64>>::row bins) {
+static inline void aggregateNonIncreasingBins(IndexedListsView<std::pair<float64, float64>>::list bins) {
     // We apply the "pool adjacent violators algorithm" (PAVA) to merge adjacent bins with non-increasing
     // probabilities. A temporary array `pools` is used to mark the beginning and end of subsequences with
     // non-increasing probabilities. If such a subsequence was found in range [i, j] then `pools[i] = j` and
     // `pools[j] = i`...
     uint32 numBins = static_cast<uint32>(bins.size());
     Array<uint32> pools(numBins);
-    util::setViewToIncreasingValues(pools.begin(), numBins, 0, 1);
+    std::iota(pools.begin(), pools.begin() + numBins, 0);
     uint32 i = 0;
     uint32 j = 0;
 
@@ -60,7 +62,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
             // average the probabilities of all bins within the non-increasing subsequence...
             uint32 numBinsInSubsequence = 2;
             previousBin.second =
-              util::iterativeArithmeticMean(numBinsInSubsequence, currentBin.second, previousBin.second);
+              math::iterativeArithmeticMean(numBinsInSubsequence, currentBin.second, previousBin.second);
 
             // Search for the end of the non-increasing subsequence...
             while ((j = pools[j] + 1) < numBins) {
@@ -73,7 +75,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
                     // We are still within the non-increasing subsequence...
                     numBinsInSubsequence++;
                     previousBin.second =
-                      util::iterativeArithmeticMean(numBinsInSubsequence, nextBin.second, previousBin.second);
+                      math::iterativeArithmeticMean(numBinsInSubsequence, nextBin.second, previousBin.second);
                     currentBin = nextBin;
                 }
             }
@@ -102,12 +104,12 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
     bins.shrink_to_fit();
 }
 
-static inline float64 calibrateProbability(ListOfLists<std::pair<float64, float64>>::const_row bins,
+static inline float64 calibrateProbability(IndexedListsView<std::pair<float64, float64>>::const_list bins,
                                            float64 probability) {
     // Find the bins that impose a lower and upper bound on the probability...
-    ListOfLists<std::pair<float64, float64>>::value_const_iterator begin = bins.cbegin();
-    ListOfLists<std::pair<float64, float64>>::value_const_iterator end = bins.cend();
-    ListOfLists<std::pair<float64, float64>>::value_const_iterator it =
+    auto begin = bins.cbegin();
+    auto end = bins.cend();
+    auto it =
       std::lower_bound(begin, end, probability, [=](const std::pair<float64, float64>& lhs, const float64& rhs) {
         return lhs.first < rhs;
     });
@@ -136,14 +138,23 @@ static inline float64 calibrateProbability(ListOfLists<std::pair<float64, float6
 }
 
 IsotonicProbabilityCalibrationModel::IsotonicProbabilityCalibrationModel(uint32 numLists)
-    : IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<std::pair<float64, float64>>>>(
-        AllocatedListOfLists<std::pair<float64, float64>>(numLists, 0)) {}
+    : ViewDecorator<AllocatedIndexedListsView<std::pair<float64, float64>>>(
+        AllocatedIndexedListsView<std::pair<float64, float64>>(numLists)) {}
+
+IsotonicProbabilityCalibrationModel::const_bin_list IsotonicProbabilityCalibrationModel::operator[](
+  uint32 labelIndex) const {
+    return this->getView()[labelIndex];
+}
+
+IsotonicProbabilityCalibrationModel::bin_list IsotonicProbabilityCalibrationModel::operator[](uint32 labelIndex) {
+    return this->getView()[labelIndex];
+}
 
 void IsotonicProbabilityCalibrationModel::fit() {
     uint32 numLists = this->getNumBinLists();
 
     for (uint32 i = 0; i < numLists; i++) {
-        row bins = (*this)[i];
+        auto& bins = this->getView()[i];
         sortByThresholdsAndEliminateDuplicates(bins);
         aggregateNonIncreasingBins(bins);
     }
@@ -151,28 +162,27 @@ void IsotonicProbabilityCalibrationModel::fit() {
 
 float64 IsotonicProbabilityCalibrationModel::calibrateMarginalProbability(uint32 labelIndex,
                                                                           float64 marginalProbability) const {
-    return calibrateProbability((*this)[labelIndex], marginalProbability);
+    return calibrateProbability(this->getView()[labelIndex], marginalProbability);
 }
 
 float64 IsotonicProbabilityCalibrationModel::calibrateJointProbability(uint32 labelVectorIndex,
                                                                        float64 jointProbability) const {
-    return calibrateProbability((*this)[labelVectorIndex], jointProbability);
+    return calibrateProbability(this->getView()[labelVectorIndex], jointProbability);
 }
 
 uint32 IsotonicProbabilityCalibrationModel::getNumBinLists() const {
-    return this->view.numRows;
+    return this->view.numLists;
 }
 
 void IsotonicProbabilityCalibrationModel::addBin(uint32 listIndex, float64 threshold, float64 probability) {
-    row row = (*this)[listIndex];
-    row.emplace_back(threshold, probability);
+    this->getView()[listIndex].emplace_back(threshold, probability);
 }
 
 void IsotonicProbabilityCalibrationModel::visit(BinVisitor visitor) const {
     uint32 numLists = this->getNumBinLists();
 
     for (uint32 i = 0; i < numLists; i++) {
-        const_row bins = (*this)[i];
+        auto& bins = this->getView()[i];
 
         for (auto it = bins.cbegin(); it != bins.cend(); it++) {
             const std::pair<float64, float64>& bin = *it;

@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/common/data/view.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
+#include <algorithm>
 #include <utility>
 
 /**
@@ -30,7 +30,15 @@ class MLRLCOMMON_API Vector : public View<T> {
                  * @return  The hash value
                  */
                 inline std::size_t operator()(const Vector<T>& v) const {
-                    return util::hashView(v.cbegin(), v.numElements);
+                    typename Vector<T>::const_iterator iterator = v.cbegin();
+                    uint32 numElements = v.numElements;
+                    std::size_t hashValue = (std::size_t) numElements;
+
+                    for (uint32 i = 0; i < numElements; i++) {
+                        hashValue ^= iterator[i] + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
+                    }
+
+                    return hashValue;
                 }
         };
 
@@ -48,9 +56,27 @@ class MLRLCOMMON_API Vector : public View<T> {
                  * @return      True, if the given objects are equal, false otherwise
                  */
                 inline bool operator()(const Vector<T>& lhs, const Vector<T>& rhs) const {
-                    return util::compareViews(lhs.cbegin(), lhs.numElements, rhs.cbegin(), rhs.numElements);
+                    uint32 numFirst = lhs.numElements;
+                    uint32 numSecond = rhs.numElements;
+
+                    if (numFirst != numSecond) {
+                        return false;
+                    }
+
+                    typename Vector<T>::const_iterator firstIterator = lhs.cbegin();
+                    typename Vector<T>::const_iterator secondIterator = rhs.cbegin();
+
+                    for (uint32 i = 0; i < numFirst; i++) {
+                        if (!isEqual(firstIterator[i], secondIterator[i])) {
+                            return false;
+                        }
+                    }
+
+                    return true;
                 }
         };
+
+    public:
 
         /**
          * The number of elements in the view.
@@ -58,29 +84,34 @@ class MLRLCOMMON_API Vector : public View<T> {
         uint32 numElements;
 
         /**
-         * @param array         A pointer to an array of template type `T` that stores the values, the view should
-         *                      provide access to
-         * @param dimensions    The number of elements in each dimension of the view
+         * The number of elements in the view plus the number of elements added to the vector to ensure aligned memory
+         * access when using SIMD operations.
          */
-        Vector(T* array, std::initializer_list<uint32> dimensions)
-            : View<T>(array), numElements(dimensions.begin()[0]) {}
+        uint32 numElementsWithPadding;
 
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
          * @param numElements   The number of elements in the view
+         * @param padding       The number of elements added to the vector to ensure aligned memory access when using
+         *                      SIMD operations
          */
-        Vector(T* array, uint32 numElements) : View<T>(array), numElements(numElements) {}
+        Vector(T* array, uint32 numElements, uint32 padding = 0)
+            : View<T>(array, numElements, padding), numElements(numElements),
+              numElementsWithPadding(numElements + padding) {}
 
         /**
          * @param other A const reference to an object of type `Vector` that should be copied
          */
-        Vector(const Vector<T>& other) : View<T>(other), numElements(other.numElements) {}
+        Vector(const Vector<T>& other)
+            : View<T>(other), numElements(other.numElements), numElementsWithPadding(other.numElementsWithPadding) {}
 
         /**
          * @param other A reference to an object of type `Vector` that should be moved
          */
-        Vector(Vector<T>&& other) : View<T>(std::move(other)), numElements(other.numElements) {}
+        Vector(Vector<T>&& other)
+            : View<T>(std::move(other)), numElements(other.numElements),
+              numElementsWithPadding(other.numElementsWithPadding) {}
 
         virtual ~Vector() override {}
 
@@ -90,7 +121,7 @@ class MLRLCOMMON_API Vector : public View<T> {
          * @return A `const_iterator` to the end
          */
         typename View<T>::const_iterator cend() const {
-            return &BaseView<T>::array[numElements];
+            return &View<T>::array[numElementsWithPadding];
         }
 
         /**
@@ -99,32 +130,101 @@ class MLRLCOMMON_API Vector : public View<T> {
          * @return An `iterator` to the end
          */
         typename View<T>::iterator end() {
-            return &BaseView<T>::array[numElements];
+            return &View<T>::array[numElementsWithPadding];
         }
 
         /**
          * Sets all values stored in the view to zero.
          */
         void clear() {
-            util::setViewToZeros(BaseView<T>::array, numElements);
+            std::fill(this->begin(), this->end(), (T) 0);
         }
 };
 
 /**
  * Allocates the memory, a `Vector` provides access to.
  *
- * @tparam T The type of the values stored in the `Vector`
+ * @tparam T                The type of the values stored in the `Vector`
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-using AllocatedVector = Allocator<Vector<T>>;
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+using AllocatedVector = Allocator<Vector<T>, MemoryAllocator>;
 
 /**
  * Allocates the memory, a `Vector` provides access to, and allows to resize it afterwards.
  *
- * @tparam T The type of the values stored in the `Vector`
+ * @tparam View             The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-using ResizableVector = ResizableAllocator<Vector<T>>;
+template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator> {
+    public:
+
+        /**
+         * The maximum number of elements in the view.
+         */
+        uint32 maxCapacity;
+
+        /**
+         * @param numElements   The number of elements in the view
+         * @param init          True, if all elements in the view should be value-initialized, false otherwise
+         */
+        explicit ResizableAllocator(uint32 numElements, bool init = false)
+            : Allocator<View, MemoryAllocator>(numElements, init), maxCapacity(numElements) {}
+
+        /**
+         * @param other A reference to an object of type `ResizableAllocator` that should be copied
+         */
+        ResizableAllocator(const ResizableAllocator<View, MemoryAllocator>& other) = delete;
+
+        /**
+         * @param other A reference to an object of type `ResizableAllocator` that should be moved
+         */
+        ResizableAllocator(ResizableAllocator<View, MemoryAllocator>&& other)
+            : Allocator<View, MemoryAllocator>(std::move(other)), maxCapacity(other.maxCapacity) {}
+
+        virtual ~ResizableAllocator() override {}
+
+        /**
+         * Resizes the view by re-allocating the memory it provides access to.
+         *
+         * @param numElements   The number of elements to which the view should be resized
+         * @param freeMemory    True, if unused memory should be freed, false otherwise
+         */
+        void resize(uint32 numElements, bool freeMemory) {
+            if (View::numElements != numElements) {
+                const uint32 newPadding = MemoryAllocator::template getPadding<typename View::value_type>(numElements);
+
+                if (numElements < maxCapacity) {
+                    if (freeMemory) {
+                        View::array = MemoryAllocator::reallocateMemory(
+                          View::array,
+                          maxCapacity + MemoryAllocator::template getPadding<typename View::value_type>(maxCapacity),
+                          numElements + newPadding);
+                        maxCapacity = numElements;
+                    }
+                } else if (numElements > maxCapacity) {
+                    View::array = MemoryAllocator::reallocateMemory(
+                      View::array,
+                      maxCapacity + MemoryAllocator::template getPadding<typename View::value_type>(maxCapacity),
+                      numElements + newPadding);
+                    maxCapacity = numElements;
+                }
+
+                View::numElements = numElements;
+                View::numElementsWithPadding = numElements + newPadding;
+            }
+        }
+};
+
+/**
+ * Allocates the memory, a `Vector` provides access to, and allows to resize it afterwards.
+ *
+ * @tparam T                The type of the values stored in the `Vector`
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
+ */
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+using ResizableVector = ResizableAllocator<Vector<T>, MemoryAllocator>;
 
 /**
  * A vector that is backed by a one-dimensional view of a specific size.

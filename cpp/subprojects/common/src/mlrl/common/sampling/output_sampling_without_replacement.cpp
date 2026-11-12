@@ -3,7 +3,7 @@
 #include "index_sampling.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/iterator/iterator_index.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 /**
@@ -104,7 +104,7 @@ IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig:
 std::unique_ptr<IOutputSamplingFactory> OutputSamplingWithoutReplacementConfig::createOutputSamplingFactory(
   const IOutputMatrix& outputMatrix) const {
     uint32 numOutputs = outputMatrix.getNumOutputs();
-    uint32 numSamples = util::calculateBoundedFraction(numOutputs, sampleSize_, minSamples_, maxSamples_);
+    uint32 numSamples = math::calculateBoundedFraction(numOutputs, sampleSize_, minSamples_, maxSamples_);
     return std::make_unique<OutputSamplingWithoutReplacementFactory>(rngConfig_.get().createRNGFactory(),
                                                                      outputMatrix.getNumOutputs(), numSamples);
 }

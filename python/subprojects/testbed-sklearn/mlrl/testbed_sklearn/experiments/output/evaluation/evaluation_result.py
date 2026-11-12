@@ -7,13 +7,15 @@ Provides classes for representing evaluation results that are part of output dat
 from itertools import tee
 from typing import Any, override
 
+from rich.console import ConsoleRenderable
+
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult, EvaluationResult
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
-from mlrl.testbed.experiments.table import RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, get_format_kwargs
 from mlrl.util.options import Options
 
 
@@ -102,7 +104,7 @@ class TabularEvaluationResult(EvaluationResult):
         return str(header).rstrip('(↑)').rstrip('(↓)').rstrip()
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -138,11 +140,13 @@ class TabularEvaluationResult(EvaluationResult):
                     new_row.append(first_row[column_index])
 
                     if fold is None:
-                        new_row.append('±' + first_row[column_index + 1])
+                        new_row.append(f'±{first_row[column_index + 1]}')
 
                 rotated_table.add_row(*new_row)
 
-            return rotated_table.sort_by_columns(0).format()
+            return rotated_table.sort_by_columns(0).to_rich_table(
+                column_styles=[Column.Style.HEADER, Column.Style.VALUE, Column.Style.VALUE_SECONDARY]
+            )
 
         return None
 
@@ -151,8 +155,6 @@ class TabularEvaluationResult(EvaluationResult):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
-        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
         enable_all = options.get_bool(
             AggregatedEvaluationResult.OPTION_ENABLE_ALL, kwargs.get(AggregatedEvaluationResult.OPTION_ENABLE_ALL, True)
         )
@@ -161,7 +163,8 @@ class TabularEvaluationResult(EvaluationResult):
         headers, measures = tee(
             filter(lambda measure: options.get_bool(measure.option_key, enable_all), dictionary.keys())
         )
-        values = (measure.format(dictionary[measure], percentage=percentage, decimals=decimals) for measure in measures)
+        format_kwargs = get_format_kwargs(options, **(dict(kwargs) | {OPTION_PERCENTAGE: True}))
+        values = (measure.format(dictionary[measure], **format_kwargs) for measure in measures)
         return RowWiseTable(*headers).add_row(*values)
 
 

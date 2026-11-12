@@ -14,8 +14,9 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
      *                          predictions should be calculated
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename MemoryAllocator>
     class DenseNonDecomposableFixedPartialRuleEvaluation final
         : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
@@ -26,7 +27,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector, MemoryAllocator> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -70,18 +71,16 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVector_.getNumElements();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                  statisticVector.hessians_diagonal_cbegin();
-                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_diagonal_cbegin();
+                auto tmpIterator = tmpVector_.begin();
                 sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
                                        l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
-                PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
-                typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
+                auto indexIterator = indexVector_.begin();
+                auto valueIterator = scoreVector_.values_begin();
+                auto outputIndexIterator = outputIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     const IndexedValue<statistic_type>& entry = tmpIterator[i];
@@ -111,60 +110,70 @@ namespace boosting {
                 quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,
                                                        l2RegularizationWeight_);
 
-                scoreVector_.quality = quality;
+                scoreVector_.setQuality(quality);
                 return scoreVector_;
             }
     };
 
-    NonDecomposableFixedPartialRuleEvaluationFactory::NonDecomposableFixedPartialRuleEvaluationFactory(
+    template<typename MemoryAllocator>
+    NonDecomposableFixedPartialRuleEvaluationFactory<MemoryAllocator>::NonDecomposableFixedPartialRuleEvaluationFactory(
       float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float32 l1RegularizationWeight,
       float32 l2RegularizationWeight, const BlasFactory& blasFactory, const LapackFactory& lapackFactory)
         : outputRatio_(outputRatio), minOutputs_(minOutputs), maxOutputs_(maxOutputs),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           blasFactory_(blasFactory), lapackFactory_(lapackFactory) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
-      NonDecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+    template<typename MemoryAllocator>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>>
+      NonDecomposableFixedPartialRuleEvaluationFactory<MemoryAllocator>::create(
+        const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<
-          DenseNonDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float32>, CompleteIndexVector, MemoryAllocator>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
           lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
-      NonDecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+    template<typename MemoryAllocator>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>>
+      NonDecomposableFixedPartialRuleEvaluationFactory<MemoryAllocator>::create(
+        const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float32>, PartialIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
+          DenseNonDecomposableStatisticVectorView<float32>, PartialIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
           lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
-      NonDecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+    template<typename MemoryAllocator>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>>
+      NonDecomposableFixedPartialRuleEvaluationFactory<MemoryAllocator>::create(
+        const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<
-          DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float64>, CompleteIndexVector, MemoryAllocator>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
           lapackFactory_.create64Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
-      NonDecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+    template<typename MemoryAllocator>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>>
+      NonDecomposableFixedPartialRuleEvaluationFactory<MemoryAllocator>::create(
+        const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
+          DenseNonDecomposableStatisticVectorView<float64>, PartialIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
           lapackFactory_.create64Bit());
     }
 
+    template class NonDecomposableFixedPartialRuleEvaluationFactory<DefaultMemoryAllocator>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class NonDecomposableFixedPartialRuleEvaluationFactory<SimdMemoryAllocator>;
+#endif
 }

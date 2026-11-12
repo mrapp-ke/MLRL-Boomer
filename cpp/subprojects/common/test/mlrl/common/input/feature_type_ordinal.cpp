@@ -12,7 +12,7 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromFortranContiguousView
     // Initialize feature matrix...
     uint32 numExamples = 8;
     AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
-    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
+    auto features = featureView.values_begin(0);
     features[0] = 1.0;
     features[1] = 0.0;
     features[2] = NAN;
@@ -33,17 +33,17 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromFortranContiguousView
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
-        OrdinalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
+        auto valueIterator = featureVector.values_cbegin();
         EXPECT_EQ(valueIterator[0], (int32) -1);
         EXPECT_EQ(valueIterator[1], (int32) 1);
 
@@ -72,7 +72,7 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
     // Initialize feature matrix...
     uint32 numExamples = 7;
     AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
-    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
+    auto features = featureView.values_begin(0);
     features[0] = 1.0;
     features[1] = 0.0;
     features[2] = NAN;
@@ -92,12 +92,12 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
@@ -122,7 +122,7 @@ TEST(OrdinalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView) 
     // Initialize feature matrix...
     uint32 numExamples = 2;
     AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
-    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
+    auto features = featureView.values_begin(0);
     features[0] = 0.0;
     features[1] = 0.0;
     FortranContiguousView<const float32> view(features, numExamples, 1);
@@ -171,17 +171,17 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromDenseCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
-        OrdinalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
+        auto valueIterator = featureVector.values_cbegin();
         EXPECT_EQ(valueIterator[0], (int32) -1);
         EXPECT_EQ(valueIterator[1], (int32) 1);
 
@@ -244,12 +244,12 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromDenseCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
@@ -330,17 +330,17 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
-        OrdinalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
+        auto valueIterator = featureVector.values_cbegin();
         EXPECT_EQ(valueIterator[0], (int32) -1);
         EXPECT_EQ(valueIterator[1], (int32) 1);
 
@@ -397,12 +397,12 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 1);
 

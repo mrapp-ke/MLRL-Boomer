@@ -197,6 +197,18 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IManualMultiThreadingConfig& useParallelPrediction()
 
+    cdef cppclass INoSimdMixin:
+
+        # Functions:
+
+        void useNoSimdOperations()
+
+    cdef cppclass ISimdMixin:
+
+        # Functions:
+
+        void useSimdOperations()
+
     cdef cppclass INoSizeStoppingCriterionMixin:
 
         # Functions:
