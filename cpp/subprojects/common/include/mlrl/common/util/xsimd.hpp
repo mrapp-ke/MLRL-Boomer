@@ -68,7 +68,7 @@ namespace util {
         }
     #endif
 
-        return batch::load_unaligned(array);
+        return batch::load_aligned(array);
     }
 #endif
 
