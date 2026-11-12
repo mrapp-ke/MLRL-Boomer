@@ -49,7 +49,7 @@ child-commands:
   --save-all true --save-evaluation true --save-meta-data false
 command: mlrl-testbed mlrl.testbed_sklearn --mode batch --log-level debug --base-dir
   python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/regression/batch_config.yml
-  --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data
-  true --save-all true --n-estimators 1 --estimator RandomForestRegressor
+  --problem-type regression --save-all true --save-evaluation true --save-meta-data
+  true --n-estimators 1 --estimator RandomForestRegressor
 timestamp: <timestamp>
 version: <version>

@@ -28,6 +28,25 @@ class CmdBuilder:
 
     RERUN_DIR = Path('rerun')
 
+    @staticmethod
+    def __get_args(args: dict[str, Any | None]) -> list[str]:
+        result: list[str] = []
+
+        for arg in sorted(args.keys()):
+            result.append(arg)
+            value = args[arg]
+
+            if value is not None:
+                result.append(str(value))
+
+        return result
+
+    def __get_control_args(self) -> list[str]:
+        return self.__get_args(self.control_args)
+
+    def __get_algorithmic_args(self) -> list[str]:
+        return self.__get_args(self.algorithmic_args)
+
     def __init__(
         self,
         expected_output_dir: Path,
@@ -60,8 +79,8 @@ class CmdBuilder:
         self.model_load_dir: Path | None = None
         self.num_folds = 0
         self.current_fold = None
-        self.control_args: list[str] = []
-        self.algorithmic_args: list[str] = []
+        self.control_args: dict[str, str | None] = {}
+        self.algorithmic_args: dict[str, str | None] = {}
         self.problem_type: str | None = None
         self.save_evaluation(True)
         self.save_meta_data(False)
@@ -180,10 +199,10 @@ class CmdBuilder:
         if self.problem_type and not rerun:
             args.extend(('--problem-type', self.problem_type))
 
-        args.extend(self.control_args)
+        args.extend(self.__get_control_args())
 
         if self.mode not in {ExperimentMode.RUN, ExperimentMode.READ}:
-            args.extend(self.algorithmic_args)
+            args.extend(self.__get_algorithmic_args())
 
         return args
 
@@ -195,10 +214,7 @@ class CmdBuilder:
         :param value:   The value of the argument
         :return:        The builder itself
         """
-        self.control_args.append(name)
-
-        if value is not None:
-            self.control_args.append(str(value))
+        self.control_args[name] = value
         return self
 
     def add_algorithmic_argument(self, name: str, value: Any | None = None):
@@ -209,11 +225,7 @@ class CmdBuilder:
         :param value:   The value of the argument
         :return:        The builder itself
         """
-        self.algorithmic_args.append(name)
-
-        if value is not None:
-            self.algorithmic_args.append(str(value))
-
+        self.algorithmic_args[name] = value
         return self
 
     def set_mode(self, mode: str | None, *extra_args: str):
@@ -225,7 +237,11 @@ class CmdBuilder:
         :return:            The builder itself
         """
         self.mode = mode
-        self.control_args.extend(extra_args)
+        control_args = self.control_args
+
+        for extra_arg in extra_args:
+            control_args[extra_arg] = None
+
         return self
 
     def set_runner(self, runner: str | None = 'sequential'):
