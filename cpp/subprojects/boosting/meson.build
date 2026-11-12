@@ -103,6 +103,7 @@ target_architecture = common_project.get_variable('target_architecture')
 multi_threading_support_enabled = common_project.get_variable('multi_threading_support_enabled')
 gpu_support_enabled = common_project.get_variable('gpu_support_enabled')
 simd_support_enabled = common_project.get_variable('simd_support_enabled')
+simd_architecture = common_project.get_variable('simd_architecture')
 
 configuration = configuration_data()
 configuration.set10('debug', get_option('buildtype').startswith('debug'))
@@ -112,6 +113,7 @@ configuration.set('mlrlboosting_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
 configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configuration.set10('simd_support_enabled', simd_support_enabled)
+configuration.set('simd_architecture', simd_architecture)
 configure_file(input : 'include/mlrl/boosting/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # SIMD extensions
