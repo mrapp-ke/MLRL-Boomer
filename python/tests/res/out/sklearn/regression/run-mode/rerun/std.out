@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.testbed_sklearn --mode run --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --save-evaluation true --save-meta-data false --save-all true --print-all true --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --mode run --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --print-all true --save-all true --save-evaluation true --save-meta-data false --estimator RandomForestRegressor
 Reading meta-data...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
@@ -8,8 +8,8 @@ currently used
 ✓ No version conflicts detected
 Re-running experiment...
 ○ 17 arguments modifying the original experiments have been provided: --log-width 120 --log-plain --log-level debug
---base-dir python/tests/res/tmp/<worker-id>/rerun --save-evaluation true --save-meta-data false --save-all true --print-all
-true --estimator RandomForestRegressor
+--base-dir python/tests/res/tmp/<worker-id>/rerun --print-all true --save-all true --save-evaluation true --save-meta-data
+false --estimator RandomForestRegressor
 Command:
 
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>/rerun --data-dir python/tests/res/data

@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --save-evaluation true --save-meta-data false --print-evaluation false --save-evaluation false --print-model-characteristics true --save-model-characteristics true
+mlrl-testbed mlrl.boosting --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --print-evaluation false --print-model-characteristics true --save-evaluation false --save-meta-data false --save-model-characteristics true
 Reading meta-data...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
@@ -14,10 +14,9 @@ Reading experimental results (1 / 1):
 Command:
 
 mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false
---save-meta-data true --print-evaluation false --save-evaluation false --print-model-characteristics true
---save-model-characteristics true --parallel-prediction false --parallel-rule-refinement false
---parallel-statistic-update false --simd false
+--data-dir python/tests/res/data --dataset emotions --result-dir results --print-evaluation false
+--print-model-characteristics true --save-evaluation false --save-meta-data true --save-model-characteristics true
+--parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --simd false
 
 Using separate training and test sets...
 
