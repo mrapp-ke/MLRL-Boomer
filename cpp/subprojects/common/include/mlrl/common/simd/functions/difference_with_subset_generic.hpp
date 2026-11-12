@@ -26,7 +26,7 @@ namespace simd {
 
             batch batchTmp = util::load_simd<batch, T>(tmp.data());
             batch batchC = util::load_simd<batch, const T>(c + i);
-            (batchTmp - batchC).store_unaligned(a + i);
+            util::store_simd(batchTmp - batchC, a + i);
         }
 
         for (; i < numElements; i++) {

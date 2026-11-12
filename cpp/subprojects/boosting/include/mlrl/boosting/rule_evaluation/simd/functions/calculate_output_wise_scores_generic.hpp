@@ -31,7 +31,7 @@ namespace boosting {
                 batch numerator = -batchGradients + l1Term;
                 batch denominator = batchHessians + l2Weight;
                 batch result = xsimd::select(denominator > epsilon, numerator / denominator, zero);
-                result.store_unaligned(outputs + i);
+                util::store_simd(result, outputs + i);
             }
 
             for (; i < numElements; i++) {
@@ -64,7 +64,7 @@ namespace boosting {
                 batch numerator = -batchGradients + l1Term;
                 batch denominator = batchHessians + l2Weighted;
                 batch result = xsimd::select(denominator > epsilon, numerator / denominator, zero);
-                result.store_unaligned(outputs + i);
+                util::store_simd(result, outputs + i);
             }
 
             for (; i < numElements; i++) {
