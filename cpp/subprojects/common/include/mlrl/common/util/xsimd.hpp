@@ -89,7 +89,7 @@ namespace util {
         }
     #endif
 
-        simdBatch.store_unaligned(array);
+        simdBatch.store_aligned(array);
     }
 #endif
 
