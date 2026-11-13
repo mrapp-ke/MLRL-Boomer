@@ -25,7 +25,7 @@ namespace simd {
             }
 
             batch batchTmp = util::load_simd<batch, T>(tmp.data());
-            (batchTmp - constant).store_unaligned(tmp.data());
+            util::store_simd(batchTmp - constant, tmp.data());
 
             for (uint32 j = 0; j < batchSize; j++) {
                 uint32 index = indices[i + j];

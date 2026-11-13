@@ -72,6 +72,27 @@ namespace util {
     }
 #endif
 
+#if SIMD_SUPPORT_ENABLED
+    /**
+     * Writes the content of a SIMD register into an array.
+     *
+     * @tparam batch    The type of the batch
+     * @tparam T        The type of the array
+     * @param simdBatch The batch to be written to the array
+     * @param array     The array into which the batch should be written
+     */
+    template<typename batch, typename T>
+    static inline constexpr void store_simd(batch simdBatch, T* array) {
+    #if DEBUG
+        if (!xsimd::is_aligned(array)) {
+            throw std::runtime_error("Array into which SIMD register should be written is not properly aligned");
+        }
+    #endif
+
+        simdBatch.store_unaligned(array);
+    }
+#endif
+
     /**
      * Returns the names of all instruction set extensions for SIMD operations available on the machine.
      *
