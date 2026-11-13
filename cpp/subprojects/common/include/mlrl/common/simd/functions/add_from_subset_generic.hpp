@@ -15,7 +15,7 @@ namespace simd {
         using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
         uint32 batchEnd = numElements - (numElements % batchSize);
-        std::array<T, batchSize> tmp;
+        alignas(Arch::alignment()) std::array<T, batchSize> tmp;
         uint32 i = 0;
 
         for (; i < batchEnd; i += batchSize) {
@@ -26,7 +26,7 @@ namespace simd {
 
             batch batchA = util::load_simd<batch, T>(a + i);
             batch batchTmp = util::load_simd<batch, T>(tmp.data());
-            (batchA + batchTmp).store_unaligned(a + i);
+            util::store_simd(batchA + batchTmp, a + i);
         }
 
         for (; i < numElements; i++) {

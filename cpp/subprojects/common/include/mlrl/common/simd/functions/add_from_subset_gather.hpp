@@ -24,7 +24,7 @@ namespace simd {
             batch batchA = util::load_simd<batch, T>(a + i);
             index_batch batchIndices = util::load_simd<index_batch, const uint32>(indices + i);
             batch batchB = batch::gather(b, batchIndices);
-            (batchA + batchB).store_unaligned(a + i);
+            util::store_simd(batchA + batchB, a + i);
         }
 
         for (; i < numElements; i++) {
