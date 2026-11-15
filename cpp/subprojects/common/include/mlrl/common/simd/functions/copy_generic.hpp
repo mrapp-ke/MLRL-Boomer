@@ -12,16 +12,12 @@ namespace simd {
     void copy(Arch, const T* from, T* to, uint32 numElements) {
         using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numElements - (numElements % batchSize);
-        uint32 i = 0;
+        const uint32 numBatches = numElements / batchSize;
 
-        for (; i < batchEnd; i += batchSize) {
-            batch batchFrom = util::load_simd<batch, const T>(from + i);
-            util::store_simd(batchFrom, to + i);
-        }
-
-        for (; i < numElements; i++) {
-            to[i] = from[i];
+        for (uint32 i = 0; i < numBatches; i++) {
+            const uint32 offset = batchSize * i;
+            batch batchFrom = util::load_simd<batch, const T>(from + offset);
+            util::store_simd(batchFrom, to + offset);
         }
     }
 }

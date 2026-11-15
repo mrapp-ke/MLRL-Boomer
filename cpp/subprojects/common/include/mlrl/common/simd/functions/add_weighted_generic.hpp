@@ -12,17 +12,13 @@ namespace simd {
     void addWeighted(Arch, T* a, const T* b, uint32 numElements, T weight) {
         using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numElements - (numElements % batchSize);
-        uint32 i = 0;
+        const uint32 numBatches = numElements / batchSize;
 
-        for (; i < batchEnd; i += batchSize) {
-            batch batchA = util::load_simd<batch, T>(a + i);
-            batch batchB = util::load_simd<batch, const T>(b + i);
-            util::store_simd(batchA + (batchB * weight), a + i);
-        }
-
-        for (; i < numElements; i++) {
-            a[i] += (b[i] * weight);
+        for (uint32 i = 0; i < numBatches; i++) {
+            const uint32 offset = batchSize * i;
+            batch batchA = util::load_simd<batch, T>(a + offset);
+            batch batchB = util::load_simd<batch, const T>(b + offset);
+            util::store_simd(batchA + (batchB * weight), a + offset);
         }
     }
 }

@@ -14,24 +14,20 @@ namespace simd {
     void differenceWithSubset(Arch, T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
         using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numElements - (numElements % batchSize);
+        const uint32 numBatches = numElements / batchSize;
         alignas(Arch::alignment()) std::array<T, batchSize> tmp;
-        uint32 i = 0;
 
-        for (; i < batchEnd; i += batchSize) {
+        for (uint32 i = 0; i < numBatches; i++) {
+            const uint32 offset = batchSize * i;
+
             for (std::size_t j = 0; j < batchSize; j++) {
-                uint32 index = indices[i + j];
+                uint32 index = indices[offset + j];
                 tmp[j] = b[index];
             }
 
             batch batchTmp = util::load_simd<batch, T>(tmp.data());
-            batch batchC = util::load_simd<batch, const T>(c + i);
-            util::store_simd(batchTmp - batchC, a + i);
-        }
-
-        for (; i < numElements; i++) {
-            uint32 index = indices[i];
-            a[i] = b[index] - c[i];
+            batch batchC = util::load_simd<batch, const T>(c + offset);
+            util::store_simd(batchTmp - batchC, a + offset);
         }
     }
 }

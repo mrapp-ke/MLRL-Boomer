@@ -14,24 +14,20 @@ namespace simd {
     void addWeightedFromSubset(Arch, T* a, const T* b, const uint32* indices, uint32 numElements, T weight) {
         using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numElements - (numElements % batchSize);
+        const uint32 numBatches = numElements / batchSize;
         alignas(Arch::alignment()) std::array<T, batchSize> tmp;
-        uint32 i = 0;
 
-        for (; i < batchEnd; i += batchSize) {
+        for (uint32 i = 0; i < numBatches; i++) {
+            const uint32 offset = batchSize * i;
+
             for (std::size_t j = 0; j < batchSize; j++) {
-                uint32 index = indices[i + j];
+                uint32 index = indices[offset + j];
                 tmp[j] = b[index];
             }
 
-            batch batchA = util::load_simd<batch, T>(a + i);
+            batch batchA = util::load_simd<batch, T>(a + offset);
             batch batchTmp = util::load_simd<batch, T>(tmp.data());
-            util::store_simd(batchA + (batchTmp * weight), a + i);
-        }
-
-        for (; i < numElements; i++) {
-            uint32 index = indices[i];
-            a[i] += (b[index] * weight);
+            util::store_simd(batchA + (batchTmp * weight), a + offset);
         }
     }
 }
