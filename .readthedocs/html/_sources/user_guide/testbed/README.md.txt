@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_testbed_dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_testbed_light.svg">
-    <img alt="mlrl-testbed" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/logo_testbed_light.svg">
+    <img alt="mlrl-testbed" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/logo_testbed_light.svg" width="75%">
   </picture>
 </p>
 
@@ -10,13 +10,30 @@
 
 **🔗 Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
-<!-- documentation-start -->
-
 This software package provides **mlrl-testbed - a command line utility for running machine learning experiments**. It implements a *straightforward*, *easily configurable*, and *extensible* workflow for conducting experiments.
+
+<figure align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/user_guide/testbed/screenshot_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/user_guide/testbed/screenshot_light.svg">
+    <img alt="Exemplary log output of "mlrl-testbed" when running an experiment" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/doc/user_guide/testbed/screenshot_light.inkscape.svg" width="75%">
+  </picture>
+  <figcaption>Log output of "mlrl-testbed" when running an experiment.</figcaption>
+</figure>
+
+<!-- documentation-start -->
 
 # mlrl-testbed
 
 On its own, this package is not very powerful. It is intended as a basis for other packages that build functionality upon it. In fact, it does not make any assumptions about the problem domain or type of machine learning algorithm that should be used in an experiment. Instead, implementations of domain- or algorithm-specific functionality are provided by the extensions discussed below.
+
+## 📖 References
+
+An introduction to this software is available in the following [paper](https://joss.theoj.org/papers/10.21105/joss.10609.pdf).
+
+*Michael Rapp. mlrl-testbed: A command line utility for tabular machine learning experiments. In: Journal of Open Source Software 11(127), 10609, 2026.*
+
+If you use the software in a scientific publication, we would appreciate citations to the mentioned paper.
 
 ## Tabular Machine Learning
 
