@@ -6,13 +6,13 @@ tocdepth: '2'
 
 # References
 
-In the following, we provide an overview of scientific publications that are concerned with the BOOMER algorithm. In particular, this includes papers where different aspects of the algorithm's methodology have originally been proposed. They are the best source of information for those who are interested in how BOOMER works from a conceptual and mathematical point of view. In addition, we also refer to studies that have made use of the algorithm.
+In the following, we provide an overview of scientific publications that are concerned with the {ref}`BOOMER algorithm <user-guide-boomer>` and the projects evolving around it.
 
-(references-first-party)=
+(references-boomer)=
 
-## Our Publications
+## Papers about BOOMER
 
-If you use the BOOMER algorithm in a scientific publication, we would appreciate citations to one of the following papers that discuss different aspects of its underlying ideas and concepts.
+In the following papers, different aspects of the BOOMER algorithm's methodology have originally been proposed. They are the best source of information for those who are interested in how this algorithm works from a conceptual and mathematical point of view. If you use the BOOMER algorithm in a scientific publication, we would appreciate citations to one of the following papers that discuss different aspects of its underlying ideas and concepts.
 
 (references-rapp2020boomer)=
 
@@ -109,9 +109,9 @@ A detailed discussion of algorithmic concepts and approximation techniques used 
 
 (references-third-party)=
 
-## Citations of BOOMER
+## Citations of Our Work
 
-In the following, we provide a selection of interesting publications that have made use of the BOOMER algorithm in experimental studies or by building upon its code for the implementation of novel machine learning approaches.
+In the following, we provide a selection of studies that have made use of our algorithms in experimental studies or by building upon our code for the implementation of novel machine learning approaches.
 
 ```{note}
 If you are the author of a paper that you would like to be presented in this section, feel free to reach out to us via the project's [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues).
