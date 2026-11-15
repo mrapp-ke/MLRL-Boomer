@@ -6,13 +6,13 @@ tocdepth: '2'
 
 # References
 
-In the following, we provide an overview of scientific publications that are concerned with the BOOMER algorithm. In particular, this includes papers where different aspects of the algorithm's methodology have originally been proposed. They are the best source of information for those who are interested in how BOOMER works from a conceptual and mathematical point of view. In addition, we also refer to studies that have made use of the algorithm.
+In the following, we provide an overview of scientific publications that are concerned with the {ref}`BOOMER algorithm <user-guide-boomer>` and the projects evolving around it.
 
-(references-first-party)=
+(references-boomer)=
 
-## Our Publications
+## Papers about BOOMER
 
-If you use the BOOMER algorithm in a scientific publication, we would appreciate citations to one of the following papers that discuss different aspects of its underlying ideas and concepts.
+In the following papers, different aspects of the BOOMER algorithm's methodology have originally been proposed. They are the best source of information for those who are interested in how this algorithm works from a conceptual and mathematical point of view. If you use the BOOMER algorithm in a scientific publication, we would appreciate citations to one of the following papers that discuss different aspects of its underlying ideas and concepts.
 
 (references-rapp2020boomer)=
 
@@ -107,21 +107,32 @@ A detailed discussion of algorithmic concepts and approximation techniques used 
     publisher={Springer}
 ```
 
-(references-third-party)=
+(references-testbed)=
 
-## Citations of BOOMER
+## Papers about mlrl-testbed
 
-In the following, we provide a selection of interesting publications that have made use of the BOOMER algorithm in experimental studies or by building upon its code for the implementation of novel machine learning approaches.
+The following list contains papers that are concerned with our machine learning software {ref}`mlrl-testbed <user-guide-testbed>`. If you use this software in a scientific publication, we would appreciate citations to one of the papers.
 
-```{note}
-If you are the author of a paper that you would like to be presented in this section, feel free to reach out to us via the project's [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues).
+### mlrl-testbed: A command line utility for tabular machine learning experiments
+
+In the following [paper](https://joss.theoj.org/papers/10.21105/joss.10609.pdf), the command line utility `mlrl-testbed` was publicly presented, including information on how to use it and an overview of its software design.
+
+```bibtex
+@article{rapp2026,
+    title={mlrl-testbed: {A} command line utility for tabular machine learning experiments},
+    author={Rapp, Michael},
+    journal={Journal of Open Source Software},
+    volume={11},
+    number={127},
+    pages={10609},
+    year={2026}
 ```
 
-### pRSL: Interpretable Multi-label Stacking by Learning Probabilistic Rules
+(references-related-work)=
 
-The BOOMER algorithm was used as a baseline in the experimental study that is included in the following paper, where a probabilistic rule stacking learner, which uses probabilistic propositional logic rules and belief propagation to combine the predictions of several classifiers, is proposed. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2105.13850).
+## Related Work
 
-*Michael Kirchhof, Lena Schmid, Christopher Reining, Michael ten Hompel and Markus Pauly. pRSL: Interpretable Multi-label Stacking by Learning Probabilistic Rules. In: Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI), pages 461-470, 2021, PMLR.*
+In the following, we provide a selection of studies that have made use of our algorithms in experimental studies or by building upon our code for the implementation of novel machine learning approaches.
 
 ### Correlation-based Discovery of Disease Patterns for Syndromic Surveillance
 
