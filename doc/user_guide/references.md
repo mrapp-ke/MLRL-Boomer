@@ -113,10 +113,6 @@ A detailed discussion of algorithmic concepts and approximation techniques used 
 
 In the following, we provide a selection of studies that have made use of our algorithms in experimental studies or by building upon our code for the implementation of novel machine learning approaches.
 
-```{note}
-If you are the author of a paper that you would like to be presented in this section, feel free to reach out to us via the project's [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues).
-```
-
 ### Correlation-based Discovery of Disease Patterns for Syndromic Surveillance
 
 In the following [paper](https://doi.org/10.3389/fdata.2021.784159), a novel rule learning approach for discovering syndrome definitions for the early detection of infectious diseases is presented. The implementation of the proposed method, which is available at [GitHub](https://github.com/mrapp-ke/SyndromeLearner), is based on this project's source code. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2110.09208).
