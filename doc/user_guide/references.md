@@ -128,9 +128,9 @@ In the following [paper](https://joss.theoj.org/papers/10.21105/joss.10609.pdf),
     year={2026}
 ```
 
-(references-third-party)=
+(references-related-work)=
 
-## Citations of Our Work
+## Related Work
 
 In the following, we provide a selection of studies that have made use of our algorithms in experimental studies or by building upon our code for the implementation of novel machine learning approaches.
 
