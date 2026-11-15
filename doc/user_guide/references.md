@@ -117,12 +117,6 @@ In the following, we provide a selection of interesting publications that have m
 If you are the author of a paper that you would like to be presented in this section, feel free to reach out to us via the project's [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues).
 ```
 
-### pRSL: Interpretable Multi-label Stacking by Learning Probabilistic Rules
-
-The BOOMER algorithm was used as a baseline in the experimental study that is included in the following paper, where a probabilistic rule stacking learner, which uses probabilistic propositional logic rules and belief propagation to combine the predictions of several classifiers, is proposed. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2105.13850).
-
-*Michael Kirchhof, Lena Schmid, Christopher Reining, Michael ten Hompel and Markus Pauly. pRSL: Interpretable Multi-label Stacking by Learning Probabilistic Rules. In: Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI), pages 461-470, 2021, PMLR.*
-
 ### Correlation-based Discovery of Disease Patterns for Syndromic Surveillance
 
 In the following [paper](https://doi.org/10.3389/fdata.2021.784159), a novel rule learning approach for discovering syndrome definitions for the early detection of infectious diseases is presented. The implementation of the proposed method, which is available at [GitHub](https://github.com/mrapp-ke/SyndromeLearner), is based on this project's source code. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2110.09208).
