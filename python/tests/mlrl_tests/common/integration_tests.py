@@ -198,6 +198,11 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
         )
         CmdRunner(builder).run(f'feature-binning-{feature_binning}_{dataset_name}-features-{feature_format}')
 
+    @pytest.mark.parametrize('use_simd', [False, True])
+    def test_simd(self, use_simd: bool, dataset: Dataset):
+        builder = self.create_cmd_builder(dataset=dataset.default).use_simd(use_simd)
+        CmdRunner(builder).run(f'simd-{str(use_simd).lower()}')
+
 
 class ClassificationRuleLearnerIntegrationTestsMixin(RuleLearnerIntegrationTestsMixin):
     """

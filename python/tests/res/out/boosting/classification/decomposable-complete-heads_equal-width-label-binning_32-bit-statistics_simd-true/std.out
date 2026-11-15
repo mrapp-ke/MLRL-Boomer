@@ -1,0 +1,69 @@
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --print-model-characteristics true --save-evaluation true --save-meta-data false --head-type complete --label-binning equal-width --loss logistic-decomposable --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --simd true --statistic-type 32-bit
+○ Checking if output files do already exist...
+
+Starting experiment using the classification algorithm "BoomerClassifier"...
+Using separate training and test sets...
+
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+✓ Successfully loaded training dataset!
+Fitting model to 397 training examples...
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
+Predicting for 196 test examples...
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted labels
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
+
+ Example-wise F1 (↑)         63.67
+ Example-wise Jaccard (↑)    55.91
+ Example-wise Precision (↑)  76.70
+ Example-wise Recall (↑)     63.78
+ Hamming Accuracy (↑)        81.29
+ Hamming Loss (↓)            18.71
+ Macro F1 (↑)                65.87
+ Macro Jaccard (↑)           50.02
+ Macro Precision (↑)         74.89
+ Macro Recall (↑)            60.81
+ Micro F1 (↑)                67.93
+ Micro Jaccard (↑)           51.43
+ Micro Precision (↑)         74.92
+ Micro Recall (↑)            62.13
+ Subset 0/1 Loss (↓)         68.88
+ Subset Accuracy (↑)         31.12
+
+○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+
+🗀 Model characteristics:
+
+                ╷       ╷               ╷               ╷               ╷               ╷              ╷
+  Statistics    │       │               │               │               │               │              │
+  about         │       │  Numerical <= │   Numerical > │    Ordinal <= │     Ordinal > │   Nominal == │    Nominal !=
+  conditions    │ Total │      operator │      operator │      operator │      operator │     operator │      operator
+╶───────────────┼───────┼───────────────┼───────────────┼───────────────┼───────────────┼──────────────┼───────────────╴
+  Default rule  │     0 │        0.00 % │        0.00 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  999 local     │ 10671 │       56.56 % │       43.44 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  rules         │       │               │               │               │               │              │
+                ╵       ╵               ╵               ╵               ╵               ╵              ╵
+
+                               ╷       ╷          ╷
+  Statistics about predictions │ Total │ Positive │ Negative
+╶──────────────────────────────┼───────┼──────────┼──────────╴
+  Default rule                 │     6 │   0.00 % │ 100.00 %
+  999 local rules              │  5994 │  39.32 % │  60.68 %
+                               ╵       ╵          ╵
+
+                            ╷         ╷         ╷
+  Statistics per local rule │ Minimum │ Average │ Maximum
+╶───────────────────────────┼─────────┼─────────┼─────────╴
+  Conditions                │       1 │   10.68 │      29
+  Predictions               │       6 │    6.00 │       6
+                            ╵         ╵         ╵
+
+✓ Successfully finished experiment after <duration>

@@ -88,9 +88,16 @@ class TestBoomerClassifier(
             StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
         ],
     )
-    def test_loss(self, loss: str, statistic_type: str):
-        builder = self.create_cmd_builder().loss(loss).statistic_type(statistic_type)
-        CmdRunner(builder).run(f'loss-{loss}_{statistic_type}-statistics')
+    @pytest.mark.parametrize(
+        'simd',
+        [
+            False,
+            True,
+        ],
+    )
+    def test_loss(self, loss: str, statistic_type: str, simd: bool):
+        builder = self.create_cmd_builder().loss(loss).statistic_type(statistic_type).use_simd(simd)
+        CmdRunner(builder).run(f'loss-{loss}_{statistic_type}-statistics_simd-{str(simd).lower()}')
 
     @pytest.mark.parametrize(
         'binary_predictor, binary_predictor_options, marginal_probability_calibration, joint_probability_calibration, '
@@ -281,9 +288,9 @@ class TestBoomerClassifier(
 
         CmdRunner(builder).run(
             f'predictor-binary-{binary_predictor}'
-            + (f'_{prediction_format}' if prediction_format else '')
-            + (f'_{binary_predictor_options}' if binary_predictor_options else '')
-            + '_incremental'
+            f'{f"_{prediction_format}" if prediction_format else ""}'
+            f'{f"_{binary_predictor_options}" if binary_predictor_options else ""}'
+            f'_incremental'
         )
 
     def test_predictor_score_output_wise(self):
@@ -382,7 +389,14 @@ class TestBoomerClassifier(
             SparsePolicy.FORCE_SPARSE,
         ],
     )
-    def test_statistics_sparse(self, output_format: str, dataset: Dataset):
+    @pytest.mark.parametrize(
+        'simd',
+        [
+            True,
+            False,
+        ],
+    )
+    def test_statistics_sparse(self, output_format: str, dataset: Dataset, simd: bool):
         builder = (
             self.create_cmd_builder(dataset=dataset.numerical_sparse)
             .sparse_statistic_format()
@@ -390,8 +404,9 @@ class TestBoomerClassifier(
             .default_rule(False)
             .loss(ClassificationLossParameter.LOSS_SQUARED_HINGE_DECOMPOSABLE)
             .head_type(HeadTypeParameter.HEAD_TYPE_SINGLE)
+            .use_simd(simd)
         )
-        CmdRunner(builder).run(f'statistics-sparse_output-format-{output_format}')
+        CmdRunner(builder).run(f'statistics-sparse_output-format-{output_format}_simd-{str(simd).lower()}')
 
     @pytest.mark.parametrize(
         'head_type, label_binning',
@@ -412,7 +427,14 @@ class TestBoomerClassifier(
             StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
         ],
     )
-    def test_decomposable_head_type(self, head_type: str, label_binning: str | None, statistic_type: str):
+    @pytest.mark.parametrize(
+        'simd',
+        [
+            False,
+            True,
+        ],
+    )
+    def test_decomposable_head_type(self, head_type: str, label_binning: str | None, statistic_type: str, simd: bool):
         builder = (
             self.create_cmd_builder()
             .loss(ClassificationLossParameter.LOSS_LOGISTIC_DECOMPOSABLE)
@@ -420,11 +442,13 @@ class TestBoomerClassifier(
             .head_type(head_type)
             .label_binning(label_binning)
             .print_model_characteristics()
+            .use_simd(simd)
         )
         CmdRunner(builder).run(
             f'decomposable-{head_type}-heads'
             + (f'_{label_binning}-label-binning' if label_binning else '')
             + f'_{statistic_type}-statistics'
+            + f'_simd-{str(simd).lower()}'
         )
 
     @pytest.mark.parametrize(
@@ -446,7 +470,16 @@ class TestBoomerClassifier(
             StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
         ],
     )
-    def test_non_decomposable_head_type(self, head_type: str, label_binning: str | None, statistic_type: str):
+    @pytest.mark.parametrize(
+        'simd',
+        [
+            False,
+            True,
+        ],
+    )
+    def test_non_decomposable_head_type(
+        self, head_type: str, label_binning: str | None, statistic_type: str, simd: bool
+    ):
         builder = (
             self.create_cmd_builder()
             .loss(ClassificationLossParameter.LOSS_LOGISTIC_NON_DECOMPOSABLE)
@@ -454,11 +487,13 @@ class TestBoomerClassifier(
             .head_type(head_type)
             .label_binning(label_binning)
             .print_model_characteristics()
+            .use_simd(simd)
         )
         CmdRunner(builder).run(
             f'non-decomposable-{head_type}-heads'
-            + (f'_{label_binning}-label-binning' if label_binning else '')
-            + f'_{statistic_type}-statistics'
+            f'{f"_{label_binning}-label-binning" if label_binning else ""}'
+            f'_{statistic_type}-statistics'
+            f'_simd-{str(simd).lower()}'
         )
 
     @pytest.mark.parametrize(
