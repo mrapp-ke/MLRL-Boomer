@@ -107,6 +107,27 @@ A detailed discussion of algorithmic concepts and approximation techniques used 
     publisher={Springer}
 ```
 
+(references-testbed)=
+
+## Papers about mlrl-testbed
+
+The following list contains papers that are concerned with our machine learning software {ref}`mlrl-testbed <user-guide-testbed>`. If you use this software in a scientific publication, we would appreciate citations to one of the papers.
+
+### mlrl-testbed: A command line utility for tabular machine learning experiments
+
+In the following [paper](https://joss.theoj.org/papers/10.21105/joss.10609.pdf), the command line utility `mlrl-testbed` was publicly presented, including information on how to use it and an overview of its software design.
+
+```bibtex
+@article{rapp2026,
+    title={mlrl-testbed: {A} command line utility for tabular machine learning experiments},
+    author={Rapp, Michael},
+    journal={Journal of Open Source Software},
+    volume={11},
+    number={127},
+    pages={10609},
+    year={2026}
+```
+
 (references-third-party)=
 
 ## Citations of Our Work
