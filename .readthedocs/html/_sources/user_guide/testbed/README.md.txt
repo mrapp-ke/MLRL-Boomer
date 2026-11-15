@@ -27,6 +27,14 @@ This software package provides **mlrl-testbed - a command line utility for runni
 
 On its own, this package is not very powerful. It is intended as a basis for other packages that build functionality upon it. In fact, it does not make any assumptions about the problem domain or type of machine learning algorithm that should be used in an experiment. Instead, implementations of domain- or algorithm-specific functionality are provided by the extensions discussed below.
 
+## 📖 References
+
+An introduction to this software is available in the following [paper](https://joss.theoj.org/papers/10.21105/joss.10609.pdf).
+
+*Michael Rapp. mlrl-testbed: A command line utility for tabular machine learning experiments. In: Journal of Open Source Software 11(127), 10609, 2026.*
+
+If you use the software in a scientific publication, we would appreciate citations to the mentioned paper.
+
 ## Tabular Machine Learning
 
 The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) adds support for tabular machine learning problems by making use of the [scikit-learn](https://scikit-learn.org) framework. It can easily be installed via the following command (and will pull [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) as a dependency):
