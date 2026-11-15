@@ -1,0 +1,5 @@
+File simd/memory.hpp
+====================
+
+.. doxygenfile:: simd/memory.hpp
+   :project: common

@@ -1,0 +1,5 @@
+File vector_statistic_dense.hpp
+===============================
+
+.. doxygenfile:: vector_statistic_dense.hpp
+   :project: boosting
