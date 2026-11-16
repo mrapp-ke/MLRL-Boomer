@@ -15,8 +15,6 @@ Submodules
    mlrl.util.arrays
    mlrl.util.cli
    mlrl.util.format
-   mlrl.util.log
    mlrl.util.options
-   mlrl.util.time
    mlrl.util.validation
    mlrl.util.version
