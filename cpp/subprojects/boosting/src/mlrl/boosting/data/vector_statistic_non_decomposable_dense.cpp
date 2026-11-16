@@ -80,8 +80,8 @@ namespace boosting {
 
         for (uint32 i = 0; i < numGradients; i++) {
             uint32 index = indexIterator[i];
-            VectorMath::addToSubset(&this->view.hessians_begin()[math::triangularNumber(i)],
-                                    &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1);
+            SequentialVectorMath::addToSubset(&this->view.hessians_begin()[math::triangularNumber(i)],
+                                              &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1);
         }
     }
 
@@ -103,9 +103,9 @@ namespace boosting {
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
-            VectorMath::addToSubsetWeighted(&this->view.hessians_begin()[math::triangularNumber(i)],
-                                            &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1,
-                                            weight);
+            SequentialVectorMath::addToSubsetWeighted(&this->view.hessians_begin()[math::triangularNumber(i)],
+                                                      &hessiansBegin[math::triangularNumber(index)], indexIterator,
+                                                      i + 1, weight);
         }
     }
 
@@ -130,9 +130,9 @@ namespace boosting {
         for (uint32 i = 0; i < numGradients; i++) {
             uint32 offset = math::triangularNumber(i);
             uint32 index = indexIterator[i];
-            VectorMath::difference(&this->view.hessians_begin()[offset],
-                                   &firstHessiansBegin[math::triangularNumber(index)], &secondHessiansBegin[offset],
-                                   indexIterator, i + 1);
+            SequentialVectorMath::difference(&this->view.hessians_begin()[offset],
+                                             &firstHessiansBegin[math::triangularNumber(index)],
+                                             &secondHessiansBegin[offset], indexIterator, i + 1);
         }
     }
 

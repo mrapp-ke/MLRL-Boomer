@@ -68,7 +68,7 @@ namespace util {
         }
     #endif
 
-        return batch::load_unaligned(array);
+        return batch::load_aligned(array);
     }
 #endif
 
@@ -89,7 +89,7 @@ namespace util {
         }
     #endif
 
-        simdBatch.store_unaligned(array);
+        simdBatch.store_aligned(array);
     }
 #endif
 

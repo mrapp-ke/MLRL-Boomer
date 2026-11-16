@@ -91,8 +91,23 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
             (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_KLN),
         ],
     )
-    def test_head_type(self, head_type: str, lift_function: str | None):
+    @pytest.mark.parametrize(
+        'simd',
+        [
+            False,
+            True,
+        ],
+    )
+    def test_head_type(self, head_type: str, lift_function: str | None, simd: bool):
         builder = (
-            self.create_cmd_builder().head_type(head_type).lift_function(lift_function).print_model_characteristics()
+            self.create_cmd_builder()
+            .head_type(head_type)
+            .lift_function(lift_function)
+            .print_model_characteristics()
+            .use_simd(simd)
         )
-        CmdRunner(builder).run(f'head-type-{head_type}{(f"_{lift_function}-lift-function" if lift_function else "")}')
+        CmdRunner(builder).run(
+            f'head-type-{head_type}'
+            f'{f"_{lift_function}-lift-function" if lift_function else ""}'
+            f'_simd-{str(simd).lower()}'
+        )
