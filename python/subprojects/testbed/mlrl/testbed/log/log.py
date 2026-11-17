@@ -411,7 +411,7 @@ class Log:
     @staticmethod
     def separator(title: str):
         """
-        Writes a log messages that acts as a separator with a specific title.
+        Writes a log message that acts as a separator with a specific title.
 
         :param title: The title to be used
         """
