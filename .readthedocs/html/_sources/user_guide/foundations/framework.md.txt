@@ -14,7 +14,7 @@ Following the notion of rules traditionally used in classification, i.e., for ta
 f : Head \leftarrow Body
 ```
 
-The body of a rule consists of one or several conditions that specify the examples to which the rule applies, and the head provides a prediction for these covered examples. Each condition refers to one of the attributes in a dataset. Such a condition $c_l$ compares an example's value for the $l$-th attribute to a constant using a relational operator, such as $=$ and $\neq$, if the attribute $A_l$ is nominal, or $\leq$ and $>$, if the attribute is numerical or ordinal.
+The body of a rule consists of one or several conditions that specify the examples to which the rule applies, and the head provides a prediction for these covered examples. Each condition refers to one of the features in a dataset. Such a condition $c_l$ compares an example's value for the $l$-th feature to a constant using a relational operator, such as $=$ and $\neq$, if the feature $A_l$ is nominal, or $\leq$ and $>$, if the feature is numerical or ordinal.
 
 When dealing with multi-output classification or regression tasks, a variety of options exist when it comes to the heads of rules. Whereas single-label rules must assign a prediction to the only available output, the heads of multi-output rules may comprise information for more than a single output. The following table shows examples of different types of rules.
 
@@ -82,7 +82,7 @@ We induce the rules to be included in a model using an iterative algorithm, wher
 
 The following UML sequence diagram provides a high-level overview of the interactions between the components involved in the induction of a rule-based model. The feature values of the training examples $X$ and their ground truth $Y$ are provided as the input to the algorithm. Individual rules are learned with respect to statistics $S$ that incorporate information about the ground truth of individual examples and the corresponding predictions of the current model. The loop that is responsible for learning new rules is exited as soon as a certain stopping criterion is met.
 
-```{image} ../../_static/sequence_diagram_rule_induction_light.svg
+```{image} ../../_static/user_guide/foundations/sequence_diagram_rule_induction_light.svg
 ---
 align: center
 width: 80%
@@ -93,7 +93,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/sequence_diagram_rule_induction_dark.svg
+```{image} ../../_static/user_guide/foundations/sequence_diagram_rule_induction_dark.svg
 ---
 align: center
 width: 80%
@@ -118,7 +118,7 @@ At the core of the rule learning framework presented here are the algorithmic co
 
 The following UML sequence diagram illustrates the individual steps that are necessary for inducing a single rule. A rule can be learned on a subset of the training examples, which is specified by assigning weights $w$ to individual examples. The predictions of a rule may be restricted to a subset of the outputs $\mathcal{L}$. The search for the best rule $f$ requires to enumerate the candidate bodies that may be used by potential rules. For each body, a corresponding head must be found. Its predictions for individual outputs depend on statistics $S'$ corresponding to the examples that are covered by the rule’s body. The quality of potential rules is assessed in terms of numerical scores $q$.
 
-```{image} ../../_static/sequence_diagram_candidate_generation_light.svg
+```{image} ../../_static/user_guide/foundations/sequence_diagram_candidate_generation_light.svg
 ---
 align: center
 width: 80%
@@ -128,7 +128,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/sequence_diagram_candidate_generation_dark.svg
+```{image} ../../_static/user_guide/foundations/sequence_diagram_candidate_generation_dark.svg
 ---
 align: center
 width: 80%
