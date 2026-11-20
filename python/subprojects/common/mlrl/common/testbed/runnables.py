@@ -21,13 +21,17 @@ from mlrl.common.config.parameters import Parameter
 from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.testbed.experiments.experiment import RuleLearnerExperiment
+from mlrl.common.testbed.experiments.input.model.extension import Hdf5ModelInputExtension
 from mlrl.common.testbed.experiments.output.characteristics.model import RuleModelCharacteristicsExtension
 from mlrl.common.testbed.experiments.output.label_vectors.extension import LabelVectorSetExtension
+from mlrl.common.testbed.experiments.output.model.extension import Hdf5ModelOutputDirectoryExtension
 from mlrl.common.testbed.experiments.output.model_text import RuleModelAsTextExtension
 from mlrl.common.testbed.experiments.prediction.predictor_incremental import IncrementalPredictor
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.meta_data import MetaData
+from mlrl.testbed.experiments.output.model.extension import ModelOutputDirectoryExtension
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
@@ -254,6 +258,16 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_type = regressor_type
         self.regressor_config_type = regressor_config_type
         self.regressor_parameters = regressor_parameters
+
+    @override
+    def _create_model_input_extension(self) -> ModelInputExtension:
+        # Models of rule learners are read from HDF5 files
+        return Hdf5ModelInputExtension()
+
+    @override
+    def _create_model_output_directory_extension(self) -> ModelOutputDirectoryExtension:
+        # Models of rule learners are written to HDF5 files
+        return Hdf5ModelOutputDirectoryExtension()
 
     @override
     def get_extensions(self) -> list[Extension]:

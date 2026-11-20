@@ -195,6 +195,24 @@ class SkLearnRunnable(Runnable, ABC):
                 predict_kwargs=predict_kwargs,
             )
 
+    def _create_model_input_extension(self) -> ModelInputExtension:
+        """
+        May be overridden by subclasses in order to create the extension that configures the functionality to read
+        models. By default, models are read from files by using Python's pickle mechanism.
+
+        :return: The extension that has been created
+        """
+        return ModelInputExtension()
+
+    def _create_model_output_directory_extension(self) -> ModelOutputDirectoryExtension:
+        """
+        May be overridden by subclasses in order to create the extension that configures the directory to which models
+        should be written. By default, models are written to files by using Python's pickle mechanism.
+
+        :return: The extension that has been created
+        """
+        return ModelOutputDirectoryExtension()
+
     @override
     def get_extensions(self) -> list[Extension]:
         """
@@ -204,9 +222,9 @@ class SkLearnRunnable(Runnable, ABC):
             SkLearnRunnable.ProblemDomainExtension(),
             DatasetSplitterExtension(),
             PredictionTypeExtension(),
-            ModelInputExtension(),
+            self._create_model_input_extension(),
             ModelOutputExtension(),
-            ModelOutputDirectoryExtension(),
+            self._create_model_output_directory_extension(),
             ParameterInputExtension(),
             ParameterOutputExtension(),
             ParameterOutputDirectoryExtension(),

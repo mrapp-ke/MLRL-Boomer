@@ -5,13 +5,14 @@ Provides classes that allow configuring the functionality to write models to one
 """
 
 from argparse import Namespace
+from pathlib import Path
 from typing import override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectoryArguments
-from mlrl.testbed.experiments.output.sinks import PickleFileSink
+from mlrl.testbed.experiments.output.sinks import PickleFileSink, Sink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.util.cli import Argument, BoolArgument
@@ -83,8 +84,19 @@ class ModelOutputDirectoryExtension(Extension):
             if base_dir and model_save_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.model_writer.add_sinks(
-                    PickleFileSink(directory=base_dir / model_save_dir, create_directory=create_directory)
+                    self._create_sink(directory=base_dir / model_save_dir, create_directory=create_directory)
                 )
+
+    def _create_sink(self, directory: Path, create_directory: bool) -> Sink:
+        """
+        May be overridden by subclasses in order to create the sink, models should be written to. By default, models
+        are written to files by using Python's pickle mechanism.
+
+        :param directory:           The path to the directory, models should be written to
+        :param create_directory:    True, if the directory should be created, if it does not exist, False otherwise
+        :return:                    The sink that has been created
+        """
+        return PickleFileSink(directory=directory, create_directory=create_directory)
 
     @override
     def get_supported_modes(self) -> set[ExperimentMode]:

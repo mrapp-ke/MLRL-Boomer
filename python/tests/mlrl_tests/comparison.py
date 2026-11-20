@@ -25,6 +25,10 @@ PLACEHOLDER_FILE_NAME = '<file>'
 
 PLACEHOLDER_WORKER_ID = '<worker-id>'
 
+# The suffix of HDF5 files, as used by the class `Hdf5FileSource` provided by the package "mlrl-common". It is not
+# imported from there, because the tests of the package "mlrl-testbed-sklearn" do not depend on "mlrl-common"
+SUFFIX_HDF5 = 'h5'
+
 
 def replace_worker_ids_with_placeholders(line: str) -> str:
     regex_worker_id = r'worker-\d+'
@@ -88,6 +92,8 @@ class FileComparison(ABC):
             return MetaDataFileComparison(file)
         if file.suffix == f'.{PickleFileSource.SUFFIX_PICKLE}':
             return PickleFileComparison(file)
+        if file.suffix == f'.{SUFFIX_HDF5}':
+            return Hdf5FileComparison(file)
         if file.suffix == f'.{CsvFileSource.SUFFIX_CSV}':
             return CsvFileComparison(file)
 
@@ -219,6 +225,60 @@ class PickleFileComparison(FileComparison):
     def _compare(self, another_file: Path) -> Difference | None:
         if not another_file.is_file():
             raise OSError(f'File "{another_file}" does not exist')
+        return None
+
+    @override
+    def _write(self, file: Path):
+        file.touch()
+
+
+class Hdf5FileComparison(FileComparison):
+    """
+    Allows to compare or overwrite HDF5 files, storing models of rule learners, produced by tests. HDF5 files are binary
+    files that may differ even if their content is equivalent. For this reason, the reference files are empty and it is
+    only checked whether a valid model file has been produced. Its content is checked by loading the model in subsequent
+    tests.
+    """
+
+    class InvalidFileDifference(Difference):
+        """
+        A difference that occurs if a produced file is not a valid model file.
+        """
+
+        def __init__(self, file: Path, reason: str):
+            """
+            :param file:    The file that has been produced
+            :param reason:  A description of the reason why the file is invalid
+            """
+            super().__init__(file)
+            self.reason = reason
+
+        @override
+        def __str__(self) -> str:
+            return f'File "{self.file}" is not a valid model file: {self.reason}'
+
+    def __init__(self, path: Path):
+        """
+        :param path: The path to a file
+        """
+        self.path = path
+
+    @override
+    def _compare(self, another_file: Path) -> Difference | None:
+        if not another_file.is_file():
+            raise OSError(f'File "{another_file}" does not exist')
+
+        # Imported lazily, because the tests of the package "mlrl-testbed-sklearn" do not depend on "mlrl-common"
+        from mlrl.common.cython.model_file import ModelFileReader
+
+        try:
+            reader = ModelFileReader(self.path.read_bytes())
+        except RuntimeError as error:
+            return Hdf5FileComparison.InvalidFileDifference(self.path, str(error))
+
+        if not reader.has_attribute('learner', 'class'):
+            return Hdf5FileComparison.InvalidFileDifference(self.path, 'The file does not contain a learner')
+
         return None
 
     @override

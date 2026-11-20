@@ -5,11 +5,13 @@ Provides classes that allow configuring the functionality to read models paramet
 """
 
 from argparse import Namespace
+from pathlib import Path
 from typing import override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.model.reader import ModelReader
+from mlrl.testbed.experiments.input.sources.source import Source
 from mlrl.testbed.experiments.input.sources.source_pickle import PickleFileSource
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
@@ -54,8 +56,18 @@ class ModelInputExtension(Extension):
         model_load_dir = self.MODEL_LOAD_DIR.get_value(args)
 
         if model_load_dir and self.LOAD_MODELS.get_value(args):
-            reader = ModelReader(PickleFileSource(model_load_dir))
+            reader = ModelReader(self._create_source(model_load_dir))
             experiment_builder.add_input_readers(reader)
+
+    def _create_source(self, directory: Path) -> Source:
+        """
+        May be overridden by subclasses in order to create the source, models should be read from. By default, models
+        are read from files by using Python's pickle mechanism.
+
+        :param directory:   The path to the directory, models should be read from
+        :return:            The source that has been created
+        """
+        return PickleFileSource(directory)
 
     @override
     def get_supported_modes(self) -> set[ExperimentMode]:
