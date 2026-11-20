@@ -17,17 +17,13 @@ namespace simd {
           std::conditional_t<xsimd::batch<T, Arch>::size == xsimd::batch<uint32, Arch>::size, uint32, uint64>;
         using index_batch = xsimd::batch<index_type, Arch>;
         constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numIndices - (numIndices % batchSize);
-        uint32 i = 0;
+        const uint32 numBatches = numIndices / batchSize;
 
-        for (; i < batchEnd; i += batchSize) {
-            index_batch batchIndices = util::load_simd<index_batch, const uint32>(indices + i);
+        for (uint32 i = 0; i < numBatches; i++) {
+            const uint32 offset = batchSize * i;
+            index_batch batchIndices = util::load_simd<index_batch, const uint32>(indices + offset);
             batch batchArray = batch::gather(array, batchIndices);
             (batchArray - constant).scatter(array, batchIndices);
-        }
-
-        for (; i < numIndices; i++) {
-            array[indices[i]] -= constant;
         }
     }
 }

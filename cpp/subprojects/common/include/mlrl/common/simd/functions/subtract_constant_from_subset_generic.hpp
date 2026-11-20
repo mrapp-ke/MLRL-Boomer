@@ -14,13 +14,14 @@ namespace simd {
     void subtractConstantFromSubset(Arch, T* array, T constant, const uint32* indices, uint32 numIndices) {
         using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numIndices - (numIndices % batchSize);
+        const uint32 numBatches = numIndices / batchSize;
         alignas(Arch::alignment()) std::array<T, batchSize> tmp;
-        uint32 i = 0;
 
-        for (; i < batchEnd; i += batchSize) {
+        for (uint32 i = 0; i < numBatches; i++) {
+            const uint32 offset = batchSize * i;
+
             for (uint32 j = 0; j < batchSize; j++) {
-                uint32 index = indices[i + j];
+                uint32 index = indices[offset + j];
                 tmp[j] = array[index];
             }
 
@@ -28,14 +29,9 @@ namespace simd {
             util::store_simd(batchTmp - constant, tmp.data());
 
             for (uint32 j = 0; j < batchSize; j++) {
-                uint32 index = indices[i + j];
+                uint32 index = indices[offset + j];
                 array[index] = tmp[j];
             }
-        }
-
-        for (; i < numIndices; i++) {
-            uint32 index = indices[i];
-            array[index] -= constant;
         }
     }
 }

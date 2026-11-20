@@ -14,25 +14,22 @@ namespace simd {
     void addConstantToSubset(Arch, T* array, T constant, const uint32* indices, uint32 numIndices) {
         using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numIndices - (numIndices % batchSize);
+        const uint32 numBatches = numIndices / batchSize;
         alignas(Arch::alignment()) std::array<T, batchSize> tmp;
-        uint32 i = 0;
 
-        for (; i < batchEnd; i += batchSize) {
+        for (uint32 i = 0; i < numBatches; i++) {
+            const uint32 offset = batchSize * i;
+
             for (std::size_t j = 0; j < batchSize; j++) {
-                tmp[j] = array[indices[i + j]];
+                tmp[j] = array[indices[offset + j]];
             }
 
             batch batchTmp = util::load_simd<batch, T>(tmp.data());
             util::store_simd(batchTmp + constant, tmp.data());
 
             for (std::size_t j = 0; j < batchSize; j++) {
-                array[indices[i + j]] = tmp[j];
+                array[indices[offset + j]] = tmp[j];
             }
-        }
-
-        for (; i < numIndices; i++) {
-            array[indices[i]] += constant;
         }
     }
 }

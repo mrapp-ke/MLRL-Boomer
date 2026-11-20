@@ -12,17 +12,13 @@ namespace simd {
     void difference(Arch, T* a, const T* b, const T* c, uint32 numElements) {
         using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numElements - (numElements % batchSize);
-        uint32 i = 0;
+        const uint32 numBatches = numElements / batchSize;
 
-        for (; i < batchEnd; i += batchSize) {
-            batch batchB = util::load_simd<batch, const T>(b + i);
-            batch batchC = util::load_simd<batch, const T>(c + i);
-            util::store_simd(batchB - batchC, a + i);
-        }
-
-        for (; i < numElements; i++) {
-            a[i] = b[i] - c[i];
+        for (uint32 i = 0; i < numBatches; i++) {
+            const uint32 offset = batchSize * i;
+            batch batchB = util::load_simd<batch, const T>(b + offset);
+            batch batchC = util::load_simd<batch, const T>(c + offset);
+            util::store_simd(batchB - batchC, a + offset);
         }
     }
 }
