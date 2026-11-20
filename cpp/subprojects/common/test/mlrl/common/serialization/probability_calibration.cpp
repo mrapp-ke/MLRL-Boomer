@@ -248,6 +248,12 @@ TEST(ProbabilityCalibrationSerializationTest, readingCorruptedModelThrows) {
     })->readMarginalProbabilityCalibrationModel(),
                  std::runtime_error);
 
+    // Intermediate offset exceeds the number of bins
+    EXPECT_THROW(createCorruptedFile([](Hdf5Group& group) {
+        writeIsotonicGroup(group, 2, {0, 3, 2}, {0.2, 0.5}, {0.2, 0.5});
+    })->readMarginalProbabilityCalibrationModel(),
+                 std::runtime_error);
+
     // Last offset does not match the number of bins
     EXPECT_THROW(createCorruptedFile([](Hdf5Group& group) {
         writeIsotonicGroup(group, 1, {0, 3}, {0.2, 0.5}, {0.2, 0.5});

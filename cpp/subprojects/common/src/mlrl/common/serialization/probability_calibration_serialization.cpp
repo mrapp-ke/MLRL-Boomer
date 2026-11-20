@@ -111,7 +111,7 @@ static std::unique_ptr<Model> readProbabilityCalibrationModel(const Hdf5Group& p
         uint32 start = offsets[i];
         uint32 end = offsets[i + 1];
 
-        if (start > end) {
+        if (start > end || end > thresholds.size()) {
             throw std::runtime_error("Group \"" + groupName
                                      + "\" stores an inconsistent probability calibration model");
         }

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
+#include "mlrl/common/prediction/output_space_info.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/prediction/probability_calibration_marginal.hpp"
 #include "mlrl/common/util/dll_exports.hpp"
@@ -129,6 +130,16 @@ class MLRLCOMMON_API IModelFileWriter {
          *                              should be written
          */
         virtual void writeJointProbabilityCalibrationModel(const IJointProbabilityCalibrationModel& model) = 0;
+
+        /**
+         * Writes information about the output space. Only information of type `INoOutputSpaceInfo` and
+         * `ILabelVectorSet` is supported.
+         *
+         * @throws std::runtime_error   If the type of the information is not supported or if such information has
+         *                              already been written
+         * @param outputSpaceInfo       A reference to an object of type `IOutputSpaceInfo` that should be written
+         */
+        virtual void writeOutputSpaceInfo(const IOutputSpaceInfo& outputSpaceInfo) = 0;
 
         /**
          * Finishes writing the model file and returns its content. Afterwards, the writer cannot be used anymore.
@@ -308,6 +319,22 @@ class MLRLCOMMON_API IModelFileReader {
          *                              `IIsotonicProbabilityCalibrationModel`
          */
         virtual std::unique_ptr<IJointProbabilityCalibrationModel> readJointProbabilityCalibrationModel() const = 0;
+
+        /**
+         * Returns whether the model file contains information about the output space or not.
+         *
+         * @return True, if the model file contains such information, false otherwise
+         */
+        virtual bool hasOutputSpaceInfo() const = 0;
+
+        /**
+         * Reads information about the output space.
+         *
+         * @throws std::runtime_error   If the model file does not contain such information or if it is invalid
+         * @return                      An unique pointer to an object of type `IOutputSpaceInfo` that has been read.
+         *                              The object is either of type `INoOutputSpaceInfo` or `ILabelVectorSet`
+         */
+        virtual std::unique_ptr<IOutputSpaceInfo> readOutputSpaceInfo() const = 0;
 };
 
 /**

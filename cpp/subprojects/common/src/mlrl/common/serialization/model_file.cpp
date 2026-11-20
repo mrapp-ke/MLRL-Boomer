@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include "hdf5/hdf5_file.hpp"
+#include "output_space_info_serialization.hpp"
 #include "probability_calibration_serialization.hpp"
 
 #include <stdexcept>
@@ -130,6 +131,11 @@ class ModelFileWriter final : public IModelFileWriter {
             ::writeJointProbabilityCalibrationModel(root, model);
         }
 
+        void writeOutputSpaceInfo(const IOutputSpaceInfo& outputSpaceInfo) override {
+            Hdf5Group root = this->getFile().getRootGroup();
+            ::writeOutputSpaceInfo(root, outputSpaceInfo);
+        }
+
         std::vector<uint8> finish() override {
             std::vector<uint8> image = this->getFile().getImage();
             filePtr_.reset();
@@ -242,6 +248,14 @@ class ModelFileReader final : public IModelFileReader {
 
         std::unique_ptr<IJointProbabilityCalibrationModel> readJointProbabilityCalibrationModel() const override {
             return ::readJointProbabilityCalibrationModel(file_.getRootGroup());
+        }
+
+        bool hasOutputSpaceInfo() const override {
+            return file_.getRootGroup().hasGroup(GROUP_OUTPUT_SPACE_INFO);
+        }
+
+        std::unique_ptr<IOutputSpaceInfo> readOutputSpaceInfo() const override {
+            return ::readOutputSpaceInfo(file_.getRootGroup());
         }
 };
 
