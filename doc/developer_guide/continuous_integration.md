@@ -41,6 +41,10 @@ The following CI jobs are used for building our software for different target pl
 - {repo-file}`publish.yml <.github/workflows/publish.yml>` is used for publishing the documentation on [readthedocs](https://readthedocs.org) and uploading pre-built packages to [PyPI](https://pypi.org/) (see {ref}`installation`). For the latter, the project is built from source for each of the target platforms and architectures. The job is run automatically when a new release was published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
 - {repo-file}`publish_development.yml <.github/workflows/publish_development.yml>` publishes development versions of the documentation on [readthedocs](https://readthedocs.org) and uploads development packages to [Test-PyPI](https://test.pypi.org/) whenever changes to the project's source code have been pushed to the main branch. The packages built by each of these runs are also saved as [artifacts](https://docs.github.com/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
 
+```{note}
+The [HDF5](https://www.hdfgroup.org/solutions/hdf5/) library, which is a mandatory dependency of the project (see {ref}`compilation`), is compiled from source when building pre-built packages. For this purpose, the jobs mentioned above use the build target `dependency_hdf5`, which compiles the version of the library specified in the file {repo-file}`build_system/res/dependencies/hdf5` and installs it into the directory `hdf5/`. The resulting shared library, as well as its license, are bundled with the packages, such that users do not need to install the library themselves. On Linux, the library is installed via the system's package manager instead when building the project for testing purposes.
+```
+
 ## Maintenance
 
 The CI jobs listed below are run periodically to perform different maintenance tasks, such as the automatic update of dependencies.

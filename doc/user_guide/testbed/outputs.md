@@ -88,17 +88,23 @@ The paths of the directories specified via the arguments `--model-save-dir` and 
 
 If {ref}`train-test splits<train-test-split>` are used for evaluating the predictive performance of models, a single model is fit to the training data and stored in a file:
 
-- `model.pickle`
+- `model.h5`
 
 If a {ref}`cross validation<cross-validation>` is performed instead, one model is trained per cross validation fold and all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
 
-- `model_fold-1.pickle`
-- `model_fold-2.pickle`
-- `model_fold-3.pickle`
-- `model_fold-4.pickle`
-- `model_fold-5.pickle`
+- `model_fold-1.h5`
+- `model_fold-2.h5`
+- `model_fold-3.h5`
+- `model_fold-4.h5`
+- `model_fold-5.h5`
 
 When executing the aforementioned command again, the program recognizes the previously stored models in the specified directory. Instead of training them from scratch, the models are then loaded from the respective files, which should be much faster than training them again.
+
+The models of the BOOMER and SeCo algorithm are saved as [HDF5](https://www.hdfgroup.org/solutions/hdf5/) files. These are the same files that are created when using the method `save_model` provided by the algorithms' Python API. Consequently, they can also be loaded outside of the package mlrl-testbed via the function `load_model` (see {ref}`usage-model-persistence`). Information about the structure of these files is available {ref}`here <model-files>`.
+
+```{note}
+When using the package mlrl-testbed-sklearn for running experiments with other scikit-learn estimators, models are saved via Python's [pickle](https://docs.python.org/3/library/pickle.html) mechanism instead. In this case, the suffix of the created files is `.pickle` rather than `.h5`.
+```
 
 (parameter-persistence)=
 

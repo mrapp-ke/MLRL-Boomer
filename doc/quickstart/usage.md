@@ -177,6 +177,54 @@ The scores are given as a matrix, where each row and column corresponds to a que
 
 The function `decision_function` supports the same keyword arguments as the `predict` function discussed {ref}`earlier <usage-prediction>`.
 
+(usage-model-persistence)=
+
+## Saving and Loading Models
+
+A fitted estimator can be saved to a file via its method `save_model`. This stores the estimator's parameters, as well as the model that has been learned, in a single file. The estimator can afterward be restored from the file via the function `load_model`:
+
+````{tab} BOOMER
+   ```python
+   from mlrl.boosting import BoomerClassifier
+   from mlrl.common import load_model
+
+   clf = BoomerClassifier().fit(x, y)
+   clf.save_model('model.h5')
+
+   clf = load_model('model.h5')
+   pred = clf.predict(x)
+   ```
+````
+
+````{tab} SeCo
+   ```python
+   from mlrl.common import load_model
+   from mlrl.seco import SeCoClassifier
+
+   clf = SeCoClassifier().fit(x, y)
+   clf.save_model('model.h5')
+
+   clf = load_model('model.h5')
+   pred = clf.predict(x)
+   ```
+````
+
+The function `load_model` returns an estimator of the same type as the one that has been saved. If the type of the estimator is known in advance, it can alternatively be loaded via the class method `load`, which additionally ensures that the file contains an estimator of the expected type:
+
+```python
+clf = BoomerClassifier.load('model.h5')
+```
+
+Models are stored in the [HDF5](https://www.hdfgroup.org/solutions/hdf5/) file format. Compared to Python's [pickle](https://docs.python.org/3/library/pickle.html) mechanism, this comes with the following advantages:
+
+- Loading a model does not execute any code that is contained in the file. As a result, it is safe to load models from untrusted sources. When loading a model, only estimators provided by this project are accepted.
+- A model can be loaded by any version of the software that supports the version of the file format it has been saved with, regardless of the version of the software that has been used for saving it.
+- The files are regular HDF5 files that can be inspected with common tools, such as [h5py](https://www.h5py.org/) or [HDFView](https://www.hdfgroup.org/downloads/hdfview/). The structure of the files is described {ref}`here <model-files>`.
+
+```{note}
+Fitted estimators can still be serialized via Python's pickle mechanism. Internally, the models of pickled estimators are stored in the same format. However, models that have been pickled by versions of the software prior to the introduction of this format cannot be loaded anymore. Such models must be trained again.
+```
+
 ## Accessing the Rules in a Model
 
 In some cases it might be desirable to access the rule in a model that has been learned via the `fit` method. For this purpose, we provide a convenient API that is illustrated in the following example:

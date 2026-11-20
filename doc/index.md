@@ -125,6 +125,7 @@ user_guide/boosting/index
 user_guide/seco/index
 user_guide/optimizations/index
 user_guide/testbed/index
+user_guide/model_files
 user_guide/references
 ```
 

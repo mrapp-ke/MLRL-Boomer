@@ -134,6 +134,7 @@ Ranka
 Rapp
 Renderable
 Reutemann
+RHEL
 Rijsbergen
 Rissanen
 Ruoming
@@ -304,6 +305,7 @@ th
 toolchain
 toolset
 unsets
+untrusted
 util
 whl
 wra
