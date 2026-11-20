@@ -95,6 +95,7 @@ source_files = [
     'src/mlrl/common/serialization/model_file.cpp',
     'src/mlrl/common/serialization/output_space_info_serialization.cpp',
     'src/mlrl/common/serialization/probability_calibration_serialization.cpp',
+    'src/mlrl/common/serialization/rule_list_serialization.cpp',
     'src/mlrl/common/simd/simd_no.cpp',
     'src/mlrl/common/simd/simd_yes.cpp',
     'src/mlrl/common/stopping/global_pruning_no.cpp',
@@ -128,6 +129,7 @@ test_files = [
     'test/mlrl/common/serialization/model_file.cpp',
     'test/mlrl/common/serialization/output_space_info.cpp',
     'test/mlrl/common/serialization/probability_calibration.cpp',
+    'test/mlrl/common/serialization/rule_list.cpp',
     'test/mlrl/common/library_info.cpp'
 ]
 

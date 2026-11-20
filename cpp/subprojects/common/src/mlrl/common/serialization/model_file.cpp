@@ -4,6 +4,7 @@
 #include "hdf5/hdf5_file.hpp"
 #include "output_space_info_serialization.hpp"
 #include "probability_calibration_serialization.hpp"
+#include "rule_list_serialization.hpp"
 
 #include <stdexcept>
 #include <utility>
@@ -136,6 +137,11 @@ class ModelFileWriter final : public IModelFileWriter {
             ::writeOutputSpaceInfo(root, outputSpaceInfo);
         }
 
+        void writeRuleModel(const IRuleModel& ruleModel) override {
+            Hdf5Group root = this->getFile().getRootGroup();
+            ::writeRuleModel(root, ruleModel);
+        }
+
         std::vector<uint8> finish() override {
             std::vector<uint8> image = this->getFile().getImage();
             filePtr_.reset();
@@ -256,6 +262,14 @@ class ModelFileReader final : public IModelFileReader {
 
         std::unique_ptr<IOutputSpaceInfo> readOutputSpaceInfo() const override {
             return ::readOutputSpaceInfo(file_.getRootGroup());
+        }
+
+        bool hasRuleModel() const override {
+            return file_.getRootGroup().hasGroup(GROUP_RULE_MODEL);
+        }
+
+        std::unique_ptr<IRuleModel> readRuleModel() const override {
+            return ::readRuleModel(file_.getRootGroup());
         }
 };
 
