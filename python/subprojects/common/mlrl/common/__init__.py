@@ -20,4 +20,16 @@ __all__ = [
     'is_gpu_support_enabled',
     'is_multi_threading_support_enabled',
     'is_simd_support_enabled',
+    'load_model',
 ]
+
+
+def __getattr__(name: str):
+    # The function `load_model` is imported lazily to avoid importing the module `mlrl.common.learners`, and its
+    # dependencies, when importing this package
+    if name == 'load_model':
+        from mlrl.common.learners import load_model
+
+        return load_model
+
+    raise AttributeError(f'module {__name__!r} has no attribute {name!r}')

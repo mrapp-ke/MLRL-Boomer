@@ -98,7 +98,21 @@ def assert_identical_after_pickling(learner, x):
     """
     data = pickle.dumps(learner)
     loaded = pickle.loads(data)
+    assert_identical_learners(learner, loaded, x)
+    # Pickling the unpickled learner again must result in an equivalent learner
+    _assert_identical(learner.predict(x), pickle.loads(pickle.dumps(loaded)).predict(x), 'predict (pickled twice)')
+    return loaded
 
+
+def assert_identical_learners(learner, loaded, x):
+    """
+    Asserts that a learner that has been restored from a fitted learner uses native objects of the same types and that
+    all supported types of predictions, including incremental predictions, are identical.
+
+    :param learner: The original learner
+    :param loaded:  The restored learner
+    :param x:       The feature matrix that should be used for obtaining predictions
+    """
     for attribute, expected_type in (
         ('model_', RuleModel),
         ('output_space_info_', OutputSpaceInfo),
@@ -124,6 +138,3 @@ def assert_identical_after_pickling(learner, x):
             _assert_identical_incremental_predictions(learner, loaded, method_name, x)
 
     assert num_compared > 0, 'No predictions have been compared'
-    # Pickling the unpickled learner again must result in an equivalent learner
-    _assert_identical(learner.predict(x), pickle.loads(pickle.dumps(loaded)).predict(x), 'predict (pickled twice)')
-    return loaded

@@ -7,13 +7,15 @@ Provides base classes for implementing rule learning algorithms.
 import re as regex
 from abc import ABC, abstractmethod
 from enum import StrEnum
-from typing import Any, override
+from importlib import import_module
+from pathlib import Path
+from typing import Any, Self, override
 
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import InputTags
 from sklearn.utils.multiclass import type_of_target
-from sklearn.utils.validation import assert_all_finite, check_array, validate_data
+from sklearn.utils.validation import assert_all_finite, check_array, check_is_fitted, validate_data
 
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.cython.example_weights import EqualExampleWeights, RealValuedExampleWeights
@@ -29,6 +31,7 @@ from mlrl.common.cython.feature_matrix import (
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.learner_classification import ClassificationRuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.model_file import ModelFileReader, ModelFileWriter
 from mlrl.common.cython.output_space_info import OutputSpaceInfo
 from mlrl.common.cython.probability_calibration import (
     JointProbabilityCalibrationModel,
@@ -47,6 +50,18 @@ from mlrl.common.mixins import (
     NominalFeatureSupportMixin,
     OrdinalFeatureSupportMixin,
     ProbabilisticClassifierMixin,
+)
+from mlrl.common.persistence import (
+    ATTRIBUTE_CLASS,
+    ATTRIBUTE_PACKAGE,
+    ATTRIBUTE_PACKAGE_VERSION,
+    GROUP_FIT_STATE,
+    GROUP_LEARNER,
+    has_numpy_value,
+    read_numpy_value,
+    read_parameters,
+    write_numpy_value,
+    write_parameters,
 )
 from mlrl.util.arrays import (
     SparseFormat,
@@ -359,6 +374,111 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                 return training_result.rule_model
 
         return None
+
+    def save_model(self, path: str | Path):
+        """
+        Saves the fitted learner, including its hyperparameters and model, to an HDF5 file. The learner can be restored
+        from the file via the function `load_model`.
+
+        :param path: The path to the file to be written
+        """
+        check_is_fitted(self)
+        writer = ModelFileWriter()
+        learner_class = type(self)
+        writer.set_attribute(GROUP_LEARNER, ATTRIBUTE_CLASS, f'{learner_class.__module__}.{learner_class.__qualname__}')
+        package_info = _get_package_info(learner_class)
+
+        if package_info:
+            writer.set_attribute(GROUP_LEARNER, ATTRIBUTE_PACKAGE, package_info.package_name)
+            writer.set_attribute(GROUP_LEARNER, ATTRIBUTE_PACKAGE_VERSION, package_info.package_version)
+
+        write_parameters(writer, self.get_params(deep=False))
+        self._write_fit_state(writer, GROUP_FIT_STATE)
+        model = getattr(self, 'model_', None)
+
+        if model is not None:
+            writer.write_rule_model(model)
+
+        output_space_info = getattr(self, 'output_space_info_', None)
+
+        if output_space_info is not None:
+            writer.write_output_space_info(output_space_info)
+
+        marginal_probability_calibration_model = getattr(self, 'marginal_probability_calibration_model_', None)
+
+        if marginal_probability_calibration_model is not None:
+            writer.write_marginal_probability_calibration_model(marginal_probability_calibration_model)
+
+        joint_probability_calibration_model = getattr(self, 'joint_probability_calibration_model_', None)
+
+        if joint_probability_calibration_model is not None:
+            writer.write_joint_probability_calibration_model(joint_probability_calibration_model)
+
+        Path(path).write_bytes(writer.finish())
+
+    @classmethod
+    def load(cls, path: str | Path) -> Self:
+        """
+        Loads a learner from an HDF5 file that has been written via the function `save_model`. In contrast to the
+        function `load_model`, it is checked whether the loaded learner is an instance of this class.
+
+        :param path:    The path to the file to be read
+        :return:        The learner that has been loaded
+        """
+        learner = load_model(path)
+
+        if not isinstance(learner, cls):
+            raise TypeError(
+                f'The file "{path}" contains a learner of type {type(learner).__qualname__}, but expected a learner of '
+                + f'type {cls.__qualname__}'
+            )
+
+        return learner
+
+    def _write_fit_state(self, writer: ModelFileWriter, group: str):
+        """
+        Writes the attributes that have been set when fitting the learner to a model file. May be extended by
+        subclasses in order to write additional attributes. The native models are written separately.
+
+        :param writer:  The `ModelFileWriter` to be used
+        :param group:   The path of the group, the attributes should be written to
+        """
+        writer.set_attribute(group, 'num_outputs', int(self.num_outputs_))
+        writer.set_attribute(group, 'sparse_predictions', int(bool(getattr(self, 'sparse_predictions_', False))))
+        y_dtype = getattr(self, 'y_dtype_', None)
+
+        if y_dtype is not None:
+            writer.set_attribute(group, 'y_dtype', np.dtype(y_dtype).str)
+
+        n_features_in = getattr(self, 'n_features_in_', None)
+
+        if n_features_in is not None:
+            writer.set_attribute(group, 'n_features_in', int(n_features_in))
+
+        feature_names_in = getattr(self, 'feature_names_in_', None)
+
+        if feature_names_in is not None:
+            write_numpy_value(writer, group, 'feature_names_in', feature_names_in)
+
+    def _read_fit_state(self, reader: ModelFileReader, group: str):
+        """
+        Restores the attributes that have been written via the function `_write_fit_state`. Must be extended by
+        subclasses that extend the function `_write_fit_state`.
+
+        :param reader:  The `ModelFileReader` to be used
+        :param group:   The path of the group, the attributes should be read from
+        """
+        self.num_outputs_ = reader.get_attribute(group, 'num_outputs')
+        self.sparse_predictions_ = bool(reader.get_attribute(group, 'sparse_predictions'))
+
+        if reader.has_attribute(group, 'y_dtype'):
+            self.y_dtype_ = np.dtype(reader.get_attribute(group, 'y_dtype'))
+
+        if reader.has_attribute(group, 'n_features_in'):
+            self.n_features_in_ = reader.get_attribute(group, 'n_features_in')
+
+        if has_numpy_value(reader, group, 'feature_names_in'):
+            self.feature_names_in_ = read_numpy_value(reader, group, 'feature_names_in')
 
     @staticmethod
     def _create_score_predictor(
@@ -714,6 +834,39 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         self.num_outputs_ = num_labels
         return None
 
+    @override
+    def _write_fit_state(self, writer: ModelFileWriter, group: str):
+        super()._write_fit_state(writer, group)
+        classes = getattr(self, 'classes_', None)
+
+        if classes is not None:
+            write_numpy_value(writer, group, 'classes', classes)
+
+        label_encoder = getattr(self, 'label_encoder_', None)
+
+        if label_encoder is not None:
+            write_numpy_value(writer, group, 'label_encoder_classes', label_encoder.classes_)
+
+        constant_prediction = getattr(self, 'constant_prediction_', None)
+
+        if constant_prediction is not None:
+            write_numpy_value(writer, group, 'constant_prediction', constant_prediction)
+
+    @override
+    def _read_fit_state(self, reader: ModelFileReader, group: str):
+        super()._read_fit_state(reader, group)
+
+        if has_numpy_value(reader, group, 'classes'):
+            self.classes_ = read_numpy_value(reader, group, 'classes')
+
+        if has_numpy_value(reader, group, 'label_encoder_classes'):
+            label_encoder = LabelEncoder()
+            label_encoder.classes_ = read_numpy_value(reader, group, 'label_encoder_classes')
+            self.label_encoder_ = label_encoder
+
+        if has_numpy_value(reader, group, 'constant_prediction'):
+            self.constant_prediction_ = read_numpy_value(reader, group, 'constant_prediction')
+
     def _encode_labels(self, y) -> tuple[Any, LabelEncoder | None]:
         """
         Encodes the given label matrix, if necessary, depending on it type, using a `LabelEncoder`.
@@ -945,6 +1098,94 @@ def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, para
 
             if value is not None:
                 parameter.configure(config=config, value=value)
+
+
+def _get_package_info(learner_class: type) -> Any | None:
+    """
+    Returns information about the Python package that provides a specific class of learners, if available.
+
+    :param learner_class:   The class of the learner
+    :return:                A `PackageInfo` or None, if no information is available
+    """
+    package_name = '.'.join(learner_class.__module__.split('.')[:2])
+
+    try:
+        return import_module(package_name + '.package_info').get_package_info()
+    except (ImportError, AttributeError):
+        return None
+
+
+def _resolve_learner_class(class_name: Any) -> type[RuleLearner]:
+    """
+    Resolves the class of a learner from its fully qualified name. Only classes that are provided by packages in the
+    namespace "mlrl" and that are subclasses of the class `RuleLearner` are accepted.
+
+    :param class_name:  The fully qualified name of the class, i.e., the name of its module and its qualified name
+    :return:            The class
+    """
+    if not isinstance(class_name, str) or not class_name.startswith('mlrl.'):
+        raise ValueError(f'The model file contains a learner of unsupported type "{class_name}"')
+
+    parts = class_name.split('.')
+
+    for num_module_parts in range(len(parts) - 1, 1, -1):
+        try:
+            resolved: Any = import_module('.'.join(parts[:num_module_parts]))
+        except ImportError:
+            continue
+
+        for attribute in parts[num_module_parts:]:
+            resolved = getattr(resolved, attribute, None)
+
+        if isinstance(resolved, type) and issubclass(resolved, RuleLearner):
+            return resolved
+
+        break
+
+    raise ValueError(f'The model file contains a learner of unsupported type "{class_name}"')
+
+
+def load_model(path: str | Path) -> RuleLearner:
+    """
+    Loads a learner from an HDF5 file that has been written via the function `RuleLearner.save_model`. The file may have
+    been written by any version of the library that uses a supported version of the file format.
+
+    :param path:    The path to the file to be read
+    :return:        The learner that has been loaded
+    """
+    reader = ModelFileReader(Path(path).read_bytes())
+
+    if not reader.has_attribute(GROUP_LEARNER, ATTRIBUTE_CLASS):
+        raise ValueError(f'The file "{path}" does not contain a learner')
+
+    # Concrete learners can be instantiated without arguments, unlike the abstract class `RuleLearner`
+    learner_class: Any = _resolve_learner_class(reader.get_attribute(GROUP_LEARNER, ATTRIBUTE_CLASS))
+    parameters = read_parameters(reader)
+    unknown_parameters = sorted(set(parameters) - set(learner_class().get_params(deep=False)))
+
+    if unknown_parameters:
+        raise ValueError(
+            f'The file "{path}" contains hyperparameters that are not supported by the class '
+            + f'{learner_class.__qualname__}: '
+            + ', '.join(f'"{name}"' for name in unknown_parameters)
+        )
+
+    learner = learner_class(**parameters)
+    learner._read_fit_state(reader, GROUP_FIT_STATE)
+
+    if reader.has_rule_model():
+        learner.model_ = reader.read_rule_model()
+
+    if reader.has_output_space_info():
+        learner.output_space_info_ = reader.read_output_space_info()
+
+    if reader.has_marginal_probability_calibration_model():
+        learner.marginal_probability_calibration_model_ = reader.read_marginal_probability_calibration_model()
+
+    if reader.has_joint_probability_calibration_model():
+        learner.joint_probability_calibration_model_ = reader.read_joint_probability_calibration_model()
+
+    return learner
 
 
 def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:
