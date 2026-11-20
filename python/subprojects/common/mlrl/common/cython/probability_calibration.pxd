@@ -1,7 +1,8 @@
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
+from libcpp.vector cimport vector
 
-from mlrl.common.cython._types cimport float64, uint32
+from mlrl.common.cython._types cimport float64, uint8, uint32
 
 ctypedef void (*BinVisitor)(uint32, float64, float64)
 
@@ -68,6 +69,47 @@ cdef extern from *:
     BinVisitor wrapBinVisitor(void* self, BinCythonVisitor visitor)
 
 
+cdef extern from *:
+    """
+    #include "mlrl/common/serialization/model_file.hpp"
+
+    static inline std::vector<uint8> serializeMarginalProbabilityCalibrationModel(
+            const IMarginalProbabilityCalibrationModel& model) {
+        std::unique_ptr<IModelFileWriter> writerPtr = createModelFileWriter();
+        writerPtr->writeMarginalProbabilityCalibrationModel(model);
+        return writerPtr->finish();
+    }
+
+    static inline std::unique_ptr<IMarginalProbabilityCalibrationModel> deserializeMarginalProbabilityCalibrationModel(
+            const uint8* data, std::size_t size) {
+        return createModelFileReader(data, size)->readMarginalProbabilityCalibrationModel();
+    }
+
+    static inline std::vector<uint8> serializeJointProbabilityCalibrationModel(
+            const IJointProbabilityCalibrationModel& model) {
+        std::unique_ptr<IModelFileWriter> writerPtr = createModelFileWriter();
+        writerPtr->writeJointProbabilityCalibrationModel(model);
+        return writerPtr->finish();
+    }
+
+    static inline std::unique_ptr<IJointProbabilityCalibrationModel> deserializeJointProbabilityCalibrationModel(
+            const uint8* data, std::size_t size) {
+        return createModelFileReader(data, size)->readJointProbabilityCalibrationModel();
+    }
+    """
+
+    vector[uint8] serializeMarginalProbabilityCalibrationModel(
+        const IMarginalProbabilityCalibrationModel& model) except +
+
+    unique_ptr[IMarginalProbabilityCalibrationModel] deserializeMarginalProbabilityCalibrationModel(
+        const uint8* data, size_t size) except +
+
+    vector[uint8] serializeJointProbabilityCalibrationModel(const IJointProbabilityCalibrationModel& model) except +
+
+    unique_ptr[IJointProbabilityCalibrationModel] deserializeJointProbabilityCalibrationModel(
+        const uint8* data, size_t size) except +
+
+
 cdef class MarginalProbabilityCalibrationModel:
 
     # Functions:
@@ -106,8 +148,6 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
 
     cdef unique_ptr[IIsotonicProbabilityCalibrationModel] probability_calibration_model_ptr
 
-    cdef object state
-
     cdef object visitor
 
     cdef dict __dict__
@@ -115,8 +155,6 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
     # Functions:
 
     cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability)
-
-    cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
 
 cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
@@ -125,8 +163,6 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
 
     cdef unique_ptr[IIsotonicProbabilityCalibrationModel] probability_calibration_model_ptr
 
-    cdef object state
-
     cdef object visitor
 
     cdef dict __dict__
@@ -134,8 +170,6 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
     # Functions:
 
     cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability)
-
-    cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
 
 cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_calibration_model(

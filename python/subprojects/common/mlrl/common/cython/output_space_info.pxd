@@ -1,7 +1,8 @@
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
+from libcpp.vector cimport vector
 
-from mlrl.common.cython._types cimport uint32
+from mlrl.common.cython._types cimport uint8, uint32
 
 
 cdef extern from "mlrl/common/prediction/output_space_info.hpp" nogil:
@@ -80,6 +81,26 @@ cdef extern from *:
     LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
 
+cdef extern from *:
+    """
+    #include "mlrl/common/serialization/model_file.hpp"
+
+    static inline std::vector<uint8> serializeOutputSpaceInfo(const IOutputSpaceInfo& outputSpaceInfo) {
+        std::unique_ptr<IModelFileWriter> writerPtr = createModelFileWriter();
+        writerPtr->writeOutputSpaceInfo(outputSpaceInfo);
+        return writerPtr->finish();
+    }
+
+    static inline std::unique_ptr<IOutputSpaceInfo> deserializeOutputSpaceInfo(const uint8* data, std::size_t size) {
+        return createModelFileReader(data, size)->readOutputSpaceInfo();
+    }
+    """
+
+    vector[uint8] serializeOutputSpaceInfo(const IOutputSpaceInfo& outputSpaceInfo) except +
+
+    unique_ptr[IOutputSpaceInfo] deserializeOutputSpaceInfo(const uint8* data, size_t size) except +
+
+
 cdef class OutputSpaceInfo:
 
     # Functions:
@@ -100,17 +121,11 @@ cdef class LabelVectorSet(OutputSpaceInfo):
 
     cdef unique_ptr[ILabelVectorSet] label_vector_set_ptr
 
-    cdef object state
-
     cdef object visitor
 
     # Functions:
 
     cdef __visit_label_vector(self, const LabelVector& label_vector, uint32 frequency)
-
-    cdef __serialize_label_vector(self, const LabelVector& label_vector, uint32 frequency)
-
-    cdef unique_ptr[LabelVector] __deserialize_label_vector(self, object label_vector_state)
 
 
 cdef inline OutputSpaceInfo create_output_space_info(unique_ptr[IOutputSpaceInfo] output_space_info_ptr):

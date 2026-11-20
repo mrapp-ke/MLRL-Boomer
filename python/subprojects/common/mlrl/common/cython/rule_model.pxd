@@ -3,6 +3,7 @@ cimport numpy as npc
 from libcpp cimport bool
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
+from libcpp.vector cimport vector
 
 from mlrl.common.cython._types cimport float32, float64, int32, uint8, uint32
 
@@ -38,10 +39,6 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
         ctypedef uint32* index_iterator
 
         ctypedef const uint32* index_const_iterator
-
-        # Constructors:
-
-        ConjunctiveBodyImpl(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq, uint32 numNominalNeq)
 
         # Functions:
 
@@ -293,6 +290,26 @@ ctypedef IRuleList* RuleListPtr
 
 cdef extern from *:
     """
+    #include "mlrl/common/serialization/model_file.hpp"
+
+    static inline std::vector<uint8> serializeRuleModel(const IRuleModel& ruleModel) {
+        std::unique_ptr<IModelFileWriter> writerPtr = createModelFileWriter();
+        writerPtr->writeRuleModel(ruleModel);
+        return writerPtr->finish();
+    }
+
+    static inline std::unique_ptr<IRuleModel> deserializeRuleModel(const uint8* data, std::size_t size) {
+        return createModelFileReader(data, size)->readRuleModel();
+    }
+    """
+
+    vector[uint8] serializeRuleModel(const IRuleModel& ruleModel) except +
+
+    unique_ptr[IRuleModel] deserializeRuleModel(const uint8* data, size_t size) except +
+
+
+cdef extern from *:
+    """
     #include "mlrl/common/model/body.hpp"
     #include "mlrl/common/model/head.hpp"
 
@@ -482,8 +499,6 @@ cdef class RuleList(RuleModel):
 
     cdef object visitor
 
-    cdef object state
-
     # Functions:
 
     cdef __visit_empty_body(self, const EmptyBodyImpl& body)
@@ -501,40 +516,6 @@ cdef class RuleList(RuleModel):
     cdef __visit_partial_32bit_head(self, const Partial32BitHeadImpl& head)
 
     cdef __visit_partial_64bit_head(self, const Partial64BitHeadImpl& head)
-
-    cdef __serialize_empty_body(self, const EmptyBodyImpl& body)
-
-    cdef __serialize_conjunctive_body(self, const ConjunctiveBodyImpl& body)
-
-    cdef __serialize_complete_binary_head(self, const CompleteBinaryHeadImpl& head)
-
-    cdef __serialize_complete_32bit_head(self, const Complete32BitHeadImpl& head)
-
-    cdef __serialize_complete_64bit_head(self, const Complete64BitHeadImpl& head)
-
-    cdef __serialize_partial_binary_head(self, const PartialBinaryHeadImpl& head)
-
-    cdef __serialize_partial_32bit_head(self, const Partial32BitHeadImpl& head)
-
-    cdef __serialize_partial_64bit_head(self, const Partial64BitHeadImpl& head)
-
-    cdef unique_ptr[IBody] __deserialize_body(self, object body_state)
-
-    cdef unique_ptr[IBody] __deserialize_conjunctive_body(self, object body_state)
-
-    cdef unique_ptr[IHead] __deserialize_head(self, object head_state)
-
-    cdef unique_ptr[IHead] __deserialize_complete_binary_head(self, object head_state)
-
-    cdef unique_ptr[IHead] __deserialize_complete_32bit_head(self, object head_state)
-
-    cdef unique_ptr[IHead] __deserialize_complete_64bit_head(self, object head_state)
-
-    cdef unique_ptr[IHead] __deserialize_partial_binary_head(self, object head_state)
-
-    cdef unique_ptr[IHead] __deserialize_partial_32bit_head(self, object head_state)
-
-    cdef unique_ptr[IHead] __deserialize_partial_64bit_head(self, object head_state)
 
 
 cdef inline RuleModel create_rule_model(unique_ptr[IRuleModel] rule_model_ptr):

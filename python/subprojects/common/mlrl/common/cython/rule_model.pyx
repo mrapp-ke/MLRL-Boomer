@@ -1,16 +1,17 @@
 """
 @author Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from libcpp.memory cimport make_unique
-from libcpp.utility cimport move
+from libcpp.cast cimport dynamic_cast
+
+from cython.operator cimport dereference
+
+from mlrl.common.cython._serialization cimport check_pickled_state, image_to_bytes
 
 from abc import abstractmethod
 from dataclasses import dataclass
 from enum import StrEnum
 
 import numpy as np
-
-SERIALIZATION_VERSION = 4
 
 
 class Comparator(StrEnum):
@@ -367,7 +368,6 @@ cdef class RuleList(RuleModel):
 
     def __cinit__(self):
         self.visitor = None
-        self.state = None
 
     cdef IRuleModel* get_rule_model_ptr(self):
         return self.rule_list_ptr.get()
@@ -452,257 +452,6 @@ cdef class RuleList(RuleModel):
         cdef npc.ndarray values = np.asarray(<float64[:num_elements]>head.values_cbegin())
         self.visitor.visit_partial_head(PartialHead.__new__(PartialHead, indices, values))
 
-    cdef __serialize_empty_body(self, const EmptyBodyImpl& body):
-        cdef object body_state = None
-        cdef object rule_state = [body_state, None]
-        self.state.append(rule_state)
-
-    cdef __serialize_conjunctive_body(self, const ConjunctiveBodyImpl& body):
-        cdef uint32 num_numerical_leq = body.getNumNumericalLeq()
-        cdef uint32 num_numerical_gr = body.getNumNumericalGr()
-        cdef uint32 num_ordinal_leq = body.getNumOrdinalLeq()
-        cdef uint32 num_ordinal_gr = body.getNumOrdinalGr()
-        cdef uint32 num_nominal_eq = body.getNumNominalEq()
-        cdef uint32 num_nominal_neq = body.getNumNominalNeq()
-        cdef object body_state = (
-            np.asarray(<float32[:num_numerical_leq]>body.numerical_leq_thresholds_cbegin())
-            if num_numerical_leq > 0 else None,
-            np.asarray(<uint32[:num_numerical_leq]>body.numerical_leq_indices_cbegin())
-            if num_numerical_leq > 0 else None,
-            np.asarray(<float32[:num_numerical_gr]>body.numerical_gr_thresholds_cbegin())
-            if num_numerical_gr > 0 else None,
-            np.asarray(<uint32[:num_numerical_gr]>body.numerical_gr_indices_cbegin()) if num_numerical_gr > 0 else None,
-            np.asarray(<int32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin()) if num_ordinal_leq > 0 else None,
-            np.asarray(<uint32[:num_ordinal_leq]>body.ordinal_leq_indices_cbegin()) if num_ordinal_leq > 0 else None,
-            np.asarray(<int32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin()) if num_ordinal_gr > 0 else None,
-            np.asarray(<uint32[:num_ordinal_gr]>body.ordinal_gr_indices_cbegin()) if num_ordinal_gr > 0 else None,
-            np.asarray(<int32[:num_nominal_eq]>body.nominal_eq_thresholds_cbegin()) if num_nominal_eq > 0 else None,
-            np.asarray(<uint32[:num_nominal_eq]>body.nominal_eq_indices_cbegin()) if num_nominal_eq > 0 else None,
-            np.asarray(<int32[:num_nominal_neq]>body.nominal_neq_thresholds_cbegin()) if num_nominal_neq > 0 else None,
-            np.asarray(<uint32[:num_nominal_neq]>body.nominal_neq_indices_cbegin()) if num_nominal_neq > 0 else None,
-        )
-        cdef object rule_state = [body_state, None]
-        self.state.append(rule_state)
-
-    cdef __serialize_complete_binary_head(self, const CompleteBinaryHeadImpl& head):
-        cdef uint32 num_elements = head.getNumElements()
-        cdef object head_state = (np.asarray(<uint8[:num_elements]>head.values_cbegin()),)
-        cdef object rule_state = self.state[len(self.state) - 1]
-        rule_state[1] = head_state
-
-    cdef __serialize_complete_32bit_head(self, const Complete32BitHeadImpl& head):
-        cdef uint32 num_elements = head.getNumElements()
-        cdef object head_state = (np.asarray(<float32[:num_elements]>head.values_cbegin()),)
-        cdef object rule_state = self.state[len(self.state) - 1]
-        rule_state[1] = head_state
-
-    cdef __serialize_complete_64bit_head(self, const Complete64BitHeadImpl& head):
-        cdef uint32 num_elements = head.getNumElements()
-        cdef object head_state = (np.asarray(<float64[:num_elements]>head.values_cbegin()),)
-        cdef object rule_state = self.state[len(self.state) - 1]
-        rule_state[1] = head_state
-
-    cdef __serialize_partial_binary_head(self, const PartialBinaryHeadImpl& head):
-        cdef uint32 num_elements = head.getNumElements()
-        cdef object head_state = (np.asarray(<uint8[:num_elements]>head.values_cbegin()),
-                                  np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
-        cdef object rule_state = self.state[len(self.state) - 1]
-        rule_state[1] = head_state
-
-    cdef __serialize_partial_32bit_head(self, const Partial32BitHeadImpl& head):
-        cdef uint32 num_elements = head.getNumElements()
-        cdef object head_state = (np.asarray(<float32[:num_elements]>head.values_cbegin()),
-                                  np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
-        cdef object rule_state = self.state[len(self.state) - 1]
-        rule_state[1] = head_state
-
-    cdef __serialize_partial_64bit_head(self, const Partial64BitHeadImpl& head):
-        cdef uint32 num_elements = head.getNumElements()
-        cdef object head_state = (np.asarray(<float64[:num_elements]>head.values_cbegin()),
-                                  np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
-        cdef object rule_state = self.state[len(self.state) - 1]
-        rule_state[1] = head_state
-
-    cdef unique_ptr[IBody] __deserialize_body(self, object body_state):
-        cdef unique_ptr[IBody] body_ptr
-
-        if body_state:
-            body_ptr = move(self.__deserialize_conjunctive_body(body_state))
-
-        return move(body_ptr)
-
-    cdef unique_ptr[IBody] __deserialize_conjunctive_body(self, object body_state):
-        cdef const float32[::1] numerical_leq_thresholds = body_state[0]
-        cdef const uint32[::1] numerical_leq_indices = body_state[1]
-        cdef const float32[::1] numerical_gr_thresholds = body_state[2]
-        cdef const uint32[::1] numerical_gr_indices = body_state[3]
-        cdef const int32[::1] ordinal_leq_thresholds = body_state[4]
-        cdef const uint32[::1] ordinal_leq_indices = body_state[5]
-        cdef const int32[::1] ordinal_gr_thresholds = body_state[6]
-        cdef const uint32[::1] ordinal_gr_indices = body_state[7]
-        cdef const int32[::1] nominal_eq_thresholds = body_state[8]
-        cdef const uint32[::1] nominal_eq_indices = body_state[9]
-        cdef const int32[::1] nominal_neq_thresholds = body_state[10]
-        cdef const uint32[::1] nominal_neq_indices = body_state[11]
-        cdef uint32 num_numerical_leq = numerical_leq_thresholds.shape[0] if numerical_leq_thresholds is not None else 0
-        cdef uint32 num_numerical_gr = numerical_gr_thresholds.shape[0] if numerical_gr_thresholds is not None else 0
-        cdef uint32 num_ordinal_leq = ordinal_leq_thresholds.shape[0] if ordinal_leq_thresholds is not None else 0
-        cdef uint32 num_ordinal_gr = ordinal_gr_thresholds.shape[0] if ordinal_gr_thresholds is not None else 0
-        cdef uint32 num_nominal_eq = nominal_eq_thresholds.shape[0] if nominal_eq_thresholds is not None else 0
-        cdef uint32 num_nominal_neq = nominal_neq_thresholds.shape[0] if nominal_neq_thresholds is not None else 0
-        cdef unique_ptr[ConjunctiveBodyImpl] body_ptr = make_unique[ConjunctiveBodyImpl](
-            num_numerical_leq, num_numerical_gr, num_ordinal_leq, num_ordinal_gr, num_nominal_eq, num_nominal_neq)
-        cdef ConjunctiveBodyImpl.numerical_threshold_iterator numerical_threshold_iterator = \
-            body_ptr.get().numerical_leq_thresholds_begin()
-        cdef ConjunctiveBodyImpl.index_iterator index_iterator = body_ptr.get().numerical_leq_indices_begin()
-        cdef uint32 i
-
-        for i in range(num_numerical_leq):
-            numerical_threshold_iterator[i] = numerical_leq_thresholds[i]
-            index_iterator[i] = numerical_leq_indices[i]
-
-        numerical_threshold_iterator = body_ptr.get().numerical_gr_thresholds_begin()
-        index_iterator = body_ptr.get().numerical_gr_indices_begin()
-
-        for i in range(num_numerical_gr):
-            numerical_threshold_iterator[i] = numerical_gr_thresholds[i]
-            index_iterator[i] = numerical_gr_indices[i]
-
-        cdef ConjunctiveBodyImpl.ordinal_threshold_iterator ordinal_threshold_iterator = \
-            body_ptr.get().ordinal_leq_thresholds_begin()
-        index_iterator = body_ptr.get().ordinal_leq_indices_begin()
-
-        for i in range(num_ordinal_leq):
-            ordinal_threshold_iterator[i] = ordinal_leq_thresholds[i]
-            index_iterator[i] = ordinal_leq_indices[i]
-
-        ordinal_threshold_iterator = body_ptr.get().ordinal_gr_thresholds_begin()
-        index_iterator = body_ptr.get().ordinal_gr_indices_begin()
-
-        for i in range(num_ordinal_gr):
-            ordinal_threshold_iterator[i] = ordinal_gr_thresholds[i]
-            index_iterator[i] = ordinal_gr_indices[i]
-
-        cdef ConjunctiveBodyImpl.nominal_threshold_iterator nominal_threshold_iterator = \
-            body_ptr.get().nominal_eq_thresholds_begin()
-        index_iterator = body_ptr.get().nominal_eq_indices_begin()
-
-        for i in range(num_nominal_eq):
-            nominal_threshold_iterator[i] = nominal_eq_thresholds[i]
-            index_iterator[i] = nominal_eq_indices[i]
-
-        nominal_threshold_iterator = body_ptr.get().nominal_neq_thresholds_begin()
-        index_iterator = body_ptr.get().nominal_neq_indices_begin()
-
-        for i in range(num_nominal_neq):
-            nominal_threshold_iterator[i] = nominal_neq_thresholds[i]
-            index_iterator[i] = nominal_neq_indices[i]
-
-        return <unique_ptr[IBody]>move(body_ptr)
-
-    cdef unique_ptr[IHead] __deserialize_head(self, object head_state):
-        dtype = head_state[0].dtype
-
-        if len(head_state) > 1:
-            if dtype == np.uint8:
-                return move(self.__deserialize_partial_binary_head(head_state))
-            elif dtype == np.float32:
-                return move(self.__deserialize_partial_32bit_head(head_state))
-            elif dtype == np.float64:
-                return move(self.__deserialize_partial_64bit_head(head_state))
-            else:
-                raise ValueError('Encountered partial head with unexpected score type: ' + str(dtype))
-        else:
-            if dtype == np.uint8:
-                return move(self.__deserialize_complete_binary_head(head_state))
-            elif dtype == np.float32:
-                return move(self.__deserialize_complete_32bit_head(head_state))
-            elif dtype == np.float64:
-                return move(self.__deserialize_complete_64bit_head(head_state))
-            else:
-                raise ValueError('Encountered complete head with unexpected score type: ' + str(dtype))
-
-    cdef unique_ptr[IHead] __deserialize_complete_binary_head(self, object head_state):
-        cdef const uint8[::1] scores = head_state[0]
-        cdef uint32 num_elements = scores.shape[0]
-        cdef unique_ptr[CompleteBinaryHeadImpl] head_ptr = make_unique[CompleteBinaryHeadImpl](num_elements)
-        cdef CompleteBinaryHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
-        cdef uint32 i
-
-        for i in range(num_elements):
-            value_iterator[i] = scores[i]
-
-        return <unique_ptr[IHead]>move(head_ptr)
-
-    cdef unique_ptr[IHead] __deserialize_complete_32bit_head(self, object head_state):
-        cdef const float32[::1] scores = head_state[0]
-        cdef uint32 num_elements = scores.shape[0]
-        cdef unique_ptr[Complete32BitHeadImpl] head_ptr = make_unique[Complete32BitHeadImpl](num_elements)
-        cdef Complete32BitHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
-        cdef uint32 i
-
-        for i in range(num_elements):
-            value_iterator[i] = scores[i]
-
-        return <unique_ptr[IHead]>move(head_ptr)
-
-    cdef unique_ptr[IHead] __deserialize_complete_64bit_head(self, object head_state):
-        cdef const float64[::1] scores = head_state[0]
-        cdef uint32 num_elements = scores.shape[0]
-        cdef unique_ptr[Complete64BitHeadImpl] head_ptr = make_unique[Complete64BitHeadImpl](num_elements)
-        cdef Complete64BitHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
-        cdef uint32 i
-
-        for i in range(num_elements):
-            value_iterator[i] = scores[i]
-
-        return <unique_ptr[IHead]>move(head_ptr)
-
-    cdef unique_ptr[IHead] __deserialize_partial_binary_head(self, object head_state):
-        cdef const uint8[::1] scores = head_state[0]
-        cdef const uint32[::1] indices = head_state[1]
-        cdef uint32 num_elements = scores.shape[0]
-        cdef unique_ptr[PartialBinaryHeadImpl] head_ptr = make_unique[PartialBinaryHeadImpl](num_elements)
-        cdef PartialBinaryHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
-        cdef PartialBinaryHeadImpl.index_iterator index_iterator = head_ptr.get().indices_begin()
-        cdef uint32 i
-
-        for i in range(num_elements):
-            value_iterator[i] = scores[i]
-            index_iterator[i] = indices[i]
-
-        return <unique_ptr[IHead]>move(head_ptr)
-
-    cdef unique_ptr[IHead] __deserialize_partial_32bit_head(self, object head_state):
-        cdef const float32[::1] scores = head_state[0]
-        cdef const uint32[::1] indices = head_state[1]
-        cdef uint32 num_elements = scores.shape[0]
-        cdef unique_ptr[Partial32BitHeadImpl] head_ptr = make_unique[Partial32BitHeadImpl](num_elements)
-        cdef Partial32BitHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
-        cdef Partial32BitHeadImpl.index_iterator index_iterator = head_ptr.get().indices_begin()
-        cdef uint32 i
-
-        for i in range(num_elements):
-            value_iterator[i] = scores[i]
-            index_iterator[i] = indices[i]
-
-        return <unique_ptr[IHead]>move(head_ptr)
-
-    cdef unique_ptr[IHead] __deserialize_partial_64bit_head(self, object head_state):
-        cdef const float64[::1] scores = head_state[0]
-        cdef const uint32[::1] indices = head_state[1]
-        cdef uint32 num_elements = scores.shape[0]
-        cdef unique_ptr[Partial64BitHeadImpl] head_ptr = make_unique[Partial64BitHeadImpl](num_elements)
-        cdef Partial64BitHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
-        cdef Partial64BitHeadImpl.index_iterator index_iterator = head_ptr.get().indices_begin()
-        cdef uint32 i
-
-        for i in range(num_elements):
-            value_iterator[i] = scores[i]
-            index_iterator[i] = indices[i]
-
-        return <unique_ptr[IHead]>move(head_ptr)
-
     def contains_default_rule(self) -> bool:
         """
         Returns whether the model contains a default rule or not.
@@ -748,55 +497,18 @@ cdef class RuleList(RuleModel):
         self.visitor = None
 
     def __reduce__(self):
-        self.state = []
-        self.rule_list_ptr.get().visit(
-            wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__serialize_empty_body),
-            wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__serialize_conjunctive_body),
-            wrapCompleteBinaryHeadVisitor(<void*>self,
-                                          <CompleteBinaryHeadCythonVisitor>self.__serialize_complete_binary_head),
-            wrapComplete32BitHeadVisitor(<void*>self,
-                                         <Complete32BitHeadCythonVisitor>self.__serialize_complete_32bit_head),
-            wrapComplete64BitHeadVisitor(<void*>self,
-                                         <Complete64BitHeadCythonVisitor>self.__serialize_complete_64bit_head),
-            wrapPartialBinaryHeadVisitor(<void*>self,
-                                         <PartialBinaryHeadCythonVisitor>self.__serialize_partial_binary_head),
-            wrapPartial32BitHeadVisitor(<void*>self,
-                                        <Partial32BitHeadCythonVisitor>self.__serialize_partial_32bit_head),
-            wrapPartial64BitHeadVisitor(<void*>self,
-                                        <Partial64BitHeadCythonVisitor>self.__serialize_partial_64bit_head))
-        cdef bint default_rule_takes_precedence = self.rule_list_ptr.get().isDefaultRuleTakingPrecedence()
-        cdef uint32 num_used_rules = self.rule_list_ptr.get().getNumUsedRules()
-        cdef object state = (SERIALIZATION_VERSION, (self.state, default_rule_takes_precedence, num_used_rules))
-        self.state = None
+        cdef bytes state = image_to_bytes(serializeRuleModel(dereference(self.rule_list_ptr.get())))
         return (RuleList, (), state)
 
     def __setstate__(self, state):
-        cdef int version = state[0]
+        check_pickled_state(state, 'RuleList')
+        cdef const uint8[::1] data = state
+        cdef const uint8* data_ptr = &data[0] if data.shape[0] > 0 else NULL
+        cdef unique_ptr[IRuleModel] rule_model_ptr = deserializeRuleModel(data_ptr, data.shape[0])
+        cdef IRuleList* rule_list_ptr = dynamic_cast[RuleListPtr](rule_model_ptr.get())
 
-        if version != SERIALIZATION_VERSION:
-            raise AssertionError('Version of the serialized RuleModel is ' + str(version) + ', expected '
-                                 + str(SERIALIZATION_VERSION))
+        if rule_list_ptr == NULL:
+            raise ValueError('The pickled data does not contain an object of type RuleList')
 
-        cdef object model_state = state[1]
-        cdef list rule_list = model_state[0]
-        cdef bint default_rule_takes_precedence = model_state[1]
-        cdef uint32 num_rules = len(rule_list)
-        cdef unique_ptr[IRuleList] rule_list_ptr = createRuleList(default_rule_takes_precedence)
-        cdef object rule_state
-        cdef unique_ptr[IBody] body_ptr
-        cdef unique_ptr[IHead] head_ptr
-        cdef uint32 i
-
-        for i in range(num_rules):
-            rule_state = rule_list[i]
-            body_ptr = self.__deserialize_body(rule_state[0])
-            head_ptr = self.__deserialize_head(rule_state[1])
-
-            if body_ptr.get() == NULL:
-                rule_list_ptr.get().addDefaultRule(move(head_ptr))
-            else:
-                rule_list_ptr.get().addRule(move(body_ptr), move(head_ptr))
-
-        cdef uint32 num_used_rules = model_state[2]
-        rule_list_ptr.get().setNumUsedRules(num_used_rules)
-        self.rule_list_ptr = move(rule_list_ptr)
+        rule_model_ptr.release()
+        self.rule_list_ptr = unique_ptr[IRuleList](rule_list_ptr)

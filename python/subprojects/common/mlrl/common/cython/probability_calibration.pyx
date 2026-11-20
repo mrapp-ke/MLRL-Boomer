@@ -1,11 +1,13 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from libcpp.utility cimport move
+from libcpp.cast cimport dynamic_cast
+
+from cython.operator cimport dereference
+
+from mlrl.common.cython._serialization cimport check_pickled_state, image_to_bytes
 
 from abc import ABC, abstractmethod
-
-SERIALIZATION_VERSION = 0
 
 
 cdef class MarginalProbabilityCalibrationModel:
@@ -111,44 +113,26 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
     cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability):
         self.visitor.visit_bin(list_index, threshold, probability)
 
-    cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability):
-        cdef list bin_list = self.state[list_index]
-        bin_list.append((threshold, probability))
-
     def __reduce__(self):
-        cdef uint32 num_bin_lists = self.probability_calibration_model_ptr.get().getNumBinLists()
-        self.state = [[] for _ in range(num_bin_lists)]
-        self.probability_calibration_model_ptr.get().visit(
-            wrapBinVisitor(<void*>self, <BinCythonVisitor>self.__serialize_bin))
-        cdef object state = (SERIALIZATION_VERSION, self.state)
-        self.state = None
+        cdef bytes state = image_to_bytes(
+            serializeMarginalProbabilityCalibrationModel(dereference(self.probability_calibration_model_ptr.get())))
         return (IsotonicMarginalProbabilityCalibrationModel, (), state)
 
     def __setstate__(self, state):
-        cdef int version = state[0]
+        check_pickled_state(state, 'IsotonicMarginalProbabilityCalibrationModel')
+        cdef const uint8[::1] data = state
+        cdef const uint8* data_ptr = &data[0] if data.shape[0] > 0 else NULL
+        cdef unique_ptr[IMarginalProbabilityCalibrationModel] model_ptr = (
+            deserializeMarginalProbabilityCalibrationModel(data_ptr, data.shape[0]))
+        cdef IIsotonicProbabilityCalibrationModel* isotonic_model_ptr = (
+            dynamic_cast[IsotonicProbabilityCalibrationModelPtr](model_ptr.get()))
 
-        if version != SERIALIZATION_VERSION:
-            raise AssertionError('Version of the serialized IsotonicMarginalProbabilityCalibrationModel is '
-                                 + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
+        if isotonic_model_ptr == NULL:
+            raise ValueError('The pickled data does not contain an object of type '
+                             + 'IsotonicMarginalProbabilityCalibrationModel')
 
-        cdef list bins_per_list = state[1]
-        cdef uint32 num_bin_lists = len(bins_per_list)
-        cdef unique_ptr[IIsotonicProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
-            createIsotonicProbabilityCalibrationModel(num_bin_lists)
-        cdef list bin_list
-        cdef float64 threshold, probability
-        cdef uint32 i, j, num_bins
-
-        for i in range(num_bin_lists):
-            bin_list = bins_per_list[i]
-            num_bins = len(bin_list)
-
-            for j in range(num_bins):
-                threshold = bin_list[j][0]
-                probability = bin_list[j][1]
-                marginal_probability_calibration_model_ptr.get().addBin(i, threshold, probability)
-
-        self.probability_calibration_model_ptr = move(marginal_probability_calibration_model_ptr)
+        model_ptr.release()
+        self.probability_calibration_model_ptr = unique_ptr[IIsotonicProbabilityCalibrationModel](isotonic_model_ptr)
 
 
 cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationModel,
@@ -169,41 +153,23 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
     cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability):
         self.visitor.visit_bin(list_index, threshold, probability)
 
-    cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability):
-        cdef list bin_list = self.state[list_index]
-        bin_list.append((threshold, probability))
-
     def __reduce__(self):
-        cdef uint32 num_bin_lists = self.probability_calibration_model_ptr.get().getNumBinLists()
-        self.state = [[] for _ in range(num_bin_lists)]
-        self.probability_calibration_model_ptr.get().visit(
-            wrapBinVisitor(<void*>self, <BinCythonVisitor>self.__serialize_bin))
-        cdef object state = (SERIALIZATION_VERSION, self.state)
-        self.state = None
+        cdef bytes state = image_to_bytes(
+            serializeJointProbabilityCalibrationModel(dereference(self.probability_calibration_model_ptr.get())))
         return (IsotonicJointProbabilityCalibrationModel, (), state)
 
     def __setstate__(self, state):
-        cdef int version = state[0]
+        check_pickled_state(state, 'IsotonicJointProbabilityCalibrationModel')
+        cdef const uint8[::1] data = state
+        cdef const uint8* data_ptr = &data[0] if data.shape[0] > 0 else NULL
+        cdef unique_ptr[IJointProbabilityCalibrationModel] model_ptr = (
+            deserializeJointProbabilityCalibrationModel(data_ptr, data.shape[0]))
+        cdef IIsotonicProbabilityCalibrationModel* isotonic_model_ptr = (
+            dynamic_cast[IsotonicProbabilityCalibrationModelPtr](model_ptr.get()))
 
-        if version != SERIALIZATION_VERSION:
-            raise AssertionError('Version of the serialized IsotonicJointProbabilityCalibrationModel is ' + str(version)
-                                 + ', expected ' + str(SERIALIZATION_VERSION))
+        if isotonic_model_ptr == NULL:
+            raise ValueError('The pickled data does not contain an object of type '
+                             + 'IsotonicJointProbabilityCalibrationModel')
 
-        cdef list bins_per_list = state[1]
-        cdef uint32 num_bin_lists = len(bins_per_list)
-        cdef unique_ptr[IIsotonicProbabilityCalibrationModel] joint_probability_calibration_model_ptr = \
-            createIsotonicProbabilityCalibrationModel(num_bin_lists)
-        cdef list bin_list
-        cdef float64 threshold, probability
-        cdef uint32 i, j, num_bins
-
-        for i in range(num_bin_lists):
-            bin_list = bins_per_list[i]
-            num_bins = len(bin_list)
-
-            for j in range(num_bins):
-                threshold = bin_list[j][0]
-                probability = bin_list[j][1]
-                joint_probability_calibration_model_ptr.get().addBin(i, threshold, probability)
-
-        self.probability_calibration_model_ptr = move(joint_probability_calibration_model_ptr)
+        model_ptr.release()
+        self.probability_calibration_model_ptr = unique_ptr[IIsotonicProbabilityCalibrationModel](isotonic_model_ptr)

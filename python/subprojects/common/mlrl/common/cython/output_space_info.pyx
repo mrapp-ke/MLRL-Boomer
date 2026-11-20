@@ -1,14 +1,15 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from libcpp.memory cimport make_unique
-from libcpp.utility cimport move
+from libcpp.cast cimport dynamic_cast
+
+from cython.operator cimport dereference
+
+from mlrl.common.cython._serialization cimport check_pickled_state, image_to_bytes
 
 from abc import abstractmethod
 
 import numpy as np
-
-SERIALIZATION_VERSION = 3
 
 
 cdef class OutputSpaceInfo:
@@ -76,53 +77,19 @@ cdef class LabelVectorSet(OutputSpaceInfo):
         label_indices = np.asarray(<uint32[:num_elements]>label_vector.cbegin() if num_elements > 0 else [])
         self.visitor.visit_label_vector(label_indices, frequency)
 
-    cdef __serialize_label_vector(self, const LabelVector& label_vector, uint32 frequency):
-        cdef list label_vector_state = []
-        cdef uint32 num_elements = label_vector.getNumElements()
-        cdef LabelVector.const_iterator iterator = label_vector.cbegin()
-        cdef uint32 i, label_index
-
-        for i in range(num_elements):
-            label_index = iterator[i]
-            label_vector_state.append(label_index)
-
-        self.state.append((label_vector_state, frequency))
-
-    cdef unique_ptr[LabelVector] __deserialize_label_vector(self, object label_vector_state):
-        cdef uint32 num_elements = len(label_vector_state)
-        cdef unique_ptr[LabelVector] label_vector_ptr = make_unique[LabelVector](num_elements)
-        cdef LabelVector.iterator iterator = label_vector_ptr.get().begin()
-        cdef uint32 i, label_index
-
-        for i in range(num_elements):
-            label_index = label_vector_state[i]
-            iterator[i] = label_index
-
-        return move(label_vector_ptr)
-
     def __reduce__(self):
-        self.state = []
-        self.label_vector_set_ptr.get().visit(
-            wrapLabelVectorVisitor(<void*>self, <LabelVectorCythonVisitor>self.__serialize_label_vector))
-        cdef object state = (SERIALIZATION_VERSION, self.state)
-        self.state = None
+        cdef bytes state = image_to_bytes(serializeOutputSpaceInfo(dereference(self.label_vector_set_ptr.get())))
         return (LabelVectorSet, (), state)
 
     def __setstate__(self, state):
-        cdef int version = state[0]
+        check_pickled_state(state, 'LabelVectorSet')
+        cdef const uint8[::1] data = state
+        cdef unique_ptr[IOutputSpaceInfo] output_space_info_ptr = deserializeOutputSpaceInfo(
+            &data[0] if data.shape[0] > 0 else NULL, data.shape[0])
+        cdef ILabelVectorSet* label_vector_set_ptr = dynamic_cast[LabelVectorSetPtr](output_space_info_ptr.get())
 
-        if version != SERIALIZATION_VERSION:
-            raise AssertionError('Version of the serialized OutputSpaceInfo is ' + str(version) + ', expected '
-                                 + str(SERIALIZATION_VERSION))
+        if label_vector_set_ptr == NULL:
+            raise ValueError('The pickled data does not contain an object of type LabelVectorSet')
 
-        cdef list label_vector_list = state[1]
-        cdef uint32 num_label_vectors = len(label_vector_list)
-        cdef unique_ptr[ILabelVectorSet] label_vector_set_ptr = createLabelVectorSet()
-        cdef list label_vector_state
-        cdef uint32 i, frequency
-
-        for i in range(num_label_vectors):
-            label_vector_state, frequency = label_vector_list[i]
-            label_vector_set_ptr.get().addLabelVector(self.__deserialize_label_vector(label_vector_state), frequency)
-
-        self.label_vector_set_ptr = move(label_vector_set_ptr)
+        output_space_info_ptr.release()
+        self.label_vector_set_ptr = unique_ptr[ILabelVectorSet](label_vector_set_ptr)

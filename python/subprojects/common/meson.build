@@ -13,6 +13,7 @@ cython_module_names = [
     'learner',
     'learner_classification',
     'learner_regression',
+    'model_file',
     'multi_threading',
     'output_matrix',
     'output_sampling',
