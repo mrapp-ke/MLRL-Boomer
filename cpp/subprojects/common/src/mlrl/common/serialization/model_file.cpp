@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include "hdf5/hdf5_file.hpp"
+#include "probability_calibration_serialization.hpp"
 
 #include <stdexcept>
 #include <utility>
@@ -119,6 +120,16 @@ class ModelFileWriter final : public IModelFileWriter {
             this->getOrCreateGroup(group).writeDataset<float64>(name, values, numValues);
         }
 
+        void writeMarginalProbabilityCalibrationModel(const IMarginalProbabilityCalibrationModel& model) override {
+            Hdf5Group root = this->getFile().getRootGroup();
+            ::writeMarginalProbabilityCalibrationModel(root, model);
+        }
+
+        void writeJointProbabilityCalibrationModel(const IJointProbabilityCalibrationModel& model) override {
+            Hdf5Group root = this->getFile().getRootGroup();
+            ::writeJointProbabilityCalibrationModel(root, model);
+        }
+
         std::vector<uint8> finish() override {
             std::vector<uint8> image = this->getFile().getImage();
             filePtr_.reset();
@@ -215,6 +226,22 @@ class ModelFileReader final : public IModelFileReader {
 
         std::vector<float64> readFloat64Array(const std::string& group, const std::string& name) const override {
             return this->openGroup(group).readDataset<float64>(name);
+        }
+
+        bool hasMarginalProbabilityCalibrationModel() const override {
+            return file_.getRootGroup().hasGroup(GROUP_MARGINAL_PROBABILITY_CALIBRATION_MODEL);
+        }
+
+        std::unique_ptr<IMarginalProbabilityCalibrationModel> readMarginalProbabilityCalibrationModel() const override {
+            return ::readMarginalProbabilityCalibrationModel(file_.getRootGroup());
+        }
+
+        bool hasJointProbabilityCalibrationModel() const override {
+            return file_.getRootGroup().hasGroup(GROUP_JOINT_PROBABILITY_CALIBRATION_MODEL);
+        }
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> readJointProbabilityCalibrationModel() const override {
+            return ::readJointProbabilityCalibrationModel(file_.getRootGroup());
         }
 };
 

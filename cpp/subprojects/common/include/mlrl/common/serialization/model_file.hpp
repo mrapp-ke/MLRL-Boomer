@@ -4,6 +4,8 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
+#include "mlrl/common/prediction/probability_calibration_joint.hpp"
+#include "mlrl/common/prediction/probability_calibration_marginal.hpp"
 #include "mlrl/common/util/dll_exports.hpp"
 
 #include <cstddef>
@@ -105,6 +107,28 @@ class MLRLCOMMON_API IModelFileWriter {
          */
         virtual void writeFloat64Array(const std::string& group, const std::string& name, const float64* values,
                                        std::size_t numValues) = 0;
+
+        /**
+         * Writes a model for the calibration of marginal probabilities. Only models of type
+         * `INoProbabilityCalibrationModel` and `IIsotonicProbabilityCalibrationModel` are supported.
+         *
+         * @throws std::runtime_error   If the type of the model is not supported or if such a model has already been
+         *                              written
+         * @param model                 A reference to an object of type `IMarginalProbabilityCalibrationModel` that
+         *                              should be written
+         */
+        virtual void writeMarginalProbabilityCalibrationModel(const IMarginalProbabilityCalibrationModel& model) = 0;
+
+        /**
+         * Writes a model for the calibration of joint probabilities. Only models of type
+         * `INoProbabilityCalibrationModel` and `IIsotonicProbabilityCalibrationModel` are supported.
+         *
+         * @throws std::runtime_error   If the type of the model is not supported or if such a model has already been
+         *                              written
+         * @param model                 A reference to an object of type `IJointProbabilityCalibrationModel` that
+         *                              should be written
+         */
+        virtual void writeJointProbabilityCalibrationModel(const IJointProbabilityCalibrationModel& model) = 0;
 
         /**
          * Finishes writing the model file and returns its content. Afterwards, the writer cannot be used anymore.
@@ -249,6 +273,41 @@ class MLRLCOMMON_API IModelFileReader {
          * @return      A `std::vector` that stores the values
          */
         virtual std::vector<float64> readFloat64Array(const std::string& group, const std::string& name) const = 0;
+
+        /**
+         * Returns whether the model file contains a model for the calibration of marginal probabilities or not.
+         *
+         * @return True, if the model file contains such a model, false otherwise
+         */
+        virtual bool hasMarginalProbabilityCalibrationModel() const = 0;
+
+        /**
+         * Reads a model for the calibration of marginal probabilities.
+         *
+         * @throws std::runtime_error   If the model file does not contain such a model or if it is invalid
+         * @return                      An unique pointer to an object of type `IMarginalProbabilityCalibrationModel`
+         *                              that has been read. The object is either of type
+         * `INoProbabilityCalibrationModel` or `IIsotonicProbabilityCalibrationModel`
+         */
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> readMarginalProbabilityCalibrationModel()
+          const = 0;
+
+        /**
+         * Returns whether the model file contains a model for the calibration of joint probabilities or not.
+         *
+         * @return True, if the model file contains such a model, false otherwise
+         */
+        virtual bool hasJointProbabilityCalibrationModel() const = 0;
+
+        /**
+         * Reads a model for the calibration of joint probabilities.
+         *
+         * @throws std::runtime_error   If the model file does not contain such a model or if it is invalid
+         * @return                      An unique pointer to an object of type `IJointProbabilityCalibrationModel` that
+         *                              has been read. The object is either of type `INoProbabilityCalibrationModel` or
+         *                              `IIsotonicProbabilityCalibrationModel`
+         */
+        virtual std::unique_ptr<IJointProbabilityCalibrationModel> readJointProbabilityCalibrationModel() const = 0;
 };
 
 /**
