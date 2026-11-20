@@ -89,6 +89,9 @@ source_files = [
     'src/mlrl/common/sampling/weight_vector_dense.cpp',
     'src/mlrl/common/sampling/weight_vector_equal.cpp',
     'src/mlrl/common/sampling/weight_vector_out_of_sample.cpp',
+    'src/mlrl/common/serialization/hdf5/hdf5_error.cpp',
+    'src/mlrl/common/serialization/hdf5/hdf5_file.cpp',
+    'src/mlrl/common/serialization/hdf5/hdf5_group.cpp',
     'src/mlrl/common/simd/simd_no.cpp',
     'src/mlrl/common/simd/simd_yes.cpp',
     'src/mlrl/common/stopping/global_pruning_no.cpp',
@@ -118,6 +121,7 @@ test_files = [
     'test/mlrl/common/input/feature_vector_decorator_numerical.cpp',
     'test/mlrl/common/input/feature_vector_decorator_ordinal.cpp',
     'test/mlrl/common/input/feature_vector_equal.cpp',
+    'test/mlrl/common/serialization/hdf5.cpp',
     'test/mlrl/common/library_info.cpp'
 ]
 
