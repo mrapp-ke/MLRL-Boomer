@@ -50,6 +50,8 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ccache-${{ runner.os }}-${{ runner.arch }}
+      - name: Install HDF5
+        run: sudo apt update && sudo apt install -y libhdf5-dev
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v2
       - name: Generate C++ Apidoc

@@ -56,6 +56,8 @@ jobs:
           check-latest: true
           cache: pip
           cache-dependency-path: '**/requirements.txt'
+      - name: Install HDF5
+        run: brew install hdf5
       - name: Install OpenMP
         if: ${{ inputs.multi_threading_support }}
         env:

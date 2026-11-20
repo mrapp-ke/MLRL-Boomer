@@ -67,6 +67,12 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ steps.arch.outputs.lowercase }}
+      - name: Install HDF5
+        uses: johnwason/vcpkg-action@v8
+        with:
+          pkgs: hdf5
+          triplet: ${{ steps.arch.outputs.lowercase }}-windows
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install OpenCL
         if: ${{ inputs.gpu_support }}
         uses: johnwason/vcpkg-action@v8
