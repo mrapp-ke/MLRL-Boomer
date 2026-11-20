@@ -67,6 +67,12 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ steps.arch.outputs.lowercase }}
+      - name: Install HDF5
+        uses: johnwason/vcpkg-action@v8
+        with:
+          pkgs: hdf5
+          triplet: ${{ steps.arch.outputs.lowercase }}-windows
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install OpenCL
         if: ${{ inputs.gpu_support }}
         uses: johnwason/vcpkg-action@v8
@@ -81,6 +87,8 @@ jobs:
           key: ccache-${{ runner.os }}-${{ runner.arch }}
       - name: Compile via MSVC
         run: |-
+          $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\hdf5_${{ steps.arch.outputs.lowercase }}-windows\include"
+          $env:LIB += ";$($pwd.Path)\vcpkg\packages\hdf5_${{ steps.arch.outputs.lowercase }}-windows\lib"
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_${{ steps.arch.outputs.lowercase }}-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_${{ steps.arch.outputs.lowercase }}-windows\lib"
           ./build.bat compile

@@ -17,6 +17,7 @@ source_files = [
     'src/mlrl/boosting/losses/loss_non_decomposable_logistic.cpp',
     'src/mlrl/boosting/losses/loss_non_decomposable_squared_error.cpp',
     'src/mlrl/boosting/losses/loss_non_decomposable_squared_hinge.cpp',
+    'src/mlrl/boosting/model/model_builder_hdf5.cpp',
     'src/mlrl/boosting/model/rule_list_builder.cpp',
     'src/mlrl/boosting/multi_threading/parallel_rule_refinement_auto.cpp',
     'src/mlrl/boosting/multi_threading/parallel_statistic_update_auto.cpp',
